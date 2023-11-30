@@ -45,6 +45,10 @@ Route::middleware(['autorizacion.defecto'])->group(function () {
     Route::post('/prevision.procesos.cartera.emision-contrato',[Contrato::class, 'fnEmision']);
 
     
+    
+    Route::get('/prevision.procesos.cartera.cotizacion',[Contrato::class, 'fnCotizacion']);
+
+
 
 
 
