@@ -81,3 +81,107 @@ function fnValidarFormularioUpdate(){
     
 }
 
+function fnValidarVacios(formulario){
+    var contadorErrores=0;
+    var valoresFormulario=$('form[name="'+formulario+'"]').serializeArray();
+    if(valoresFormulario.length>0){
+        for(var a=0;a<valoresFormulario.length;a++){
+            var select=$('select[name="'+valoresFormulario[a]['name']+'"]');
+            var input=$('input[name="'+valoresFormulario[a]['name']+'"]');
+            if(select.length==1){
+                var valorSelect=$('select[name="'+valoresFormulario[a]['name']+'"] option:selected');
+                var div=$('div[id="error'+valoresFormulario[a]['name']+'"]');
+                if(valorSelect.val()){
+                    div.hide();
+                }else{
+                    div.show();
+                    div.html('');
+                    div.append('El campo está vacío.');
+                    contadorErrores+=1;
+                }
+            }
+            if(input.length==1){
+                var valorInput=$('input[name="'+valoresFormulario[a]['name']+'"]');
+                var div=$('div[id="error'+valoresFormulario[a]['name']+'"]');
+                if(valorInput.val()){
+                    div.hide();
+                }else{
+                    div.show();
+                    div.html('');
+                    div.append('El campo está vacío.');
+                    contadorErrores+=1;
+                    
+                }
+            }
+        }
+    }
+    return contadorErrores;
+}
+
+function fnValidarTelefono(){
+    var documento=$('input[name="nu_telefono"]').val();
+    var div=$('div[id="errornu_telefono"]');
+    if(documento.length==7){
+        div.hide();
+    }else{
+        div.show();
+        div.html('');
+        div.append('El número debe posee solo 7 caracteres');
+        throw "Error Telefono";
+    }
+}
+function calcularEdad(){
+    var feNacimiento=$('input[name="fe_nacimiento"]').val();
+    var formatoFecha = new Date(feNacimiento);
+    var diferenciaFechas = Date.now() - formatoFecha.getTime();
+    var formatoDiferenciaFechas = new Date(diferenciaFechas); 
+    var anio = formatoDiferenciaFechas.getUTCFullYear();
+    var edad = Math.abs(anio - 1970);
+    var div=$('div[id="errorfe_nacimiento"]');
+    if(edad > 18){
+        div.hide();
+    }else{
+        div.show();
+        div.html('');
+        div.append('El titular no puede ser menor de edad.');
+        throw "Error Edad";
+    }
+}
+
+function fnValidarDocumento(){
+    var tokenLaravel=$('input[name="_token"]').val();
+    var documento=$('input[name="nu_documento"]').val();;
+    var busqueda='busquedaValidacionDocumento';
+    var formulario=[];
+    formulario.push({name:'tp_query',value:2});
+    formulario.push({name:'query',value:busqueda});
+    formulario.push({name:'nu_documento',value:documento});
+    if(documento){
+        $.ajax({
+            url:'/prevision.general.querys',
+            type:'POST',
+            cache:false,
+            headers: {'X-CSRF-TOKEN': tokenLaravel},
+            data:formulario
+        }).done(function(response){
+            console.log(response);
+            var JSONParse=JSON.parse(response);
+            if(JSONParse.httpResponse==200){
+                var div=$('div[id="errornu_documento"]');
+                if(JSONParse.message.content[0].text=='0'){
+                    div.hide();
+                }else{
+                    div.show();
+                    div.html('');
+                    div.append(JSONParse.message.content[0].text);
+                    throw "Error Documento";
+                }
+                
+            }
+        }).fail(function(a,c,b){
+            console.log(a,b,c);
+        });
+    }
+    
+}
+

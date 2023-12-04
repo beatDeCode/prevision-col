@@ -129,6 +129,13 @@ class CatalogoQuery{
    union all
    select 2 value, 'Cálculo Por Prima' text from dual";
 
+   const busquedaTipoCalculoPrimaColectivo="
+   select 1 value, 'Estándar' text from dual
+   union all
+   select 2 value, 'Personalizado' text from dual
+   union all
+   select 3 value, 'Traspaso' text from dual";
+
    const busquedaTasaRiesgoPorAsegurado='select 
    po_tasa_riesgo tasa_riesgo 
    from productotasariesgo

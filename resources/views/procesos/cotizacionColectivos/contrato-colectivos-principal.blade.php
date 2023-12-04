@@ -6,6 +6,7 @@
 @include('plantillas.tarjetaDinamicaApertura')
 
     @include('procesos.cotizacionColectivos.contrato-colectivos-producto')
+    @include('procesos.cotizacionColectivos.contrato-colectivos-carga')
 @include('plantillas.tarjetaDinamicaCierre')
 </div>
 </div>

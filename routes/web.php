@@ -6,6 +6,8 @@ use App\Http\Controllers\Catalogo\Moneda;
 use App\Http\Controllers\Negocio\Empresas;
 use App\Http\Controllers\Seguridad\AuditoriaController;
 use App\Http\Controllers\Procesos\Contrato;
+use App\Http\Controllers\Procesos\ContratoColectivos;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -42,8 +44,10 @@ Route::middleware(['autorizacion.defecto'])->group(function () {
 
     Route::post('/prevision.procesos.cartera.generar-cotizacion',[Contrato::class, 'fnGenerarCotizacion']);
     Route::post('/prevision.procesos.cartera.valida-asegurados',[Contrato::class, 'fnValidarAsegurados']);
-    Route::post('/prevision.procesos.cartera.emision-contrato',[Contrato::class, 'fnEmision']);
-    Route::post('/prevision.procesos.cartera.emision-contrato',[Contrato::class, 'fnEmision']);
+
+    Route::get('/prevision.procesos.cartera.cotizacion-colectivos',[ContratoColectivos::class, 'fnCotizacion']);
+    Route::post('/prevision.procesos.cartera.valida-asegurados-colectivo',[ContratoColectivos::class, 'fnValidarCarga']);
+    
 
     
     

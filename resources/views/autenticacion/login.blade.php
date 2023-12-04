@@ -46,7 +46,7 @@
                         $clave=hash('sha256',
                         'ejecutivo@2024'
                            );
-                           print_r($clave);
+                           //print_r($clave);
                       ?>
                     </div>
                     <div id="errorcd_usuario" style="font-size:11px;display:none;color:red;"></div>
