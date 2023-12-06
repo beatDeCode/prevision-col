@@ -243,8 +243,49 @@ class NegocioQuery{
         cd_sexo,
         to_char(fe_nacimiento,'dd/mm/yyyy') fe_nacimiento,
         mt_prima,
-        mt_prima_plan
+        mt_prima_plan,
+        error
     from temporalcolectivo temp
     where nu_temporal=:nu_temporal
     order by to_number(nu_linea) asc,nu_documento_beneficiario";
+        
+    const busquedaMontosCotizacionColectivo=
+    "select 
+        
+        round(sum(mt_prima),2) mt_cuota,
+        round(sum(mt_prima_plan),2) mt_cuota_plan,
+        'El archivo se cargó exitosamente' mensaje,
+        nu_temporal
+    from temporalcolectivo temp
+    where nu_temporal=:nu_temporal
+    group by nu_temporal";
+    
+    const borrarTemporalColectivo=
+    "delete from temporalcolectivo temp
+    where nu_temporal=:nu_temporal";
+    const borrarTemporalColectivoProducto=
+    "delete from temporalcolectivoProducto temp
+    where nu_temporal=:nu_temporal";
+    const borrarTemporalColectivoTitular=
+    "delete from temporalcolectivoTitular temp
+    where nu_temporal=:nu_temporal";
+
+    const busquedaCotizacionColectivoConErrores=
+    "select 
+        to_number(nu_linea) nu_linea,
+        tp_documento_beneficiario||nu_documento_beneficiario nu_documento,
+        nombre1||' '||apellido1 nm_persona,
+        (select de_parentesco from parentescos where cd_parentesco=temp.cd_parentesco) de_parentesco,
+        cd_sexo,
+        to_char(fe_nacimiento,'dd/mm/yyyy') fe_nacimiento,
+        mt_prima,
+        mt_prima_plan,
+        error,
+        nu_temporal
+    from temporalcolectivo temp
+    where nu_temporal=:nu_temporal
+    and error is not null
+    order by to_number(nu_linea) asc,nu_documento_beneficiario";
+
+    
 }

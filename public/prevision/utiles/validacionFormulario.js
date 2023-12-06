@@ -83,6 +83,7 @@ function fnValidarFormularioUpdate(){
 
 function fnValidarVacios(formulario){
     var contadorErrores=0;
+    console.log('validando Forms');
     var valoresFormulario=$('form[name="'+formulario+'"]').serializeArray();
     if(valoresFormulario.length>0){
         for(var a=0;a<valoresFormulario.length;a++){
@@ -185,3 +186,39 @@ function fnValidarDocumento(){
     
 }
 
+function fnValidarVacios(formulario){
+    var contadorErrores=0;
+    var valoresFormulario=$('form[name="'+formulario+'"]').serializeArray();
+    if(valoresFormulario.length>0){
+        for(var a=0;a<valoresFormulario.length;a++){
+            var select=$('select[name="'+valoresFormulario[a]['name']+'"]');
+            var input=$('input[name="'+valoresFormulario[a]['name']+'"]');
+            if(select.length==1){
+                var valorSelect=$('select[name="'+valoresFormulario[a]['name']+'"] option:selected');
+                var div=$('div[id="error'+valoresFormulario[a]['name']+'"]');
+                if(valorSelect.val()){
+                    div.hide();
+                }else{
+                    div.show();
+                    div.html('');
+                    div.append('El campo está vacío.');
+                    contadorErrores+=1;
+                }
+            }
+            if(input.length==1){
+                var valorInput=$('input[name="'+valoresFormulario[a]['name']+'"]');
+                var div=$('div[id="error'+valoresFormulario[a]['name']+'"]');
+                if(valorInput.val()){
+                    div.hide();
+                }else{
+                    div.show();
+                    div.html('');
+                    div.append('El campo está vacío.');
+                    contadorErrores+=1;
+                    
+                }
+            }
+        }
+    }
+    return contadorErrores;
+}

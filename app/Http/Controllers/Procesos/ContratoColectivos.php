@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Auditoria;
 use App\Models\TemporalColectivoModel;
 use App\Models\TemporalColectivoProductoModel;
+use App\Models\TemporalColectivoTitularModel;
 use Illuminate\Support\Facades\Storage;
 use File;
 use DB;
@@ -105,6 +106,7 @@ class ContratoColectivos extends Controller{
     //
 
     public function fnValidarCarga(Request $request ){
+        $retorno=array();
         try {
             $archivo = $request->file('carga_colectivo'); // Retrieve the uploaded file from the request
             $nombreArchivo = $archivo->getClientOriginalName(); // Retrieve the original filename
@@ -185,7 +187,21 @@ class ContratoColectivos extends Controller{
                 $contador+=1;
             }
             if(sizeof($arrayErrores)==0){
-                $arrayCoelctivoProducto=[
+                $arrayColectivoTitular=[
+                    "de_correo"=>$request->post('de_correo'),
+                    "nu_telefono"=>$request->post('nu_area'),
+                    "de_direccion"=>$request->post('de_direccion'),
+                    "cd_parroquia"=>$request->post('cd_parroquia'),
+                    "cd_municipio"=>$request->post('cd_municipio'),
+                    "cd_estado"=>$request->post('cd_estado'),
+                    "cd_sexo"=>$request->post('cd_sexo'),
+                    "fe_nacimiento"=>$request->post('fe_nacimiento'),
+                    "nm_completo"=>$request->post('nm_completo'),
+                    "nu_documento"=>$request->post('nu_documento'),
+                    "tp_documento"=>$request->post('tp_documento'),
+                    "nu_temporal"=>$secuenciaTemporalColectivo];
+                
+                $arrayColectivoProducto=[
                 "cd_plan_pago"=>$request->post('cd_plan_pago'),
                 "tp_calculo"=>$request->post('cd_tipo_calculo'),
                 "cd_cobertura_detalle"=>$request->post('mt_suma_asegurada'),
@@ -194,12 +210,18 @@ class ContratoColectivos extends Controller{
                 "cd_producto"=>$request->post('cd_producto'),
                 "nu_temporal"=>$secuenciaTemporalColectivo
                 ];
+
+                $instanciaTemporalColectivoTitular= new TemporalColectivoTitularModel;
+                $instanciaTemporalColectivoTitular->fnCreate($arrayColectivoTitular);
+
                 $instanciaTemporalColectivoProducto= new TemporalColectivoProductoModel;
-                    $instanciaTemporalColectivoProducto->fnCreate($arrayCoelctivoProducto);
+                $instanciaTemporalColectivoProducto->fnCreate($arrayColectivoProducto);
+
+                
+                    
                 foreach($arrayFinalInsercion as $array){
                     $instanciaTemporalColectivo= new TemporalColectivoModel;
                     $instanciaTemporalColectivo->fnCreate($array);
-
                 }
                 $tipoCalculo=$request->post('cd_tipo_calculo');
                 if($tipoCalculo==1){
@@ -217,26 +239,70 @@ class ContratoColectivos extends Controller{
                     ],
                 ];
                 DB::executeProcedure($prodecimientoPLSQL, $parametros);
-                print_r($indicadorCotizacion);
                 $busquedaCotizacionColectivo='';
                 if($indicadorCotizacion==0){
-                    $busquedaCotizacionColectivo=$instanciaAuditoria->fnBusquedaParametrizada(
-                        'busquedaCotizacionColectivo',
+                    $busquedaMontosCotizacionColectivo=$instanciaAuditoria->fnBusquedaParametrizada(
+                        'busquedaMontosCotizacionColectivo',
                         array('nu_temporal'=>$secuenciaTemporalColectivo),
                         2
                     );
+                    $retorno=array(
+                        'httpResponse'=>200,
+                        'message'=>array(
+                            'validate'=>1,
+                            'content'=>$busquedaMontosCotizacionColectivo,
+                            'object'=>array(),
+                        ),
+                        'error'=>0
+                    );
+                }else{
+                    $busquedaCotizacionColectivoConErrores=$instanciaAuditoria->fnBusquedaParametrizada(
+                        'busquedaCotizacionColectivoConErrores',
+                        array('nu_temporal'=>$secuenciaTemporalColectivo),
+                        2
+                    );
+                    $retorno=array(
+                        'httpResponse'=>200,
+                        'message'=>array(
+                            'validate'=>0,
+                            'content'=>$busquedaCotizacionColectivoConErrores,
+                            'object'=>array(),
+                        ),
+                        'error'=>1
+                    );
                 }
-                print_r($busquedaCotizacionColectivo);
+                
+                
                
             }else{
-
+                $retorno=array(
+                    'httpResponse'=>200,
+                    'message'=>array(
+                        'validate'=>0,
+                        'content'=>$arrayErrores,
+                        'object'=>array(),
+                    ),
+                    'error'=>9
+                );
             }
             
            
         } catch (Exception $th) {
             print_r($th);
-            //throw $th;
         }
+        return json_encode($retorno);
         
+    }
+    public function fnBorrarTemporal($numeroTemporal){
+        try {
+            $instanciaTemporalColectivoTitular=new TemporalColectivoTitularModel;
+            $instanciaTemporalColectivoProducto=new TemporalColectivoProductoModel;
+            $instanciaTemporalColectivo=new TemporalColectivoModel;
+            $instanciaTemporalColectivo::where('nu_temporal','=',$numeroTemporal)->delete();
+            $instanciaTemporalColectivoProducto::where('nu_temporal','=',$numeroTemporal)->delete();
+            $instanciaTemporalColectivoTitular::where('nu_temporal','=',$numeroTemporal)->delete();
+        } catch (Exception $th) {
+            print_r($th);
+        }
     }
 }

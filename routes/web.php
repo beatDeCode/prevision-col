@@ -47,6 +47,10 @@ Route::middleware(['autorizacion.defecto'])->group(function () {
 
     Route::get('/prevision.procesos.cartera.cotizacion-colectivos',[ContratoColectivos::class, 'fnCotizacion']);
     Route::post('/prevision.procesos.cartera.valida-asegurados-colectivo',[ContratoColectivos::class, 'fnValidarCarga']);
+    Route::get('/prevision.procesos.cartera.borrarTemporal-colectivo/{numeroTemporal}',[ContratoColectivos::class, 'fnBorrarTemporal']);
+
+    Route::get('/prevision.prueba-steps',[Contrato::class, 'fnPrueba']);
+    
     
 
     

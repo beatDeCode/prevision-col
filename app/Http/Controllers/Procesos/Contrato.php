@@ -12,6 +12,20 @@ use App\Models\ContratoCertificadoEndosoModel;
 use App\Models\RecibosModel;
 
 class Contrato extends Controller{
+    public function fnPrueba(){
+        $menu=5;
+        $submenu=6;
+        $scripts=array(
+            '/prevision/utiles/validacionFormulario.js',
+            '/prevision/utiles/sweetAlertsPersonalizados.js',
+            '/prevision/utiles/comboDependienteProductos.js',
+            '/prevision/utiles/comboDependienteEstados.js',
+            '/prevision/procesos/cotizacion.js',
+            '/prevision/utiles/clonarInputs.js');
+        
+        $tarjeta=array('cotizacion-producto|Cotizacion');
+        return view('prueba-steps',compact('scripts','tarjeta','menu','submenu'));
+    }
     public function fnCotizacion(){
         $menu=5;
         $submenu=6;
