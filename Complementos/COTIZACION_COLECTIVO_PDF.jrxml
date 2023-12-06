@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 4.8.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="COTIZACION_COLECTIVO_PDF" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="dadd82fc-df1a-4d74-97d3-57261ef29f6d">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="LOCALHOST"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="NU_TEMPORAL" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select 
+        to_number(nu_linea) nu_linea,
+        nu_documento_titular,
+        tp_documento_beneficiario||nu_documento_beneficiario nu_documento,
+        nombre1||' '||apellido1 nm_persona,
+        (select de_parentesco from parentescos where cd_parentesco=temp.cd_parentesco) de_parentesco,
+        cd_sexo,
+        to_char(fe_nacimiento,'dd/mm/yyyy') fe_nacimiento,
+        mt_prima,
+        mt_prima_plan
+    from temporalcolectivo temp
+    where nu_temporal= $P{NU_TEMPORAL} 
+    order by to_number(nu_linea) asc,nu_documento_beneficiario]]>
+	</queryString>
+	<field name="NU_LINEA" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="NU_LINEA"/>
+		<property name="com.jaspersoft.studio.field.label" value="NU_LINEA"/>
+	</field>
+	<field name="NU_DOCUMENTO_TITULAR" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NU_DOCUMENTO_TITULAR"/>
+		<property name="com.jaspersoft.studio.field.label" value="NU_DOCUMENTO_TITULAR"/>
+	</field>
+	<field name="NU_DOCUMENTO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NU_DOCUMENTO"/>
+		<property name="com.jaspersoft.studio.field.label" value="NU_DOCUMENTO"/>
+	</field>
+	<field name="NM_PERSONA" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NM_PERSONA"/>
+		<property name="com.jaspersoft.studio.field.label" value="NM_PERSONA"/>
+	</field>
+	<field name="DE_PARENTESCO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="DE_PARENTESCO"/>
+		<property name="com.jaspersoft.studio.field.label" value="DE_PARENTESCO"/>
+	</field>
+	<field name="CD_SEXO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CD_SEXO"/>
+		<property name="com.jaspersoft.studio.field.label" value="CD_SEXO"/>
+	</field>
+	<field name="FE_NACIMIENTO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FE_NACIMIENTO"/>
+		<property name="com.jaspersoft.studio.field.label" value="FE_NACIMIENTO"/>
+	</field>
+	<field name="MT_PRIMA" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="MT_PRIMA"/>
+		<property name="com.jaspersoft.studio.field.label" value="MT_PRIMA"/>
+	</field>
+	<field name="MT_PRIMA_PLAN" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="MT_PRIMA_PLAN"/>
+		<property name="com.jaspersoft.studio.field.label" value="MT_PRIMA_PLAN"/>
+	</field>
+	<variable name="mt_prima_vig_grupo" class="java.math.BigDecimal" resetType="Group" resetGroup="titular" calculation="Sum">
+		<variableExpression><![CDATA[$F{MT_PRIMA}]]></variableExpression>
+	</variable>
+	<variable name="mt_prima_plan_grupo" class="java.math.BigDecimal" resetType="Group" resetGroup="titular" calculation="Sum">
+		<variableExpression><![CDATA[$F{MT_PRIMA_PLAN}]]></variableExpression>
+	</variable>
+	<variable name="mt_prima_plan_total" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{MT_PRIMA_PLAN}]]></variableExpression>
+	</variable>
+	<variable name="mt_prima_vig_total" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{MT_PRIMA}]]></variableExpression>
+	</variable>
+	<group name="titular">
+		<groupExpression><![CDATA[$F{NU_DOCUMENTO_TITULAR}]]></groupExpression>
+		<groupHeader>
+			<band height="40">
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="20" width="55" height="20" backcolor="#D4D4D4" uuid="02c2ddad-5da6-41b7-a0a6-7b8c3b5f67f2">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<text><![CDATA[Linea]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="55" y="20" width="100" height="20" backcolor="#D4D4D4" uuid="1faffe00-b02c-49d2-8bd6-0a8a1a6bbe52">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<text><![CDATA[Documento]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="155" y="20" width="100" height="20" backcolor="#D4D4D4" uuid="512fea20-7dd4-4cd5-b199-e03c4354e7f5">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<text><![CDATA[Parentesco]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="255" y="20" width="30" height="20" backcolor="#D4D4D4" uuid="b3975664-cd70-4c10-9f3a-718c52197f78">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<text><![CDATA[Sexo]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="285" y="20" width="100" height="20" backcolor="#D4D4D4" uuid="728b5a67-fd7c-41f4-84db-8e46d91351e0">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<text><![CDATA[Fecha de Nacimiento]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="385" y="20" width="90" height="20" backcolor="#D4D4D4" uuid="d7bce5fb-60ba-4a8c-b8f2-c8bdd2fc0a2f">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<text><![CDATA[Prima Vigencia]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="475" y="20" width="80" height="20" backcolor="#D4D4D4" uuid="4a28deee-5288-42b4-8ded-26cf6b60a600">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<text><![CDATA[Prima Cuota]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="0" width="55" height="20" uuid="e511719a-d1de-40e2-bdc8-7c79f10992ee">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<text><![CDATA[Certificado]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<textField>
+					<reportElement mode="Opaque" x="385" y="0" width="90" height="20" backcolor="#D4D4D4" uuid="12dd42fc-c47e-4731-8811-2acfb3fae642">
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$V{mt_prima_vig_grupo}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Opaque" x="475" y="0" width="80" height="20" backcolor="#D4D4D4" uuid="dd550b00-1f62-4c3f-b21f-22c75494dc13">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$V{mt_prima_plan_grupo}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="63" splitType="Stretch">
+			<staticText>
+				<reportElement x="120" y="0" width="300" height="30" uuid="a164935e-a47f-4e61-976b-9a84e4fe72fd"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Propuesta Cotizacion Colectivo]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="55" height="20" uuid="889c89f2-22ab-4d1c-b330-85bda6fc2db6">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{NU_LINEA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="55" y="0" width="100" height="20" uuid="cc4e64d6-d2f2-4eeb-b0a8-dec9be53f5ae">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{NU_DOCUMENTO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="155" y="0" width="100" height="20" uuid="2e30a247-02e5-47c0-9648-e40653979a6f">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{DE_PARENTESCO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="255" y="0" width="30" height="20" uuid="a2629444-3b5c-4272-af00-474f44cf6fbe">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{CD_SEXO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="285" y="0" width="100" height="20" uuid="51f00b26-f64e-4d00-93c7-f700737e7475">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{FE_NACIMIENTO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="385" y="0" width="90" height="20" uuid="0e1ba2a1-c17b-46f0-9070-2c1598837e9c">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{MT_PRIMA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="475" y="0" width="80" height="20" uuid="0d2458f8-95c2-4df7-8c4e-15053909eef4">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{MT_PRIMA_PLAN}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement mode="Opaque" x="385" y="0" width="90" height="20" backcolor="#D4D4D4" uuid="4c622107-64cd-41cd-9cb2-7050c127f7d3">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{mt_prima_vig_total}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="475" y="0" width="80" height="20" backcolor="#D4D4D4" uuid="c001f7bc-a711-43f6-ae09-338cee36ddbf">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{mt_prima_plan_total}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>
