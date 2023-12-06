@@ -7,7 +7,7 @@ declare
 begin
     v_table:=upper('moneda');
 for reg in (
-    select * from all_tab_columns 
+    select lower(column_name) column_name from all_tab_columns 
     where upper(owner)=upper('prevision')
     and table_name=(v_table)
 )loop

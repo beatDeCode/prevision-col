@@ -233,4 +233,18 @@ class NegocioQuery{
     and ccer.NU_CERTIFICADO = ccen.NU_CERTIFICADO
     and ccer.NU_CONTRATO = ccen.NU_CONTRATO
     and ccer.NU_ULTIMO_ENDOSO=ccen.NU_ENDOSO';
+
+    const busquedaCotizacionColectivo=
+    "select 
+        to_number(nu_linea) nu_linea,
+        tp_documento_beneficiario||nu_documento_beneficiario nu_documento,
+        nombre1||' '||apellido1 nm_persona,
+        (select de_parentesco from parentescos where cd_parentesco=temp.cd_parentesco) de_parentesco,
+        cd_sexo,
+        to_char(fe_nacimiento,'dd/mm/yyyy') fe_nacimiento,
+        mt_prima,
+        mt_prima_plan
+    from temporalcolectivo temp
+    where nu_temporal=:nu_temporal
+    order by to_number(nu_linea) asc,nu_documento_beneficiario";
 }

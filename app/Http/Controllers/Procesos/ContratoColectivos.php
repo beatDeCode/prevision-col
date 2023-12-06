@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Procesos;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Auditoria;
+use App\Models\TemporalColectivoModel;
+use App\Models\TemporalColectivoProductoModel;
 use Illuminate\Support\Facades\Storage;
 use File;
 use DB;
@@ -109,27 +111,128 @@ class ContratoColectivos extends Controller{
             $archive=Storage::disk('local')->put('entrada/'.$nombreArchivo, file_get_contents($archivo));
             $contenido = storage::disk('local')->get('entrada/'.$nombreArchivo);
             $contador=1;
-            $arr = explode("\n", $contenido);
-            $pdo = DB::getPdo();
-            $p1=50;
-            $p2=100;
-            $p3=null;
+            $desglosePorLinea = explode("\n", $contenido);
             $procedureName = 'prevision.pck_cotizacion.pd_valida_cotizacion_colectivo';
- 
-            $result = null;
-            $bindings = [
-                'p_a'  => $p1,
-                'p_b'  => $p2,
-                'p_cotizacion' => [
-                    'value' => &$result,
-                    'length' => 1000,
-                ],
-            ];
-            DB::executeProcedure($procedureName, $bindings);
-            print_r($result);
+            $arrayInsercion=[];
+            $instanciaAuditoria= new Auditoria;
+            $secuenciaTemporalColectivo=$instanciaAuditoria->fnBuscarSecuenciaCatalogo('busquedaSecuenciaTemporalColectivo',array())[0]['secuencia'];
+            $arrayErrores=[];
+            foreach($desglosePorLinea as $linea){
+                $errorLinea='';
+                $desgloseCSV=explode(',',$linea);
+                //Validacion de columnas con formato
+                $patronNumerico='/^[0-9]+$/';
+                $patronAlfabetico="/^[a-zA-Z]+$/";
+                $patronFecha='/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/';
+                //V1,23695018,V,23695018,Yorman,Medina,1994/10/04,M,1,0,1200,0,
+
+                if(preg_match($patronAlfabetico, $desgloseCSV[0])==0){
+                        $errorLinea.='\n Error en la Linea '.$contador.', Columna 1, El campo debe ser una Letra.';
+                }
+                if(preg_match($patronNumerico, $desgloseCSV[1])==0){
+                    $errorLinea.='\n Error en la Linea '.$contador.', Columna 2, El campo debe ser un numero.'.$desgloseCSV[1];
+                }
+                if(preg_match($patronAlfabetico, $desgloseCSV[2])==0){
+                    $errorLinea.='\n Error en la Linea '.$contador.', Columna 3, El campo debe ser una Letra.';
+                }
+                if(preg_match($patronNumerico, $desgloseCSV[3])==0){
+                    $errorLinea.='\n Error en la Linea '.$contador.', Columna 4, El campo debe ser un numero.';
+                }
+                if(preg_match($patronAlfabetico, $desgloseCSV[4])==0){
+                    $errorLinea.='\n Error en la Linea '.$contador.', Columna 5, El campo debe ser alfabetico.';
+                }
+                if(preg_match($patronAlfabetico, $desgloseCSV[5])==0){
+                    $errorLinea.='\n Error en la Linea '.$contador.', Columna 6, El campo debe ser alfabetico.';
+                }
+                if(preg_match($patronFecha, $desgloseCSV[6])==0){
+                    $errorLinea.='\n Error en la Linea '.$contador.', Columna 7, El campo no cumple con formato yyyy/mm/dd.';
+                }
+                if(preg_match($patronAlfabetico, $desgloseCSV[7])==0){
+                    $errorLinea.='\n Error en la Linea '.$contador.', Columna 8, El campo debe ser alfabetico.';
+                }
+                if(preg_match($patronNumerico, $desgloseCSV[8])==0){
+                    $errorLinea.='\n Error en la Linea '.$contador.', Columna 9,  El campo debe ser un numero.';
+                }
+                if(preg_match($patronNumerico, $desgloseCSV[9])==0){
+                    $errorLinea.='\n Error en la Linea '.$contador.', Columna 10,  El campo debe ser un numero.';
+                }
+                if(preg_match($patronNumerico, $desgloseCSV[10])==0){
+                    $errorLinea.='\n Error en la Linea '.$contador.', Columna 11,  El campo debe ser un numero.';
+                }
+                
+                
+                if($errorLinea){
+                    array_push($arrayErrores,$errorLinea);
+                }
+                $arrayInsercion=
+                [
+                    "tp_documento_titular"=>$desgloseCSV[0],
+                    "nu_documento_titular"=>$desgloseCSV[1],
+                    "tp_documento_beneficiario"=>$desgloseCSV[2],
+                    "nu_documento_beneficiario"=>$desgloseCSV[3],
+                    "nombre1"=>$desgloseCSV[4],
+                    "apellido1"=>$desgloseCSV[5],
+                    "fe_nacimiento"=>$desgloseCSV[6],
+                    "cd_sexo"=>$desgloseCSV[7],
+                    "cd_parentesco"=>$desgloseCSV[8],
+                    "mt_suma"=>$desgloseCSV[9],
+                    "mt_prima"=>$desgloseCSV[10],
+                    "nu_linea"=>$contador,
+                    "nu_temporal"=>$secuenciaTemporalColectivo,
+                    "error"=>$errorLinea
+                ];
+                $arrayFinalInsercion[$contador]=$arrayInsercion;
+                $contador+=1;
+            }
+            if(sizeof($arrayErrores)==0){
+                $arrayCoelctivoProducto=[
+                "cd_plan_pago"=>$request->post('cd_plan_pago'),
+                "tp_calculo"=>$request->post('cd_tipo_calculo'),
+                "cd_cobertura_detalle"=>$request->post('mt_suma_asegurada'),
+                "cd_grupo_familiar"=>$request->post('cd_grupo_familiar'),
+                "cd_cobertura"=>$request->post('cd_cobertura'),
+                "cd_producto"=>$request->post('cd_producto'),
+                "nu_temporal"=>$secuenciaTemporalColectivo
+                ];
+                $instanciaTemporalColectivoProducto= new TemporalColectivoProductoModel;
+                    $instanciaTemporalColectivoProducto->fnCreate($arrayCoelctivoProducto);
+                foreach($arrayFinalInsercion as $array){
+                    $instanciaTemporalColectivo= new TemporalColectivoModel;
+                    $instanciaTemporalColectivo->fnCreate($array);
+
+                }
+                $tipoCalculo=$request->post('cd_tipo_calculo');
+                if($tipoCalculo==1){
+                    $prodecimientoPLSQL='prevision.pck_cotizacion_colectivos.pd_cotizacion_estandar';
+                }
+                if($tipoCalculo==2){
+                    $prodecimientoPLSQL='prevision.pck_cotizacion_colectivos.pd_cotizacion_personalizado';
+                }
+                $indicadorCotizacion = null;
+                $parametros = [
+                    'p_nu_temporal'  => $secuenciaTemporalColectivo,
+                    'p_in_cotizacion' => [
+                        'value' => &$indicadorCotizacion,
+                        'length' => 1000,
+                    ],
+                ];
+                DB::executeProcedure($prodecimientoPLSQL, $parametros);
+                print_r($indicadorCotizacion);
+                $busquedaCotizacionColectivo='';
+                if($indicadorCotizacion==0){
+                    $busquedaCotizacionColectivo=$instanciaAuditoria->fnBusquedaParametrizada(
+                        'busquedaCotizacionColectivo',
+                        array('nu_temporal'=>$secuenciaTemporalColectivo),
+                        2
+                    );
+                }
+                print_r($busquedaCotizacionColectivo);
+               
+            }else{
+
+            }
             
-            
-            //print_r($p3); // prints 1
+           
         } catch (Exception $th) {
             print_r($th);
             //throw $th;

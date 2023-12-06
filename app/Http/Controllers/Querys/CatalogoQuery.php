@@ -30,6 +30,9 @@ class CatalogoQuery{
     const busquedaSecuenciaContrato="
     select contrato_seq.nextval secuencia from dual
    ";
+   const busquedaSecuenciaTemporalColectivo="
+      select temporalcolectivo_seq.nextval secuencia from dual
+    ";
 
     const busquedaAreasTelefono="
         select '0424' value, '0424' text from dual
