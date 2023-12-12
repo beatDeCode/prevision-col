@@ -1,4 +1,3 @@
-
 function fnDevolverFase(fase){
     if(fase==2){
         $('#fase2').hide();
@@ -344,47 +343,6 @@ function fnMoverFase4(){
     var fase2=$('div[id="fase4"]');
     fase2.fadeIn('slow');
 }
-/*
-function fnFase4(formulario){
-    var intermediario=$('select[name="cd_intermediario"] option:selected').val();
-    var formaPago=$('select[name="cd_forma_pago"] option:selected').val();
-    var contador=0;
-    var div1=$('div[id="errorcd_forma_pago"]');
-    if(formaPago){
-        div1.hide();
-    }else{
-        
-        div1.html('');
-        div1.append('El campo está vacío');
-        div1.show();
-        contador+=1;
-    }
-    var div2=$('div[id="errorcd_intermediario"]');
-    if(intermediario){
-        div2.hide();
-    }else{
-        div2.show();
-        div2.html('');
-        div2.append('El campo está vacío');
-        contador+=1;
-    }
-    if(contador>0){
-
-    } else{
-        var factura=$('div[id="factura"]').html();
-        var ventanaConfirmacion=
-        fnAlertDetalleFormulario(factura+'<br>¿Está seguro que desea Emitir la Poliza?','Transacción',);
-        ventanaConfirmacion.then((response) =>{
-            if(response.isConfirmed){
-                fnTransaccionConfirmada('Transaccion','Se ha emitido la Póliza.');
-                setInterval(function(){
-                    window.location.replace('/prevision.procesos.cartera.cotizacion');
-                },3000);
-            }
-        });
-    }
-
-}*/
 
 $('select[name="cd_tipo_calculo"]').on('change',function(){
     var valorSeleccionado=$('select[name="cd_tipo_calculo"] option:selected').val();
@@ -481,12 +439,7 @@ function fnEmitir(){
         }else{
             fnGuardarContrato();
         }
-            
-        
-
     }
-    
-
 }
 function fnGuardarContrato(){
     var solicitud=[];
@@ -521,7 +474,6 @@ function fnGuardarContrato(){
     solicitud.push( {name:'fe_nacimiento_asegurado',value: $('input[name="fe_nacimiento_asegurado"]').val() });
     solicitud.push( {name:'cd_parentesco_asegurado',value: $('select[name="cd_parentesco_asegurado"] option:selected').val() });
     var tokenLaravel=$('input[name="_token"]').val();
-    console.log(cantidadDeClonacion);
     if(cantidadDeClonacion>0){
         for(var a=0;a<cantidadDeClonacion;a++){
             solicitud.push( {name:'cd_parentesco_asegurado'+a,value: $('select[name="cd_parentesco_asegurado'+a+'"] option:selected').val() });
@@ -589,6 +541,8 @@ function fnGenerarPdf(){
     ventanaPDF.document.title = "Emision de La Poliza"
     ventanaPDF.document.body.appendChild(obj);
 }
+
+
 /*
 function fnGenerarPdficticio(){
     var factura=$('div[id="factura"]').html();

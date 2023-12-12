@@ -111,21 +111,22 @@ class CatalogoQuery{
    ";
 
    //Productos
-   const busquedaProductos='select cd_producto value, de_producto text from productos';
+   const busquedaProductos="select cd_producto value, de_producto text, 3 columnas, de_producto titulo, tx_icono, 'Productos' nombreTitulo from productos";
 
    //Coberturas
-   const busquedaCoberturas='select cd_cobertura value, de_cobertura text from coberturas
-   where cd_producto=:cd_producto';
+   const busquedaCoberturas="select cd_cobertura value, de_cobertura text, 3 columnas, de_cobertura titulo, tx_icono, 'Coberturas' nombreTitulo from coberturas
+   where cd_producto=:cd_producto";
 
    //CoberturaDetalle
 
    const busquedaSumasAseguradas="
-      select cd_cobertura_detalle value, de_cobertura_detalle text 
+      select cd_cobertura_detalle value, de_cobertura_detalle text ,nu_columnas columnas, de_cobertura_detalle titulo, tx_icono, 'Montos a Riesgo' nombreTitulo
       from coberturadetalle cobe
       where cd_cobertura=:cd_cobertura
       order by mt_suma_asegurada";
 
-   const busquedaGruposFamiliares="select cd_grupo_familiar value, de_grupo_familiar text from gruposfamiliares";
+   const busquedaGruposFamiliares="select cd_grupo_familiar value, initcap(de_grupo_familiar) text ,4 columnas, initcap(de_grupo_familiar) titulo, tx_icono, 'Grupo familiar' nombreTitulo
+   from gruposfamiliares";
 
    const busquedaTipoCalculoPrima="
    select 1 value, 'Cálculo Por Tasa Riesgo' text from dual
@@ -162,7 +163,8 @@ class CatalogoQuery{
 
    //Planes Pago
 
-   const busquedaPlanesPago='select cd_plan_pago value, de_plan_pago text from planespago';
+   const busquedaPlanesPago="select cd_plan_pago value, de_plan_pago text,3 columnas, de_plan_pago titulo, tx_icono, 'Grupo familiar' nombreTitulo
+    from planespago";
 
    //Formas de pago
 

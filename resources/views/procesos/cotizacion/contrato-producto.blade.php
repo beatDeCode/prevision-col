@@ -8,13 +8,12 @@
             '3|3. Emisión|none|dribbble|typcn typcn-image',
         );
         $formulariosCreate1=array(
-            'cd_producto|select|text|col-md-4|Producto'=>$busquedaProductos,
-            'cd_cobertura|select|text|col-md-4|Cobertura|Empresa'=>array(),
-            'mt_suma_asegurada|select|text|col-md-4|Monto a Riesgo'=>array(),
-            'cd_grupo_familiar|select|text|col-md-4|Grupo Familiar'=>$busquedaGruposFamiliares,
-            'cd_plan_pago|select|text|col-md-4|Plan de Pago'=>$busquedaPlanesPago,
-            'cd_tipo_calculo|select|text|col-md-4|Tipo de Cáculo'=>$busquedaTipoCalculoPrima,
-            'div_mt_prima|div|text|col-md-4|Pr'=> array(),
+            'cd_producto|select|text|col-md-4|Producto||display:none'=>$busquedaProductos,
+            'cd_cobertura|select|text|col-md-4|Cobertura|Empresa||display:none'=>array(),
+            'mt_suma_asegurada|select|text|col-md-4|Monto a Riesgo||display:none'=>array(),
+            'cd_grupo_familiar|select|text|col-md-4|Grupo Familiar||display:none'=>$busquedaGruposFamiliares,
+            'cd_plan_pago|select|text|col-md-4|Plan de Pago||display:none'=>$busquedaPlanesPago,
+            //'cd_tipo_calculo|select|text|col-md-4|Tipo de Cáculo'=>$busquedaTipoCalculoPrima,
             ) ;
         $cantidadDeClonacion1=0;
         $formulariosAClonar1=array();
@@ -25,17 +24,19 @@
 
     <!-- Cuerpo Fase I-->
     @include('plantillas.cabeceraWizard',['barra'=>$barra1,'botonesWizard'=>$botonesWizard1])
-    <br>
     <div class="container-fluid">
-        <div class="badge" style="background-color: #7c90a7;color:white;text-align:left;">
-            Datos del Producto
-        </div>
-        <hr class="hr-none">
-        @include('plantillas.formularioCreate',[
+            <div style="display:none">
+            @include('plantillas.formularioCreate',[
             'formulariosCreate'=>$formulariosCreate1,
             'nombreFormulario'=>$nombreFormulario1,
             'formulariosAClonar'=>$formulariosAClonar1,
             'cantidadDeClonacion'=>$cantidadDeClonacion1 ])
+            </div>
+            @include('plantillas.botonesProducto')
+            <div id="coberturas"></div>
+            <div id="sumas"></div>
+            <div id="grupo-familiar"></div>
+            <div id="plan-pago"></div>
         <hr class="hr-none">
             <center>
                 <button type="button" class="btn btn-sm" 
