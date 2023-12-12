@@ -14,13 +14,13 @@ function fnDevolverFase(fase){
     }
 }
 function fnMoverFase2(formulario){
+    
     var validacionFase1=fnValidarVacios(formulario);
-    console.log(validacionFase1);
     if(validacionFase1==0){
         var fase1=$('div[id="fase1"]');
-        fase1.hide(500);
+        fase1.toggle(500);
         var fase2=$('div[id="fase2"]');
-        fase2.fadeIn('slow');
+        fase2.show(500);
     }
     
 }

@@ -32,18 +32,54 @@
             'formulariosAClonar'=>$formulariosAClonar1,
             'cantidadDeClonacion'=>$cantidadDeClonacion1 ])
             </div>
-            @include('plantillas.botonesProducto')
-            <div id="coberturas"></div>
-            <div id="sumas"></div>
-            <div id="grupo-familiar"></div>
-            <div id="plan-pago"></div>
-        <hr class="hr-none">
-            <center>
-                <button type="button" class="btn btn-sm" 
-                style="background-color: #7c90a7;color: white;margin-bottom:15px;" 
-                onclick="fnMoverFase2('formulario-producto')">Siguiente</button>
-                
-            </center>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-3">
+                        <br>
+                       
+                        <div class="card text-left">
+                        <div class="card-header"></div>
+                        <div class="card-body">
+                            <h6 class="card-title">Resumen Cotización</h6>
+                            <hr style="padding:5px;">
+                            <p class="card-subtitle mb-2 " id="p-producto"><a style="font-weight:bold;" >Producto:</a></p> 
+                            <p class="card-subtitle mb-2 " id="resumen-producto"></p> 
+
+                            <p class="card-subtitle mb-2 " id="p-cobertura"><a style="font-weight:bold;">Cobertura:</a></p> 
+                            <p class="card-subtitle mb-2 " id="resumen-cobertura"></p> 
+
+                            <p class="card-subtitle mb-2 " id="p-suma"><a style="font-weight:bold;">Monto a Riesgo:</a></p> 
+                            <p class="card-subtitle mb-2 " id="resumen-suma"></p> 
+
+                            <p class="card-subtitle mb-2 " id="p-grupo-familiar"><a style="font-weight:bold;">Grupo Familiar:</a></p> 
+                            <p class="card-subtitle mb-2 " id="resumen-grupo-familiar"></p> 
+
+                            <p class="card-subtitle mb-2 " id="p-plan-pago""><a style="font-weight:bold;">Plan de Pago:</a></p> 
+                            <p class="card-subtitle mb-2 " id="resumen-plan-pago"></p> 
+                            
+                            <hr style="padding:5px;">
+                            <center></center>
+                        </div>   
+                    </div>
+                    <br>
+                </div>
+
+                <div class="col-md-9">
+                    @include('plantillas.botonesProducto')
+                    <div id="divcoberturas"></div>
+                    <div id="divsumas"></div>
+                    <div id="divgrupofamiliar"></div>
+                    <div id="divplanpago"></div>
+
+                    <center>
+                        <button type="button" class="btn btn-sm" 
+                        style="background-color: #7c90a7;color: white;margin-bottom:15px;" 
+                        onclick="fnMoverFase2('formulario-producto')">Siguiente</button>
+                        
+                    </center>
+                </div>
+            </div>
+            
             <!--
             <center>
                 <button type="button" class="btn btn-sm" 
@@ -54,6 +90,7 @@
             -->
             
         
+    </div>
     </div>
     <!-- Cierre Cuerpo Fase I-->
 </div>

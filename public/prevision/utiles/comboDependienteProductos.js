@@ -23,8 +23,8 @@ $('select[name="cd_producto"').on('change',function(){
             for(var a=0;a<valoresOption.length;a++){
                 selectCobertura.append($('<option>', {value:valoresOption[a]['value'], text:valoresOption[a]['text']}));
             }
-            var botones=fnDespliegueBotones(valoresOption,'fnCambiarCobertura','cobertura');
-            var divCoberturas=$('div[id="coberturas"]');
+            var botones=fnDespliegueBotones(valoresOption,'fnCambiarCobertura','cobertura','Coberturas');
+            var divCoberturas=$('div[id="divcoberturas"]');
             divCoberturas.html('');
             divCoberturas.append(botones);
             
@@ -59,8 +59,8 @@ $('select[name="cd_cobertura"').on('change',function(){
             for(var a=0;a<valoresOption.length;a++){
                 selectSumasAseguradas.append($('<option>', {value:valoresOption[a]['value'], text:valoresOption[a]['text']}));
             }
-            var botones=fnDespliegueBotones(valoresOption,'fnCambiarSumas','sumas');
-            var divCoberturas=$('div[id="sumas"]');
+            var botones=fnDespliegueBotones(valoresOption,'fnCambiarSumas','sumas','Monto a Riesgo');
+            var divCoberturas=$('div[id="divsumas"]');
             divCoberturas.html('');
             divCoberturas.append(botones);
             
@@ -93,8 +93,8 @@ $('select[name="mt_suma_asegurada"').on('change',function(){
             for(var a=0;a<valoresOption.length;a++){
                 busquedaGruposFamiliares.append($('<option>', {value:valoresOption[a]['value'], text:valoresOption[a]['text']}));
             }
-            var botones=fnDespliegueBotones(valoresOption,'fnCambiarGrupoFamiliar','grupo-familiar');
-            var divGrupoFamiliar=$('div[id="grupo-familiar"]');
+            var botones=fnDespliegueBotones(valoresOption,'fnCambiarGrupoFamiliar','grupo-familiar','Grupo Familiar');
+            var divGrupoFamiliar=$('div[id="divgrupofamiliar"]');
             divGrupoFamiliar.html('');
             divGrupoFamiliar.append(botones);
             
@@ -127,8 +127,8 @@ $('select[name="cd_grupo_familiar"').on('change',function(){
             for(var a=0;a<valoresOption.length;a++){
                 planesPago.append($('<option>', {value:valoresOption[a]['value'], text:valoresOption[a]['text']}));
             }
-            var botones=fnDespliegueBotones(valoresOption,'fnCambiarPlanPago','plan-pago');
-            var divGrupoFamiliar=$('div[id="plan-pago"]');
+            var botones=fnDespliegueBotones(valoresOption,'fnCambiarPlanPago','plan-pago','Planes de Pago');
+            var divGrupoFamiliar=$('div[id="divplanpago"]');
             divGrupoFamiliar.html('');
             divGrupoFamiliar.append(botones);
             
@@ -136,40 +136,55 @@ $('select[name="cd_grupo_familiar"').on('change',function(){
     });
 });
 
-function fnCambiarProducto(producto){
-    $('select[name="cd_producto"]').val(producto).change();
-}
+
 function fnActivarBotonProducto(producto,nombreProducto){
     var indicadorProducto=$('input[name="indicador-'+nombreProducto+'"]');
     var tarjetaSeleccion=$('div[id="card-'+nombreProducto+'-'+producto+'"]');
     if(indicadorProducto==0){
-        tarjetaSeleccion.css('border','solid 2px gray');
-        tarjetaSeleccion.css('background-color','#a3ffd0');
+        tarjetaSeleccion.css('border','solid 3px lightgray');
+        tarjetaSeleccion.css('background-color','#e8eff9');
         indicadorProducto.val(producto);
     }
     console.log(producto,tarjetaSeleccion,indicadorProducto);
     if(indicadorProducto.val()==producto){
-        tarjetaSeleccion.css('border','solid 2px gray');
-        tarjetaSeleccion.css('background-color','#a3ffd0');
+        tarjetaSeleccion.css('border','solid 3px lightgray');
+        tarjetaSeleccion.css('background-color','#e8eff9');
         indicadorProducto.val(producto);
     }else{
         var tarjetaSeleccionada=$('div[id="card-'+nombreProducto+'-'+indicadorProducto.val()+'"]');
-        tarjetaSeleccionada.css('border','solid 2px lightgray');
+        tarjetaSeleccionada.css('border','solid 3px lightgray');
         tarjetaSeleccionada.css('background-color','#fff');
         tarjetaSeleccion.css('border','solid 2px gray');
-        tarjetaSeleccion.css('background-color','#a3ffd0');
+        tarjetaSeleccion.css('background-color','#e8eff9');
         indicadorProducto.val(producto);
     }
 }
 
-function fnDespliegueBotones(opciones,nombreFuncion,nombreTarjeta){
-    var row='<div class="container-fluid"><div class="row">';
+function fnDespliegueBotones(opciones,nombreFuncion,nombreTarjeta,nombreTitulo){
+    var row='<div class="container-fluid">'+
+        '<div class="row">'+
+            '<div class="col-md-12" style="margin-top:10px;">'+
+                '<div class="badge" style="background-color: #1d4068;color:white;text-align:left;">'+
+                nombreTitulo+
+                '</div>'+
+                '<hr class="hr-none">'+
+            '</div>'+
+        '</div>'+
+    '</div>'+
+    '<div class="container-fluid"><div class="row">';
     var botones='';
     for(var a=0;a<opciones.length;a++){
         botones+=
         '<div class="col-sm-'+opciones[a]['columnas']+'">'+
             '<br>'+
-               ' <div id="card-'+nombreTarjeta+'-'+opciones[a]['value']+'" class="card" style="border-radius:10px;border:solid 2px lightgray;">'+
+            '<div id="card-'+nombreTarjeta+'-'+opciones[a]['value']+'" class="card text-right" style="border-radius:10px;border: 2px solid gray;">'+
+                '<div class="card-body">'+
+                    '<h5 class="card-title">'+opciones[a]['text']+'</h5>'+
+                    '<p class="card-text">'+opciones[a]['de_tarjeta']+' </p>'+
+                   '<a href="#" onclick="'+nombreFuncion+'('+opciones[a]['value']+')" class="btn btn-primary">Elegir</a>'+
+                '</div>'+
+            '</div>'+
+               /*' <div id="card-'+nombreTarjeta+'-'+opciones[a]['value']+'" class="card" style="border-radius:10px;border:solid 2px lightgray;">'+
                     '<div class="card-img-top" alt="100%x180" data-holder-rendered="true" style="height: 25px; width: 100%; display: block;">'+
                     '<center><i class="'+opciones[a]['tx_icono']+'" style="font-size:25px;"></i> </center>'+
                     '</div>'+
@@ -178,23 +193,46 @@ function fnDespliegueBotones(opciones,nombreFuncion,nombreTarjeta){
                         '<a href="#" style="color:#1d4068;font-weight:bold;" onclick="'+nombreFuncion+'('+opciones[a]['value']+')">  </i> '+opciones[a]['text']+'</a>' +
                        ' </center></p>'+
                     '</div>'+
-                '</div>'+
-           ' </div>';
+                '</div>'+*/
+        '</div>';
     }
-    var cierreRow='</div></div>';
+    var cierreRow='</div><hr class="hr-none"></div>';
     return row+''+botones+''+cierreRow;
 
 }
+function fnCambiarProducto(producto){
+    $('select[name="cd_producto"]').val(producto).change();
+    $('div[id="divproductos"]').hide(850);
+    var resumen=$('p[id="resumen-producto"]');
+    resumen.html('');
+    resumen.append($('select[name="cd_producto"] option:selected').text());
+}
 function fnCambiarCobertura(cobertura){
     $('select[name="cd_cobertura"]').val(cobertura).change();
+    $('div[id="divcoberturas"]').hide(850);
+    var resumen=$('p[id="resumen-cobertura"]');
+    resumen.html('');
+    resumen.append($('select[name="cd_cobertura"] option:selected').text());
 }
 
 function fnCambiarSumas(suma){
     $('select[name="mt_suma_asegurada"]').val(suma).change();
+    $('div[id="divsumas"]').hide(850);
+    var resumen=$('p[id="resumen-suma"]');
+    resumen.html('');
+    resumen.append($('select[name="mt_suma_asegurada"] option:selected').text());
 }
 function fnCambiarGrupoFamiliar(grupofamiliar){
     $('select[name="cd_grupo_familiar"]').val(grupofamiliar).change();
+    $('div[id="divgrupofamiliar"]').hide(850);
+    var resumen=$('p[id="resumen-grupo-familiar"]');
+    resumen.html('');
+    resumen.append($('select[name="cd_grupo_familiar"] option:selected').text());
 }
 function fnCambiarPlanPago(planpago){
     $('select[name="cd_plan_pago"]').val(planpago).change();
+    var resumen=$('p[id="resumen-plan-pago"]');
+    resumen.html('');
+    resumen.append($('select[name="cd_plan_pago"] option:selected').text());
+    fnActivarBotonProducto(planpago,'plan-pago');
 }

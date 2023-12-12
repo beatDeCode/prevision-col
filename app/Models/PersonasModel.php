@@ -207,7 +207,7 @@ class PersonasModel extends Model
                     'cd_grupo_familiar'=>$request->post('cd_grupo_familiar'),
                 ))[0]['tasa_riesgo'];
             
-            $fecha= date('d-M-y');
+            $fecha=date("Y/m/d");
             $arrayTitular=array(
                 "cd_persona"=>$titular,
                 "fe_exlusion"=>'',
