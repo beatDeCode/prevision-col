@@ -83,7 +83,6 @@ function fnValidarFormularioUpdate(){
 
 function fnValidarVacios(formulario){
     var contadorErrores=0;
-    console.log('validando Forms');
     var valoresFormulario=$('form[name="'+formulario+'"]').serializeArray();
     if(valoresFormulario.length>0){
         for(var a=0;a<valoresFormulario.length;a++){

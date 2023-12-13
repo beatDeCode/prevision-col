@@ -93,7 +93,7 @@ function fnTransaccionConfirmada(titulo,mensaje){
   var alerta=
   Swal.fire({
     title: titulo,
-    text: mensaje,
+    html: mensaje,
     icon: "success",
     showCancelButton: false,
     showConfirmButton:false,

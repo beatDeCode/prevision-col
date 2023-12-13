@@ -391,54 +391,63 @@ function fnEmitir(){
     
     var cantidadErrores=
     validarFormularioArray(formulario);
+
     if(cantidadErrores==0){
-        
-        if(formaPago==2 ){
-            var tipoDocumentoDomiclio=$('select[name="tp_documento_domicilio"] option:selected').val();
-            var documentoDomiclio=$('input[name="nu_documento_domicilio"]').val();
-            var tipoCuenta=$('select[name="tp_cuenta"] option:selected').val(); 
-            var cuenta=$('input[name="nu_cuenta"]').val(); 
-            var div=$('div[id="errornu_cuenta"]');
-            if(cuenta.length!=20){
-                div.show();
-                div.html('');
-                div.append('La cuenta debe poseer 20 d&iacute;gitos.');
-            }else{
-                formulario.push({value:'tp_documento_domicilio',text:tipoDocumentoDomiclio});
-                formulario.push({value:'nu_documento_domicilio',text:documentoDomiclio});
-                formulario.push({value:'tp_cuenta',text:tipoCuenta});
-                formulario.push({value:'nu_cuenta',text:cuenta});
-                var formularioRequest=[];
-                var tokenLaravel=$('input[name="_token"]').val();
-                div.hide();
-                busqueda='busquedaCodigoVerificadorBanco';
-                formularioRequest.push({name:'tp_query',value:2});
-                formularioRequest.push({name:'query',value:busqueda});
-                formularioRequest.push({name:'nu_cuenta',value:cuenta});
-                $.ajax({
-                    url:'/prevision.general.querys',
-                    type:'POST',
-                    cache:false,
-                    headers: {'X-CSRF-TOKEN': tokenLaravel},
-                    data:formularioRequest
-                }).done(function(response){
-                    var JSONParse=JSON.parse(response);
-                    var contenido=JSONParse.message.content;
-                    if(contenido[0]['cuenta']==0){
-                        var div=$('div[id="errornu_cuenta"]');
+        contenidoHtml=$('div[id="factura"]').html();
+        var sweetAlert=fnAlertDetalleFormulario(contenidoHtml,'Transacción');
+        sweetAlert.then((response) =>{
+            if(response.isConfirmed){
+                if(formaPago==2 ){
+                    var tipoDocumentoDomiclio=$('select[name="tp_documento_domicilio"] option:selected').val();
+                    var documentoDomiclio=$('input[name="nu_documento_domicilio"]').val();
+                    var tipoCuenta=$('select[name="tp_cuenta"] option:selected').val(); 
+                    var cuenta=$('input[name="nu_cuenta"]').val(); 
+                    var div=$('div[id="errornu_cuenta"]');
+                    if(cuenta.length!=20){
                         div.show();
                         div.html('');
-                        div.append('La cuenta no pertenece a ning&uacute;n Banco.');  
+                        div.append('La cuenta debe poseer 20 d&iacute;gitos.');
                     }else{
-                        fnGuardarContrato();
+                        formulario.push({value:'tp_documento_domicilio',text:tipoDocumentoDomiclio});
+                        formulario.push({value:'nu_documento_domicilio',text:documentoDomiclio});
+                        formulario.push({value:'tp_cuenta',text:tipoCuenta});
+                        formulario.push({value:'nu_cuenta',text:cuenta});
+                        var formularioRequest=[];
+                        var tokenLaravel=$('input[name="_token"]').val();
+                        div.hide();
+                        busqueda='busquedaCodigoVerificadorBanco';
+                        formularioRequest.push({name:'tp_query',value:2});
+                        formularioRequest.push({name:'query',value:busqueda});
+                        formularioRequest.push({name:'nu_cuenta',value:cuenta});
+                        $.ajax({
+                            url:'/prevision.general.querys',
+                            type:'POST',
+                            cache:false,
+                            headers: {'X-CSRF-TOKEN': tokenLaravel},
+                            data:formularioRequest
+                        }).done(function(response){
+                            var JSONParse=JSON.parse(response);
+                            var contenido=JSONParse.message.content;
+                            if(contenido[0]['cuenta']==0){
+                                var div=$('div[id="errornu_cuenta"]');
+                                div.show();
+                                div.html('');
+                                div.append('La cuenta no pertenece a ning&uacute;n Banco.');  
+                            }else{
+                                fnGuardarContrato();
+                            }
+                        }).fail(function(a,b,c){
+                            console.log(a,b,c);
+                        });
                     }
-                }).fail(function(a,b,c){
-                    console.log(a,b,c);
-                });
+                }else{
+                    fnGuardarContrato();
+                }
+            }else{
+                
             }
-        }else{
-            fnGuardarContrato();
-        }
+        });
+        
     }
 }
 function fnGuardarContrato(){
@@ -507,10 +516,10 @@ function fnGuardarContrato(){
         if(JSONParse.httpResponse==200){
             fnTransaccionConfirmada('Transaccion','Se ha emitido el contrato #'+contenido);
                 window.location.replace('http://10.10.0.202:9003/sgd.reportes-xlsx/PREVISON_EMISION/NU_CONTRATO-'+contenido);
-                setInterval(function(){
+                /*setInterval(function(){
                     
                     window.location.replace('/prevision.procesos.cartera.cotizacion');
-                },3000);
+                },3000);*/
             
         }
     }).fail(function(a,b,c){
