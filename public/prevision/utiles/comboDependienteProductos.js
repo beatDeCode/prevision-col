@@ -27,6 +27,7 @@ $('select[name="cd_producto"').on('change',function(){
             var divCoberturas=$('div[id="divcoberturas"]');
             divCoberturas.html('');
             divCoberturas.append(botones);
+            divCoberturas.show(350);
             
         }
 
@@ -63,6 +64,7 @@ $('select[name="cd_cobertura"').on('change',function(){
             var divCoberturas=$('div[id="divsumas"]');
             divCoberturas.html('');
             divCoberturas.append(botones);
+            divCoberturas.show(350);
             
         }
     });
@@ -97,6 +99,7 @@ $('select[name="mt_suma_asegurada"').on('change',function(){
             var divGrupoFamiliar=$('div[id="divgrupofamiliar"]');
             divGrupoFamiliar.html('');
             divGrupoFamiliar.append(botones);
+            divGrupoFamiliar.show(350);
             
         }
     });
@@ -131,6 +134,7 @@ $('select[name="cd_grupo_familiar"').on('change',function(){
             var divGrupoFamiliar=$('div[id="divplanpago"]');
             divGrupoFamiliar.html('');
             divGrupoFamiliar.append(botones);
+            divGrupoFamiliar.show(350);
             
         }
     });
@@ -141,18 +145,17 @@ function fnActivarBotonProducto(producto,nombreProducto){
     var indicadorProducto=$('input[name="indicador-'+nombreProducto+'"]');
     var tarjetaSeleccion=$('div[id="card-'+nombreProducto+'-'+producto+'"]');
     if(indicadorProducto==0){
-        tarjetaSeleccion.css('border','solid 3px lightgray');
+        tarjetaSeleccion.css('border','solid 2px gray');
         tarjetaSeleccion.css('background-color','#e8eff9');
         indicadorProducto.val(producto);
     }
-    console.log(producto,tarjetaSeleccion,indicadorProducto);
     if(indicadorProducto.val()==producto){
-        tarjetaSeleccion.css('border','solid 3px lightgray');
+        tarjetaSeleccion.css('border','solid 2px gray');
         tarjetaSeleccion.css('background-color','#e8eff9');
         indicadorProducto.val(producto);
     }else{
         var tarjetaSeleccionada=$('div[id="card-'+nombreProducto+'-'+indicadorProducto.val()+'"]');
-        tarjetaSeleccionada.css('border','solid 3px lightgray');
+        tarjetaSeleccionada.css('border','solid 2px lightgray');
         tarjetaSeleccionada.css('background-color','#fff');
         tarjetaSeleccion.css('border','solid 2px gray');
         tarjetaSeleccion.css('background-color','#e8eff9');
@@ -177,23 +180,13 @@ function fnDespliegueBotones(opciones,nombreFuncion,nombreTarjeta,nombreTitulo){
         botones+=
         '<div class="col-sm-'+opciones[a]['columnas']+'">'+
             '<br>'+
-            '<div id="card-'+nombreTarjeta+'-'+opciones[a]['value']+'" class="card text-right" style="border-radius:10px;border: 2px solid gray;">'+
+            '<div id="card-'+nombreTarjeta+'-'+opciones[a]['value']+'" class="card text-right" style="border-radius:10px;border: 2px solid lightgray;">'+
                 '<div class="card-body">'+
                     '<h5 class="card-title">'+opciones[a]['text']+'</h5>'+
                     '<p class="card-text">'+opciones[a]['de_tarjeta']+' </p>'+
-                   '<a href="#" onclick="'+nombreFuncion+'('+opciones[a]['value']+')" class="btn btn-primary">Elegir</a>'+
+                   '<a href="#" onclick="'+nombreFuncion+'('+opciones[a]['value']+')" class="btn btn-primary btn-sm">Elegir</a>'+
                 '</div>'+
             '</div>'+
-               /*' <div id="card-'+nombreTarjeta+'-'+opciones[a]['value']+'" class="card" style="border-radius:10px;border:solid 2px lightgray;">'+
-                    '<div class="card-img-top" alt="100%x180" data-holder-rendered="true" style="height: 25px; width: 100%; display: block;">'+
-                    '<center><i class="'+opciones[a]['tx_icono']+'" style="font-size:25px;"></i> </center>'+
-                    '</div>'+
-                    '<div class="card-body" style="padding:0.1rem;">'+
-                        '<p class="card-title" style="margin:0px;font-size:13px;"><center>'+
-                        '<a href="#" style="color:#1d4068;font-weight:bold;" onclick="'+nombreFuncion+'('+opciones[a]['value']+')">  </i> '+opciones[a]['text']+'</a>' +
-                       ' </center></p>'+
-                    '</div>'+
-                '</div>'+*/
         '</div>';
     }
     var cierreRow='</div><hr class="hr-none"></div>';
@@ -201,38 +194,117 @@ function fnDespliegueBotones(opciones,nombreFuncion,nombreTarjeta,nombreTitulo){
 
 }
 function fnCambiarProducto(producto){
+    
     $('select[name="cd_producto"]').val(producto).change();
-    $('div[id="divproductos"]').hide(850);
+    $('div[id="divproductos"]').hide(350);
     var resumen=$('p[id="resumen-producto"]');
     resumen.html('');
     resumen.append($('select[name="cd_producto"] option:selected').text());
+    var elementoIProducto=$('i[id="i-producto"]');
+    elementoIProducto.removeClass('typcn typcn-chevron-right');
+    var elementoICobertura=$('i[id="i-cobertura"]');
+    elementoICobertura.addClass('typcn typcn-chevron-right');
+    var inputLocalizacion=$('input[name="indicador-ubicacion-resumen"]');
+    inputLocalizacion.val(2);
+    $('button[id="devolver-pasos"]').show();
 }
 function fnCambiarCobertura(cobertura){
+    
     $('select[name="cd_cobertura"]').val(cobertura).change();
-    $('div[id="divcoberturas"]').hide(850);
+    $('div[id="divcoberturas"]').hide(350);
     var resumen=$('p[id="resumen-cobertura"]');
     resumen.html('');
     resumen.append($('select[name="cd_cobertura"] option:selected').text());
+    var elementoIProducto=$('i[id="i-cobertura"]');
+    elementoIProducto.removeClass('typcn typcn-chevron-right');
+    var elementoICobertura=$('i[id="i-suma"]');
+    elementoICobertura.addClass('typcn typcn-chevron-right');
+    var inputLocalizacion=$('input[name="indicador-ubicacion-resumen"]');
+    inputLocalizacion.val(3);
 }
 
 function fnCambiarSumas(suma){
+    
     $('select[name="mt_suma_asegurada"]').val(suma).change();
-    $('div[id="divsumas"]').hide(850);
+    $('div[id="divsumas"]').hide(350);
     var resumen=$('p[id="resumen-suma"]');
     resumen.html('');
     resumen.append($('select[name="mt_suma_asegurada"] option:selected').text());
+    var elementoIProducto=$('i[id="i-suma"]');
+    elementoIProducto.removeClass('typcn typcn-chevron-right');
+    var elementoICobertura=$('i[id="i-grupo-familiar"]');
+    elementoICobertura.addClass('typcn typcn-chevron-right');
+    var inputLocalizacion=$('input[name="indicador-ubicacion-resumen"]');
+    inputLocalizacion.val(4);
+    
 }
 function fnCambiarGrupoFamiliar(grupofamiliar){
+    
     $('select[name="cd_grupo_familiar"]').val(grupofamiliar).change();
-    $('div[id="divgrupofamiliar"]').hide(850);
+    $('div[id="divgrupofamiliar"]').hide(350);
     var resumen=$('p[id="resumen-grupo-familiar"]');
     resumen.html('');
     resumen.append($('select[name="cd_grupo_familiar"] option:selected').text());
+    var elementoIProducto=$('i[id="i-grupo-familiar"]');
+    elementoIProducto.removeClass('typcn typcn-chevron-right');
+    var elementoICobertura=$('i[id="i-plan-pago"]');
+    elementoICobertura.addClass('typcn typcn-chevron-right');
+    var inputLocalizacion=$('input[name="indicador-ubicacion-resumen"]');
+    inputLocalizacion.val(5);
+    $('button[id="boton-fase2"]').show();
 }
 function fnCambiarPlanPago(planpago){
+
     $('select[name="cd_plan_pago"]').val(planpago).change();
     var resumen=$('p[id="resumen-plan-pago"]');
     resumen.html('');
     resumen.append($('select[name="cd_plan_pago"] option:selected').text());
     fnActivarBotonProducto(planpago,'plan-pago');
+    var inputLocalizacion=$('input[name="indicador-ubicacion-resumen"]');
+}
+
+function fnUbicacionResumen(){
+    var inputLocalizacion=$('input[name="indicador-ubicacion-resumen"]');
+    var valorLocalizacion=inputLocalizacion.val();
+    inputLocalizacion.val(valorLocalizacion-1);
+    if(valorLocalizacion==5){
+        $('div[id="divplanpago"]').hide(350);
+        $('div[id="divgrupofamiliar"]').show(350);
+        var elementoIProducto=$('i[id="i-plan-pago"]');
+        elementoIProducto.removeClass('typcn typcn-chevron-right');
+        var elementoICobertura=$('i[id="i-grupo-familiar"]');
+        elementoICobertura.addClass('typcn typcn-chevron-right');
+    }
+    if(valorLocalizacion==4){
+        $('div[id="divgrupofamiliar"]').hide(350);
+        $('div[id="divsumas"]').show(350);
+        var elementoIProducto=$('i[id="i-grupo-familiar"]');
+        elementoIProducto.removeClass('typcn typcn-chevron-right');
+        var elementoICobertura=$('i[id="i-suma"]');
+        elementoICobertura.addClass('typcn typcn-chevron-right');
+    }
+    if(valorLocalizacion==3){
+        $('div[id="divsumas"]').hide(350);
+        $('div[id="divcoberturas"]').show(350);
+        var elementoIProducto=$('i[id="i-suma"]');
+        elementoIProducto.removeClass('typcn typcn-chevron-right');
+        var elementoICobertura=$('i[id="i-cobertura"]');
+        elementoICobertura.addClass('typcn typcn-chevron-right');
+    }
+    if(valorLocalizacion==2){
+        $('div[id="divcoberturas"]').hide(350);
+        $('div[id="divproductos"]').show(350);
+        var elementoIProducto=$('i[id="i-cobertura"]');
+        elementoIProducto.removeClass('typcn typcn-chevron-right');
+        var elementoICobertura=$('i[id="i-producto"]');
+        elementoICobertura.addClass('typcn typcn-chevron-right');
+    }
+    if(valorLocalizacion==1){
+        $('button[id="devolver-pasos"]').hide();
+    }
+    
+    
+    if(valorLocalizacion<=5){
+        $('button[id="boton-fase2"]').hide();
+    }
 }

@@ -4,7 +4,7 @@
     <?php 
         $botonesWizard1=array(
             '3|1. Producto|active|linkedin|typcn typcn-user-outline',
-            '3|2. Asegurados|none|dribbble|typcn typcn-credit-card',
+            '3|2. Beneficiarios|none|dribbble|typcn typcn-credit-card',
             '3|3. Emisión|none|dribbble|typcn typcn-image',
         );
         $formulariosCreate1=array(
@@ -42,23 +42,24 @@
                         <div class="card-body">
                             <h6 class="card-title">Resumen Cotización</h6>
                             <hr style="padding:5px;">
-                            <p class="card-subtitle mb-2 " id="p-producto"><a style="font-weight:bold;" >Producto:</a></p> 
+                            
+                            <p class="card-subtitle mb-2 " id="p-producto"><i id="i-producto" class="typcn typcn-chevron-right" style="color:red"></i><a style="font-weight:bold;" >Producto:</a></p> 
                             <p class="card-subtitle mb-2 " id="resumen-producto"></p> 
 
-                            <p class="card-subtitle mb-2 " id="p-cobertura"><a style="font-weight:bold;">Cobertura:</a></p> 
+                            <p class="card-subtitle mb-2 " id="p-cobertura"><i id="i-cobertura" class="" style="color:red"></i><a style="font-weight:bold;">Cobertura:</a></p> 
                             <p class="card-subtitle mb-2 " id="resumen-cobertura"></p> 
 
-                            <p class="card-subtitle mb-2 " id="p-suma"><a style="font-weight:bold;">Monto a Riesgo:</a></p> 
+                            <p class="card-subtitle mb-2 " id="p-suma"><i id="i-suma" class="" style="color:red"></i><a style="font-weight:bold;">Monto a Riesgo:</a></p> 
                             <p class="card-subtitle mb-2 " id="resumen-suma"></p> 
 
-                            <p class="card-subtitle mb-2 " id="p-grupo-familiar"><a style="font-weight:bold;">Grupo Familiar:</a></p> 
+                            <p class="card-subtitle mb-2 " id="p-grupo-familiar"><i id="i-grupo-familiar" class="" style="color:red"></i><a style="font-weight:bold;">Grupo Familiar:</a></p> 
                             <p class="card-subtitle mb-2 " id="resumen-grupo-familiar"></p> 
 
-                            <p class="card-subtitle mb-2 " id="p-plan-pago""><a style="font-weight:bold;">Plan de Pago:</a></p> 
+                            <p class="card-subtitle mb-2 " id="p-plan-pago"><i id="i-plan-pago" class="" style="color:red"></i><a style="font-weight:bold;">Plan de Pago:</a></p> 
                             <p class="card-subtitle mb-2 " id="resumen-plan-pago"></p> 
                             
                             <hr style="padding:5px;">
-                            <center></center>
+                            <center><button id="devolver-pasos" class="btn btn-sm btn-primary" onclick="fnUbicacionResumen()" style="display:none;">Devolver</button></center>
                         </div>   
                     </div>
                     <br>
@@ -72,8 +73,8 @@
                     <div id="divplanpago"></div>
 
                     <center>
-                        <button type="button" class="btn btn-sm" 
-                        style="background-color: #7c90a7;color: white;margin-bottom:15px;" 
+                        <button type="button" class="btn btn-sm" id="boton-fase2"
+                        style="background-color: #7c90a7;color: white;margin-bottom:15px;display:none;" 
                         onclick="fnMoverFase2('formulario-producto')">Siguiente</button>
                         
                     </center>

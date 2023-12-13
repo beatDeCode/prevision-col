@@ -4,7 +4,7 @@
     <?php 
         $botonesWizard2=array(
             '3|1. Producto|active|dribbble|typcn typcn-user-outline',
-            '3|2. Asegurados|none|linkedin|typcn typcn-credit-card',
+            '3|2. Beneficiarios|none|linkedin|typcn typcn-credit-card',
             '3|3. Emisión|none|dribbble|typcn typcn-image',
         );
         $formulariosOcultos2=array(
@@ -57,6 +57,7 @@
     @include('plantillas.cabeceraWizard',['barra'=>$barra2,'botonesWizard'=>$botonesWizard2])
     <br>
     <div class="container-fluid">
+        
         <div class="container-fluid">
             <div class="badge" style="background-color: #7c90a7;color:white;text-align:left;">
                 Benficiario Titular

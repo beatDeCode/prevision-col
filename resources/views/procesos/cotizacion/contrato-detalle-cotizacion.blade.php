@@ -4,7 +4,7 @@
     <?php 
         $botonesWizard3=array(
             '3|1. Producto|active|dribbble|typcn typcn-user-outline',
-            '3|2. Asegurados|none|dribbble|typcn typcn-credit-card',
+            '3|2. Beneficiarios|none|dribbble|typcn typcn-credit-card',
             '3|3. Emisión|none|linkedin|typcn typcn-image',
         );
         $formulariosCreate3=array() ;

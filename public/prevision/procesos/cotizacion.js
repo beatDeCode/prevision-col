@@ -509,72 +509,16 @@ function fnGuardarContrato(){
         headers: {'X-CSRF-TOKEN': tokenLaravel},
         data:solicitud
     }).done(function(response){
-        console.log(response);
         var JSONParse=JSON.parse(response);
-        var contenido=JSONParse.message.content;
+        var contenido='<button class="btn btn-primary" onclick="fnGenerarPDFContrato('+JSONParse.message.content+')">Generar Contrato PDF</button>';
         
         if(JSONParse.httpResponse==200){
-            fnTransaccionConfirmada('Transaccion','Se ha emitido el contrato #'+contenido);
-                window.location.replace('http://10.10.0.202:9003/sgd.reportes-xlsx/PREVISON_EMISION/NU_CONTRATO-'+contenido);
-                /*setInterval(function(){
-                    
-                    window.location.replace('/prevision.procesos.cartera.cotizacion');
-                },3000);*/
-            
+            fnTransaccionConfirmada('Transaccion','<br> Se ha emitido el contrato # '+JSONParse.message.content+' <br> '+contenido);
         }
     }).fail(function(a,b,c){
         console.log(a,b,c);
     });
 }
-function fnGenerarPdf(){
-    var b64 = 'asdasdasd'; //base64PDF
-    var bin = atob(b64);
-    console.log('File Size:', Math.round(bin.length / 1024), 'KB');
-    console.log('PDF Version:', bin.match(/^.PDF-([0-9.]+)/)[1]);
-    console.log('Create Date:', bin.match(/<xmp:CreateDate>(.+?)<\/xmp:CreateDate>/)[1]);
-    console.log('Modify Date:', bin.match(/<xmp:ModifyDate>(.+?)<\/xmp:ModifyDate>/)[1]);
-    console.log('Creator Tool:', bin.match(/<xmp:CreatorTool>(.+?)<\/xmp:CreatorTool>/)[1]);
-
-    var obj = document.createElement('object');
-    obj.style.width = '100%';
-    obj.style.height = '100%';
-    obj.type = 'application/pdf';
-    obj.title = 'Reporte';
-    obj.data = 'data:application/pdf;base64,' + b64;
-    document.body.appendChild(obj); 
-    var ventanaPDF=window.open(
-        '',
-        "win",
-        'width=1000,height=1000,screenX=500,screenY=0,menubar=no'
-    );
-    ventanaPDF.document.title = "Emision de La Poliza"
-    ventanaPDF.document.body.appendChild(obj);
+function fnGenerarPDFContrato(contrato){
+    window.location.replace('http://10.10.0.200:8081/sgd.reportes/JRTE0001_1/NU_CONTRATO-'+contrato);
 }
-
-
-/*
-function fnGenerarPdficticio(){
-    var factura=$('div[id="factura"]').html();
-    var ventanaConfirmacion=
-    fnAlertDetalleFormulario(factura+'<br>¿Está seguro que desea Emitir la Poliza?','Transacción',);
-    ventanaConfirmacion.then((response) =>{
-        if(response.isConfirmed){
-            fnTransaccionConfirmada('Transaccion','Se ha emitido la Póliza.');
-            setInterval(function(){
-                console.log('prueba');
-                //window.location.replace('/prevision.procesos.cartera.cotizacion');
-            },10000);
-            console.log(factura);
-            const winUrl = URL.createObjectURL(
-                new Blob([factura], { type: "text/html" })
-            );
-            const win = window.open(
-                winUrl,
-                "win",
-                'width=800,height=400,screenX=200,screenY=200'
-            );
-        }
-    });
-
-    
-}*/

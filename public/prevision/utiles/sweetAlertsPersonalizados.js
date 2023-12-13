@@ -97,6 +97,9 @@ function fnTransaccionConfirmada(titulo,mensaje){
     icon: "success",
     showCancelButton: false,
     showConfirmButton:false,
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+    
   });
   return alerta;
 }

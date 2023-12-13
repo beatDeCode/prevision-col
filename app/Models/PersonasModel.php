@@ -176,6 +176,7 @@ class PersonasModel extends Model
             );
             $arrayCorreo=array(
                 'de_correo'=>$request->post('de_correo'),
+                'cd_persona'=>$secuenciaPersona
             );
     
             $this->create(
