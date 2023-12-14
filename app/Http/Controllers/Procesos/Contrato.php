@@ -141,7 +141,8 @@ class Contrato extends Controller{
                 'mt_suma_asegurada'=>$request->post('mt_suma_asegurada'),
                 'cd_plan_pago'=>$request->post('cd_plan_pago'),
                 'cd_parentesco'=>1,
-                'mt_prima'=>$request->post('mt_prima')
+                'mt_prima'=>$request->post('mt_prima'),
+                'nu_asegurado'=>''
             );
             /**Procesamos la cotizacion Para el Titular */
             $instanciaAuditoria=new Auditoria;
@@ -154,56 +155,63 @@ class Contrato extends Controller{
             /**Agregamos al arreglo global de cotizacion al titular */
             $retornoAsegurados[0]=$cotizacionTitular[0];
             $arrayAdicionales=array();
-            $cantidadClonacion=$request->post('ca_clonacion');
-
-            /**Recorremos el array de asegurados para reemplazar la palabra _asegurado  */
-            for($b=0;$b< sizeof($arrayInputsAdicionales);$b++){
-                $arrayAdicionales[str_replace('_asegurado','',$arrayInputsAdicionales[$b])]=$request->post($arrayInputsAdicionales[$b]);
-            }
-            $arrayAdicionales['cd_producto']=$request->post('cd_producto');
-            $arrayAdicionales['cd_grupo_familiar']=$request->post('cd_grupo_familiar');
-            $arrayAdicionales['mt_suma_asegurada']=$request->post('mt_suma_asegurada');
-            $arrayAdicionales['cd_plan_pago']=$request->post('cd_plan_pago');
-            $arrayAdicionales['mt_prima']=0;
-
-            /**Procesamos la cotizacion Para el primer asegurado */
-            $cotizacionPrimerAsegurado=$instanciaAuditoria->fnBusquedaParametrizada(
-                $CotizacionTitular,
-                $arrayAdicionales,
-                2
-            );
-             /**Agregamos al arreglo global de cotizacion del primer asegurado */
-            $retornoAsegurados[1]=$cotizacionPrimerAsegurado[0];
-            $arrayAdicionalesOtros=null;
-            $contadorRetornos=1;
-            /**Recorremos los asegurados adicionales restantes*/
-            if($cantidadClonacion>0){
-                for($a=0;$a<$cantidadClonacion;$a++){
-                    $contadorRetornos+=1;
-                    //print_r($cantidadClonacion);
-                    for($b=0;$b<sizeof($arrayInputsAdicionales);$b++){
-                        //print_r($arrayInputsAdicionales[$b].''.$a);
-                        $arrayAdicionalesOtros[str_replace('_asegurado','',$arrayInputsAdicionales[$b])]=$request->post($arrayInputsAdicionales[$b].''.$a);
-                    }
-                    $arrayAdicionalesOtros['cd_producto']=$request->post('cd_producto');
-                    $arrayAdicionalesOtros['cd_grupo_familiar']=$request->post('cd_grupo_familiar');
-                    $arrayAdicionalesOtros['mt_suma_asegurada']=$request->post('mt_suma_asegurada');
-                    $arrayAdicionalesOtros['cd_plan_pago']=$request->post('cd_plan_pago');
-                    $arrayAdicionalesOtros['ap_persona1']='';
-                    $arrayAdicionales['mt_prima']=0;
-                    //print_r($arrayAdicionales);
-                    /**Procesamos la cotizacion para el asegurado restante*/
-                    $cotizacionOtrosAsegurado=$instanciaAuditoria->fnBusquedaParametrizada(
-                        $CotizacionTitular,
-                        $arrayAdicionalesOtros,
-                        2
-                    );
-                    /**Agregamos al arreglo global de cotizacion para el asegurado restante*/
-                    $retornoAsegurados[$contadorRetornos]=$cotizacionOtrosAsegurado[0];
-                    $arrayAdicionales=null;
-
+            $in_adicionales=$request->post('de_adicionales');
+            if($in_adicionales=='on'){
+                $cantidadClonacion=$request->post('ca_clonacion');
+                /**Recorremos el array de asegurados para reemplazar la palabra _asegurado  */
+                for($b=0;$b< sizeof($arrayInputsAdicionales);$b++){
+                    $arrayAdicionales[str_replace('_asegurado','',$arrayInputsAdicionales[$b])]=$request->post($arrayInputsAdicionales[$b]);
                 }
+                $arrayAdicionales['cd_producto']=$request->post('cd_producto');
+                $arrayAdicionales['cd_grupo_familiar']=$request->post('cd_grupo_familiar');
+                $arrayAdicionales['mt_suma_asegurada']=$request->post('mt_suma_asegurada');
+                $arrayAdicionales['cd_plan_pago']=$request->post('cd_plan_pago');
+                $arrayAdicionales['mt_prima']=0;
+                $arrayAdicionales['nu_asegurado']='';
+
+                /**Procesamos la cotizacion Para el primer asegurado */
+                $cotizacionPrimerAsegurado=$instanciaAuditoria->fnBusquedaParametrizada(
+                    $CotizacionTitular,
+                    $arrayAdicionales,
+                    2
+                );
+
+                /**Agregamos al arreglo global de cotizacion del primer asegurado */
+                $retornoAsegurados[1]=$cotizacionPrimerAsegurado[0];
+                $arrayAdicionalesOtros=null;
+                $contadorRetornos=1;
+                /**Recorremos los asegurados adicionales restantes*/
+                if($cantidadClonacion>0){
+                    for($a=0;$a<$cantidadClonacion;$a++){
+                        $contadorRetornos+=1;
+                        //print_r($cantidadClonacion);
+                        for($b=0;$b<sizeof($arrayInputsAdicionales);$b++){
+                            //print_r($arrayInputsAdicionales[$b].''.$a);
+                            $arrayAdicionalesOtros[str_replace('_asegurado','',$arrayInputsAdicionales[$b])]=$request->post($arrayInputsAdicionales[$b].''.$a);
+                        }
+                        $arrayAdicionalesOtros['cd_producto']=$request->post('cd_producto');
+                        $arrayAdicionalesOtros['cd_grupo_familiar']=$request->post('cd_grupo_familiar');
+                        $arrayAdicionalesOtros['mt_suma_asegurada']=$request->post('mt_suma_asegurada');
+                        $arrayAdicionalesOtros['cd_plan_pago']=$request->post('cd_plan_pago');
+                        $arrayAdicionalesOtros['ap_persona1']='';
+                        $arrayAdicionalesOtros['nu_asegurado']=$a;
+                        $arrayAdicionales['mt_prima']=0;
+                        /**Procesamos la cotizacion para el asegurado restante*/
+                        $cotizacionOtrosAsegurado=$instanciaAuditoria->fnBusquedaParametrizada(
+                            $CotizacionTitular,
+                            $arrayAdicionalesOtros,
+                            2
+                        );
+                        /**Agregamos al arreglo global de cotizacion para el asegurado restante*/
+                        $retornoAsegurados[$contadorRetornos]=$cotizacionOtrosAsegurado[0];
+                        $arrayAdicionales=null;
+
+                    }
+                }
+            }else{
+
             }
+         
             $retorno=array(
                 'httpResponse'=>200,
                 'message'=>array(

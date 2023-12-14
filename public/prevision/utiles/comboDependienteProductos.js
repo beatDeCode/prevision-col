@@ -259,8 +259,12 @@ function fnCambiarPlanPago(planpago){
     var resumen=$('p[id="resumen-plan-pago"]');
     resumen.html('');
     resumen.append($('select[name="cd_plan_pago"] option:selected').text());
+    var elementoIProducto=$('i[id="i-plan-pago"]');
+    elementoIProducto.removeClass('typcn typcn-chevron-right');
+    var elementoICobertura=$('i[id="i-adicionales"]');
+    elementoICobertura.addClass('typcn typcn-chevron-right');
     fnActivarBotonProducto(planpago,'plan-pago');
-    var inputLocalizacion=$('input[name="indicador-ubicacion-resumen"]');
+
 }
 
 function fnUbicacionResumen(){

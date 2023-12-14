@@ -7,18 +7,18 @@
                 <?php $input=explode('|',$key); ?>
                 @if($input[1]=='input' )
                     @if($input[2]!='hidden')
-
-                    <div class="{{$input[3]}}" id="{{$input[0]}}">
+                    
+                    <div class="{{$input[3]}}" id="{{$input[0]}}" >
                         <div class="form-label-group outline">
                             <input type="{{$input[2]}}" id="{{$input[0]}}" name="{{$input[0]}}"
-                            class="form-control shadow-none" placeholder="{{$input[4]}}" style="height:47px;font-size:13px;" />
+                            class="form-control shadow-none" placeholder="{{$input[4]}}" style="height:47px;font-size:13px;" {{$input[5]}} />
                             <span><label for="{{$input[0]}}" id="{{$input[0]}}">{{$input[4]}}</label></span>
                         </div>
                         <div id="error{{$input[0]}}" style="font-size:11px;display:none;color:red;"></div>
                     </div>
                     @elseif($input[2]=='hidden')
                         <input type="{{$input[2]}}" class="form-control" placeholder="" aria-label="Username" 
-                        name="{{$input[0]}}" id="{{$input[0]}}" value="{{$input[5]}}">
+                        name="{{$input[0]}}" id="{{$input[0]}}">
                     @endif
                 @endif
 
@@ -26,7 +26,7 @@
                 <div class="{{$input[3]}}" id="{{$input[0]}}" >
 
                     <div class="form-label-group outline">
-                        <select class="custom-select" id="{{$input[0]}}" name="{{$input[0]}}" style="height:47px;font-size:13px;">
+                        <select class="custom-select" id="{{$input[0]}}" name="{{$input[0]}}" style="height:47px;font-size:13px;"  {{$input[5]}} >
                             <option value=""></option>
                             @foreach($formulariosCreate[$key] as $option)
                                 <option value="{{$option['value']}}">{{$option['text']}}</option>
@@ -44,7 +44,7 @@
                         <span><label id="{{$input[0]}}" class="input-group-text" style="height:30;border-radius:8px;margin-top:10px;" id="basic-addon1">{{$input[4]}}</label></span>
                     </div>
                     <input type="{{$input[1]}}" class="form-control" name="{{$input[0]}}" aria-label="Username" aria-describedby="basic-addon1"
-                        style="height:20;font-size:13px;border-radius:8px;margin-top:10px;"
+                        style="height:20;font-size:13px;border-radius:8px;margin-top:10px;"  
                     >
                 </div>
                 <div id="error{{$input[0]}}" style="font-size:11px;display:none;color:red;"></div>

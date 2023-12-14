@@ -9,15 +9,15 @@
         );
 
         $formulariosCreate1=array(
-            'titulo1|hr|text|col-md-6|Datos Pagos'=>array(),
-            'cd_intermediario|select|text|col-md-4|Intermediario'=>$busquedaIntermediarios,
-            'cd_forma_pago|select|text|col-md-4|Forma de Pago'=>$busquedaFormasPago,
+            'titulo1|hr|text|col-md-6|Datos Pagos|'=>array(),
+            'cd_intermediario|select|text|col-md-4|Intermediario|'=>$busquedaIntermediarios,
+            'cd_forma_pago|select|text|col-md-4|Forma de Pago|'=>$busquedaFormasPago,
 
-            'titulo2|hr|text|col-md-6|Domicilio Bancario'=>array(),
-            'tp_documento_domicilio|select|text|col-md-3|Tipo Documento'=>$busquedaTipoDocumento,
-            'nu_documento_domicilio|input|text|col-md-3|Número Documento'=>array(),
-            'tp_cuenta|select|text|col-md-3|Tipo Cuenta'=>$busquedaTipoCuenta,
-            'nu_cuenta|input|text|col-md-3|Numero Cuenta'=>array(),
+            'titulo2|hr|text|col-md-6|Domicilio Bancario|'=>array(),
+            'tp_documento_domicilio|select|text|col-md-3|Tipo Documento|'=>$busquedaTipoDocumento,
+            'nu_documento_domicilio|input|text|col-md-3|Número Documento|'=>array(),
+            'tp_cuenta|select|text|col-md-3|Tipo Cuenta|'=>$busquedaTipoCuenta,
+            'nu_cuenta|input|text|col-md-3|Numero Cuenta|'=>array(),
 
             ) ;
         $cantidadDeClonacion1=0;

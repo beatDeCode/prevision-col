@@ -37,7 +37,7 @@
                     <div class="col-md-3">
                         <br>
                        
-                        <div class="card text-left">
+                        <div class="card text-left" id="div-resumen-producto">
                         <div class="card-header"></div>
                         <div class="card-body">
                             <h6 class="card-title">Resumen Cotización</h6>
@@ -57,6 +57,9 @@
 
                             <p class="card-subtitle mb-2 " id="p-plan-pago"><i id="i-plan-pago" class="" style="color:red"></i><a style="font-weight:bold;">Plan de Pago:</a></p> 
                             <p class="card-subtitle mb-2 " id="resumen-plan-pago"></p> 
+
+                            <p class="card-subtitle mb-2 " id="p-adicionales"><i id="i-adicionales" class="" style="color:red"></i><a style="font-weight:bold;">¿Con Adicionales?</a></p> 
+                            <p class="card-subtitle mb-2 " id="resumen-adicionales">Sin Adicionales</p>
                             
                             <hr style="padding:5px;">
                             <center><button id="devolver-pasos" class="btn btn-sm btn-primary" onclick="fnUbicacionResumen()" style="display:none;">Devolver</button></center>

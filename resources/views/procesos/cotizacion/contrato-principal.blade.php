@@ -7,6 +7,7 @@
 
     @include('procesos.cotizacion.contrato-producto')
     @include('procesos.cotizacion.contrato-adicionales')
+    @include('procesos.cotizacion.contrato-preeliminar')
     @include('procesos.cotizacion.contrato-detalle-cotizacion')
     @include('procesos.cotizacion.contrato-emision')
 @include('plantillas.tarjetaDinamicaCierre')

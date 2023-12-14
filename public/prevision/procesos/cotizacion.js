@@ -2,6 +2,8 @@ function fnDevolverFase(fase){
     if(fase==2){
         $('#fase2').hide();
         $('#fase1').show();
+        var botonResumen=$('button[id="devolver-pasos"]');
+        botonResumen.css('display','block');
         
     }
     if(fase==3){
@@ -21,10 +23,17 @@ function fnMoverFase2(formulario){
         fase1.toggle(500);
         var fase2=$('div[id="fase2"]');
         fase2.show(500);
+        var divResumen=$('div[id="div-resumen-adicionales"]');
+        var divResumenAnterior=$('div[id="div-resumen-producto"]').html();
+        divResumen.html('');
+        divResumen.append(divResumenAnterior);
+        var botonResumen=$('button[id="devolver-pasos"]');
+        botonResumen.css('display','none');
+        
     }
     
 }
-function fnCrearCotizacion(){
+function fnCrearPreliminar(){
     var tokenLaravel=$('input[name="_token"]').val();
     var contadorDeClonacion=$('input[name="contador-clonacion"]').val();
     var cedulaTitular=$('input[name="nu_documento"]').val();
@@ -37,6 +46,7 @@ function fnCrearCotizacion(){
     var cd_plan_pago=$('select[name="cd_plan_pago"] option:selected').val();
     var valoresFormulario=$('input[name="valores-formulario"]').val();
     var tipoCalculo=$('select[name="cd_tipo_calculo"] option:selected').val();
+    var de_adicionales=$('input[name="de_adicionales"]:checked').val();
     var mt_prima=0;
     if($('input[name="mt_prima"]')){
         mt_prima=$('input[name="mt_prima"]').val();
@@ -54,7 +64,148 @@ function fnCrearCotizacion(){
     formulario.push({name:'ca_clonacion',value:contadorDeClonacion});
     formulario.push({name:'cd_tipo_calculo',value:tipoCalculo});
     formulario.push({name:'mt_prima',value:mt_prima});
-    for(var a=0;a<valoresDesglosados.length;a++){
+    formulario.push({name:'nu_documento',value:cedulaTitular});
+    formulario.push({name:'de_adicionales',value:de_adicionales});
+    for(var a=0;a<valoresDesglosados.length;a++){   
+        if(valoresDesglosados[a]=='boton'){
+            
+        }else{
+            var select=$('select[name="'+valoresDesglosados[a]+'"]');
+            var input=$('input[name="'+valoresDesglosados[a]+'"]');
+            if(input.length==1){
+                var valorInput=$('input[name="'+valoresDesglosados[a]+'"]').val();
+                formulario.push({name:valoresDesglosados[a],value:valorInput});
+            }
+            if(select.length==1){
+                var valorSelect=$('select[name="'+valoresDesglosados[a]+'"] option:selected').val();
+                formulario.push({name:valoresDesglosados[a],value:valorSelect});
+            }
+        }
+    }
+    for(var b=0;b<contadorDeClonacion;b++){
+        formulario.push({name:'nu_asegurado'+b,value:b});
+        for(var c=0;c<valoresDesglosados.length;c++){
+            if(valoresDesglosados[c]=='boton'){
+                
+            }else{
+                var select=$('select[name="'+valoresDesglosados[c]+''+b+'"]');
+                var input=$('input[name="'+valoresDesglosados[c]+'"]');
+                if(input.length==1){
+                    var valorInput=$('input[name="'+valoresDesglosados[c]+''+b+'"]').val();
+                    formulario.push({name:valoresDesglosados[c]+''+b,value:valorInput});
+                }
+                if(select.length==1){
+                    var valorSelect=$('select[name="'+valoresDesglosados[c]+''+b+'"] option:selected').val();
+                    formulario.push({name:valoresDesglosados[c]+''+b,value:valorSelect});
+                }
+            }
+        }
+    }
+    $.ajax({
+        url:'/prevision.procesos.cartera.generar-cotizacion',
+        type:'POST',
+        cache:false,
+        headers: {'X-CSRF-TOKEN': tokenLaravel},
+        data:formulario
+    }).done(function(response){
+        var JSONParse=JSON.parse(response);
+        if(JSONParse.httpResponse==200){
+            var valoresCotizacion=JSONParse.message.content;
+            var siglas=valoresCotizacion[0]['siglas_moneda'];
+            var contenidoTitular='';
+            var contenidoAsegurados='';
+            var base=0;
+            for(var a=0;a<valoresCotizacion.length;a++){
+                base+=parseFloat(valoresCotizacion[a]['mt_prima_plan']);
+                if(a==0){
+                    var contenidoTitular=
+                    '<tr style="font-size:11px;text-align:center;">'+
+                        '<td><center>'+valoresCotizacion[a]['parentesco']+'</center></td>'+
+                        '<td><center>'+valoresCotizacion[a]['nm_completo']+'</center></td>'+
+                        '<td><center>'+valoresCotizacion[a]['nu_documento']+'</center></td>'+
+                        '<td><center>'+valoresCotizacion[a]['es_adicional']+'</center></td>'+
+                        '<td><center>'+valoresCotizacion[a]['mt_prima_plan']+' '+siglas+'</center></td>'+
+                        '<td></td>'+
+                    '<tr/>'
+                    ;
+                }
+                if(a>0){
+                    contenidoAsegurados+=
+                    '<tr style="font-size:11px;text-align:center;">'+
+                        '<td><center>'+valoresCotizacion[a]['parentesco']+'</center></td>'+
+                        '<td><center>'+valoresCotizacion[a]['nm_completo']+'</center></td>'+
+                        '<td><center>'+valoresCotizacion[a]['nu_documento']+'</center></td>'+
+                        '<td><center>'+valoresCotizacion[a]['es_adicional']+'</center></td>'+
+                        '<td><center>'+valoresCotizacion[a]['mt_prima_plan']+''+siglas+'</center> </td>'+
+                        '<td><center><a class="btn btn-primary" onclick="fnEliminarAsegurado('+valoresCotizacion[a]['nu_asegurado']+')"> <i class="typcn typcn-trash"></i></a> </center></td>'+
+                    '</tr>';
+                }
+            }
+            var subTotal=base*(0.16);
+            var total=base+subTotal;
+            var baseConDecimales=base.toFixed(3);
+            var subTotalConDecimales=subTotal.toFixed(3);
+            var totalConDecimales=total.toFixed(3);
+            var contenidoTotal=
+            '<tr >'+
+            '<td colspan="3"></td>'+
+            '<td style="text-align:center;font-size:11px;"><b>Total Prima Base</b></td>'+
+            '<td style="text-align:center;font-size:11px;background-color: #e9ecef;"><b>'+baseConDecimales.replace('.',',')+' '+siglas+'</b></td>'+
+            '</tr>'+
+            '<tr >'+
+            '<td colspan="3"></td>'+
+            '<td style="text-align:center;font-size:11px;"><b>Sub Total (16%) I.V.A</b></td>'+
+            '<td style="text-align:center;font-size:11px;background-color: #e9ecef;"><b>'+subTotalConDecimales.replace('.',',')+' '+siglas+'</b></td>'+
+            '</tr>'+
+            '<tr >'+
+            '<td colspan="3"></td>'+
+            '<td style="text-align:center;font-size:11px;"><b>Total</b></td>'+
+            '<td style="text-align:center;font-size:11px;background-color: #e9ecef;"><b>'+ totalConDecimales.replace('.',',')+' '+siglas+'</b></td>'+
+            '</tr>';
+            var detalleFactura=contenidoTitular+contenidoAsegurados+contenidoTotal;
+            var tablaPreliminar=$('tbody[id="preliminar"]');
+            tablaPreliminar.html('');
+            tablaPreliminar.append(detalleFactura);
+        }
+    }).fail(function(a,c,b){
+        console.log(a,b,c);
+    });
+}
+function fnCrearCotizacion(){
+    var tokenLaravel=$('input[name="_token"]').val();
+    var contadorDeClonacion=$('input[name="contador-clonacion"]').val();
+    var cedulaTitular=$('input[name="nu_documento"]').val();
+    var tipoDocumento=$('select[name="tp_documento"] option:selected').val();
+    var nm_persona1=$('input[name="nm_persona1"]').val();
+    var ap_persona1=$('input[name="ap_persona1"]').val();
+    var mt_suma_asegurada=$('select[name="mt_suma_asegurada"] option:selected').val();
+    var cd_producto=$('select[name="cd_producto"] option:selected').val();
+    var cd_grupo_familiar=$('select[name="cd_grupo_familiar"] option:selected').val();
+    var cd_plan_pago=$('select[name="cd_plan_pago"] option:selected').val();
+    var valoresFormulario=$('input[name="valores-formulario"]').val();
+    var tipoCalculo=$('select[name="cd_tipo_calculo"] option:selected').val();
+    var de_adicionales=$('input[name="de_adicionales"]:checked').val();
+    var mt_prima=0;
+    if($('input[name="mt_prima"]')){
+        mt_prima=$('input[name="mt_prima"]').val();
+    }   
+    var valoresDesglosados=valoresFormulario.split(',');
+    var formulario=[];
+    formulario.push({name:'nu_documento',value:cedulaTitular});
+    formulario.push({name:'tp_documento',value:tipoDocumento});
+    formulario.push({name:'nm_persona1',value:nm_persona1});
+    formulario.push({name:'ap_persona1',value:ap_persona1});
+    formulario.push({name:'cd_producto',value:cd_producto});
+    formulario.push({name:'mt_suma_asegurada',value:mt_suma_asegurada});
+    formulario.push({name:'cd_grupo_familiar',value:cd_grupo_familiar});
+    formulario.push({name:'cd_plan_pago',value:cd_plan_pago});
+    formulario.push({name:'ca_clonacion',value:contadorDeClonacion});
+    formulario.push({name:'cd_tipo_calculo',value:tipoCalculo});
+    formulario.push({name:'mt_prima',value:mt_prima});
+    formulario.push({name:'nu_documento',value:cedulaTitular});
+    formulario.push({name:'de_adicionales',value:de_adicionales});
+    console.log();
+    for(var a=0;a<valoresDesglosados.length;a++){   
         if(valoresDesglosados[a]=='boton'){
             
         }else{
@@ -158,17 +309,17 @@ function fnCrearCotizacion(){
             var subTotalConDecimales=subTotal.toFixed(3);
             var totalConDecimales=total.toFixed(3);
             var contenidoTotal=
-            '<tr class="item last">'+
+            '<tr>'+
             '<td colspan="4"></td>'+
             '<td style="text-align:center;font-size:11px;"><b>Total Prima Base</b></td>'+
             '<td style="text-align:center;font-size:11px;background-color: #e9ecef;"><b>'+baseConDecimales.replace('.',',')+' '+siglas+'</b></td>'+
             '</tr>'+
-            '<tr class="item last">'+
+            '<tr>'+
             '<td colspan="4"></td>'+
             '<td style="text-align:center;font-size:11px;"><b>Sub Total (16%) I.V.A</b></td>'+
             '<td style="text-align:center;font-size:11px;background-color: #e9ecef;"><b>'+subTotalConDecimales.replace('.',',')+' '+siglas+'</b></td>'+
             '</tr>'+
-            '<tr class="item last">'+
+            '<tr>'+
             '<td colspan="4"></td>'+
             '<td style="text-align:center;font-size:11px;"><b>Total</b></td>'+
             '<td style="text-align:center;font-size:11px;background-color: #e9ecef;"><b>'+ totalConDecimales.replace('.',',')+' '+siglas+'</b></td>'+
@@ -219,14 +370,12 @@ function fnArmarFactura(contenidoCabecera,contenidDetalle,total){
             '<td>¿Es Adicional?</td>'+
 			'<td>Cuota </td>'+
             '<td>Cuota Por Plan Pago</td>'+
-            
 		'</tr>'+
         contenidDetalle+
         total+
 	'</table>'+
 	'</div>';
     return factura;
-    
 }
 function fnArregloBorrarErrores(contadorDeClonacion){
     var limpiarError1=$('div[id="errornu_documento"]');
@@ -238,13 +387,84 @@ function fnArregloBorrarErrores(contadorDeClonacion){
         limpiarError3.html('');
     }
 }
+function fnMoverFase3_(formulario){
+    var tokenLaravel=$('input[name="_token"]').val();
+    var validacionFase2=fnValidarVacios(formulario);
+    var contadorDeClonacion=$('input[name="contador-clonacion"]').val();
+    var auxiliarValiacionFase2=parseInt(validacionFase2) - (36-(parseInt(contadorDeClonacion)*5));
+    try {
+        calcularEdad();
+        fnValidarTelefono();
+        if(auxiliarValiacionFase2<=0){
+            var formulario=[];
+            var documentoTitular=$('input[name="nu_documento"]').val();
+            var producto=$('select[name="cd_producto"] option:selected').val();
+            formulario.push({name:'ca_clonacion',value:contadorDeClonacion});
+            formulario.push({name:'nu_documento',value:documentoTitular});
+            formulario.push({name:'cd_producto',value:producto});
+            if(contadorDeClonacion>=0){
+                var documentoAsegurado=$('input[name="nu_documento_asegurado"]').val();
+                formulario.push({name:'nu_documento_asegurado',value:documentoAsegurado});
+                if(contadorDeClonacion>0){
+                    for(var a=0;a<contadorDeClonacion;a++){
+                        var documentoAseguradoExtra=$('input[name="nu_documento_asegurado'+a+'"]').val();
+                        formulario.push({name:'nu_documento_asegurado'+a ,value:documentoAseguradoExtra});
+                    }
+                }
+            }
+            $.ajax({
+                url:'/prevision.procesos.cartera.valida-asegurados',
+                type:'POST',
+                cache:false,
+                headers: {'X-CSRF-TOKEN': tokenLaravel},
+                data:formulario
+            }).done(function(response){
+                console.log(response);
+                var JSONParse=JSON.parse(response);
+                if(JSONParse.httpResponse==200){
+                    var contenido=JSONParse.message.content;
+                    var contadorErrores1=0;
+                    if(contenido.length>0){
+                        for(var a=0;a<contenido.length;a++){
+                            if(contenido[a]['cuenta']==1){
+                                contadorErrores1+=1;
+                                var div=$('div[id="error'+contenido[a]['value']+'"]');
+                                div.html('');
+                                div.append(contenido[a]['error']);
+                                div.show();
+                            }
+                        }
+                    }
+                    if(contadorErrores1==0){
+                        var fase1=$('div[id="fase2"]');
+                        fase1.hide(500);
+                        var fase2=$('div[id="fase3_"]');
+                        fase2.fadeIn('slow');
+                        var divResumen=$('div[id="div-resumen-preliminar"]');
+                        var divResumenAnterior=$('div[id="div-resumen-adicionales"]').html();
+                        divResumen.html('');
+                        divResumen.append(divResumenAnterior);
+                        fnCrearPreliminar();
+                        //fnCrearCotizacion();
+                    }
+                    
+                    
+                }
+            }).fail(function(a,b,c){
+                console.log(a,b,c);
+            });
+           
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
 function fnMoverFase3(formulario){
     var tokenLaravel=$('input[name="_token"]').val();
     var validacionFase2=fnValidarVacios(formulario);
     var contadorDeClonacion=$('input[name="contador-clonacion"]').val();
     var auxiliarValiacionFase2=parseInt(validacionFase2) - (36-(parseInt(contadorDeClonacion)*5));
     try {
-        //fnValidarDocumento();
         calcularEdad();
         fnValidarTelefono();
         if(auxiliarValiacionFase2<=0){
@@ -522,3 +742,37 @@ function fnGuardarContrato(){
 function fnGenerarPDFContrato(contrato){
     window.location.replace('http://10.10.0.200:8081/sgd.reportes/JRTE0001_1/NU_CONTRATO-'+contrato);
 }
+
+$('input[name="de_adicionales"]' ).change( "click", function(){
+    var adicionales=$('input[name="de_adicionales"]').is(":checked");
+    var nm_persona=$('input[name="nm_persona1_asegurado"]');
+    var nu_documento=$('input[name="nu_documento_asegurado"]');
+    var tp_documento=$('select[name="tp_documento_asegurado"]');
+    var fe_nacimiento=$('input[name="fe_nacimiento_asegurado"]');
+    var cd_sexo=$('select[name="cd_sexo_asegurado"]');
+    var cd_parentesco=$('select[name="cd_parentesco_asegurado"]');
+    var resumen=$('p[id="resumen-adicionales"]');
+    console.log(resumen);
+    resumen.html('');
+     if(adicionales==true){
+        nm_persona.prop('disabled',false);
+        nu_documento.prop('disabled',false);
+        tp_documento.prop('disabled',false);
+        fe_nacimiento.prop('disabled',false);
+        cd_sexo.prop('disabled',false);
+        cd_parentesco.prop('disabled',false);
+        resumen.append('Con Adicionales');
+     }else{
+        nm_persona.prop('disabled',true);
+        nu_documento.prop('disabled',true);
+        tp_documento.prop('disabled',true);
+        fe_nacimiento.prop('disabled',true);
+        cd_sexo.prop('disabled',true);
+        cd_parentesco.prop('disabled',true);
+        resumen.append('Sin Adicionales');
+     }
+     
+    
+
+});
+

@@ -94,7 +94,8 @@ class NegocioQuery{
         where cd_grupo_familiar=:cd_grupo_familiar)grupo_familiar,
         (select de_producto from productos
         where cd_producto=:cd_producto)producto,
-        es_adicional
+        es_adicional,
+        :nu_asegurado nu_asegurado
         from (
             select 
             case when cuenta>0
@@ -157,7 +158,8 @@ class NegocioQuery{
         (select de_producto from productos
         where cd_producto=:cd_producto)producto,
         es_adicional,
-        :mt_prima mt_prima_aux
+        :mt_prima mt_prima_aux,
+        :nu_asegurado nu_asegurado
         from (
             select 
             case when cuenta>0
