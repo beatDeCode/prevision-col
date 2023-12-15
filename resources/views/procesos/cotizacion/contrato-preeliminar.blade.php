@@ -24,33 +24,35 @@
 
             </div>
             <div class="col-md-9">
-            <div id="preliminar-factura">
-                <div class="table-responsive">
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th>Parentesco</th>
-                        <th>Documento</th>
-                        <th>Nombre</th>
-                        <th>¿Es Adicional?</th>
-                        <th>Monto Cuota</th>
-                        <th>-</th>
-                    </tr>
-                    </thead>
-                    <tbody id="preliminar">
-                    </tbody>
-                </table>
+                <div id="preliminar-factura">
+                    <div class="container-fluid">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th style="font-size:13px;">Parentesco</th>
+                                    <th style="font-size:13px;">Documento</th>
+                                    <th style="font-size:13px;">Nombre</th>
+                                    <th style="font-size:13px;">¿Es Adicional?</th>
+                                    <th style="font-size:13px;">Monto Cuota</th>
+                                    <th style="font-size:13px;">-</th>
+                                </tr>
+                                </thead>
+                                <tbody id="preliminar" style="font-size:12px;">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
-                </div>
-            <hr class="hr-none">
-            <center>
-                <button type="button" class="btn btn-sm" 
+                <hr class="hr-none">
+                <center>
+                    <button type="button" class="btn btn-sm" 
+                        style="background-color: #7c90a7;color: white;margin-bottom:15px;" 
+                        onclick="fnDevolverFase(3)">Volver</button>
+                    <button type="button" class="btn btn-sm" 
                     style="background-color: #7c90a7;color: white;margin-bottom:15px;" 
-                    onclick="fnDevolverFase(3)">Volver</button>
-                <button type="button" class="btn btn-sm" 
-                style="background-color: #7c90a7;color: white;margin-bottom:15px;" 
-                onclick="fnMoverFase4('formulario-producto')">Siguiente</button>
-            </center>
+                    onclick="fnMoverFase4('formulario-producto')">Siguiente</button>
+                </center>
             </div>
         </div>
     </div>

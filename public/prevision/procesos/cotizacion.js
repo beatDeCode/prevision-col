@@ -4,10 +4,9 @@ function fnDevolverFase(fase){
         $('#fase1').show();
         var botonResumen=$('button[id="devolver-pasos"]');
         botonResumen.css('display','block');
-        
     }
     if(fase==3){
-        $('#fase3').hide();
+        $('#fase3_').hide();
         $('#fase2').show();
     }
     if(fase==4){
@@ -120,24 +119,24 @@ function fnCrearPreliminar(){
                 if(a==0){
                     var contenidoTitular=
                     '<tr style="font-size:11px;text-align:center;">'+
-                        '<td><center>'+valoresCotizacion[a]['parentesco']+'</center></td>'+
-                        '<td><center>'+valoresCotizacion[a]['nm_completo']+'</center></td>'+
-                        '<td><center>'+valoresCotizacion[a]['nu_documento']+'</center></td>'+
-                        '<td><center>'+valoresCotizacion[a]['es_adicional']+'</center></td>'+
-                        '<td><center>'+valoresCotizacion[a]['mt_prima_plan']+' '+siglas+'</center></td>'+
-                        '<td></td>'+
+                        '<td style="font-size:13px;"><center>'+valoresCotizacion[a]['parentesco']+'</center></td>'+
+                        '<td style="font-size:13px;"><center>'+valoresCotizacion[a]['nm_completo']+'</center></td>'+
+                        '<td style="font-size:13px;"><center>'+valoresCotizacion[a]['nu_documento']+'</center></td>'+
+                        '<td style="font-size:13px;"><center>'+valoresCotizacion[a]['es_adicional']+'</center></td>'+
+                        '<td style="font-size:13px;"><center>'+valoresCotizacion[a]['mt_prima_plan']+' '+siglas+'</center></td>'+
+                        '<td style="font-size:13px;"></td>'+
                     '<tr/>'
                     ;
                 }
                 if(a>0){
                     contenidoAsegurados+=
                     '<tr style="font-size:11px;text-align:center;">'+
-                        '<td><center>'+valoresCotizacion[a]['parentesco']+'</center></td>'+
-                        '<td><center>'+valoresCotizacion[a]['nm_completo']+'</center></td>'+
-                        '<td><center>'+valoresCotizacion[a]['nu_documento']+'</center></td>'+
-                        '<td><center>'+valoresCotizacion[a]['es_adicional']+'</center></td>'+
-                        '<td><center>'+valoresCotizacion[a]['mt_prima_plan']+''+siglas+'</center> </td>'+
-                        '<td><center><a class="btn btn-primary" onclick="fnEliminarAsegurado('+valoresCotizacion[a]['nu_asegurado']+')"> <i class="typcn typcn-trash"></i></a> </center></td>'+
+                        '<td style="font-size:12px;"><center>'+valoresCotizacion[a]['parentesco']+'</center></td>'+
+                        '<td style="font-size:12px;"><center>'+valoresCotizacion[a]['nm_completo']+'</center></td>'+
+                        '<td style="font-size:12px;"><center>'+valoresCotizacion[a]['nu_documento']+'</center></td>'+
+                        '<td style="font-size:12px;"><center>'+valoresCotizacion[a]['es_adicional']+'</center></td>'+
+                        '<td style="font-size:12px;"><center>'+valoresCotizacion[a]['mt_prima_plan']+''+siglas+'</center> </td>'+
+                        '<td style="font-size:12px;"><center><a class="btn btn-primary" onclick="fnEliminarAsegurado('+valoresCotizacion[a]['nu_asegurado']+')"> <i class="typcn typcn-trash"></i></a> </center></td>'+
                     '</tr>';
                 }
             }
@@ -305,9 +304,9 @@ function fnCrearCotizacion(){
             }
             var subTotal=base*(0.16);
             var total=base+subTotal;
-            var baseConDecimales=base.toFixed(3);
-            var subTotalConDecimales=subTotal.toFixed(3);
-            var totalConDecimales=total.toFixed(3);
+            var baseConDecimales=base.toFixed(2);
+            var subTotalConDecimales=subTotal.toFixed(2);
+            var totalConDecimales=total.toFixed(2);
             var contenidoTotal=
             '<tr>'+
             '<td colspan="4"></td>'+
@@ -752,7 +751,6 @@ $('input[name="de_adicionales"]' ).change( "click", function(){
     var cd_sexo=$('select[name="cd_sexo_asegurado"]');
     var cd_parentesco=$('select[name="cd_parentesco_asegurado"]');
     var resumen=$('p[id="resumen-adicionales"]');
-    console.log(resumen);
     resumen.html('');
      if(adicionales==true){
         nm_persona.prop('disabled',false);
@@ -771,8 +769,51 @@ $('input[name="de_adicionales"]' ).change( "click", function(){
         cd_parentesco.prop('disabled',true);
         resumen.append('Sin Adicionales');
      }
-     
-    
-
 });
+
+function fnEliminarAsegurado(codigoFormulario){
+    if(codigoFormulario==null || codigoFormulario=='null'){
+        codigoFormulario='';
+    }
+    var nm_completo=$('input[name="nm_persona1_asegurado'+codigoFormulario+'"]');
+    var tp_documento=$('select[name="tp_documento_asegurado'+codigoFormulario+'"]');
+    var nu_documento=$('input[name="nu_documento_asegurado'+codigoFormulario+'"]');
+    var cd_sexo=$('select[name="cd_sexo_asegurado'+codigoFormulario+'"]');
+    var fe_nacimiento=$('input[name="fe_nacimiento_asegurado'+codigoFormulario+'"]');
+    var cd_parentesco=$('select[name="cd_parentesco_asegurado'+codigoFormulario+'"]');
+
+    var contadorDeClonacion=$('input[name="contador-clonacion"]');
+    if(contadorDeClonacion.val()>=1){
+        contadorDeClonacion.val(parseInt(contadorDeClonacion.val())-1);
+        nm_completo.css('display','none');
+        tp_documento.css('display','none');
+        nu_documento.css('display','none');
+        cd_sexo.css('display','none');
+        fe_nacimiento.css('display','none');
+        cd_parentesco.css('display','none');
+        
+    }else{
+        var de_adicionales=$('input[name="de_adicionales"]');
+        de_adicionales.prop('checked',false);
+       
+        
+    }
+    
+    nm_completo.prop('disabled',true);
+    tp_documento.prop('disabled',true);
+    nu_documento.prop('disabled',true);
+    cd_sexo.prop('disabled',true);
+    fe_nacimiento.prop('disabled',true);
+    cd_parentesco.prop('disabled',true);
+    
+    nm_completo.val('');
+    tp_documento.val('');
+    nu_documento.val('');
+    cd_sexo.val('');
+    fe_nacimiento.val('');
+    cd_parentesco.val('');
+
+    fnCrearPreliminar();
+}
+
 
