@@ -10,6 +10,10 @@ function fnDevolverFase(fase){
         $('#fase2').show();
     }
     if(fase==4){
+        $('#fase3').hide();
+        $('#fase3_').show();
+    }
+    if(fase==5){
         $('#fase4').hide();
         $('#fase3').show();
     }
@@ -508,7 +512,7 @@ function fnMoverFase3(formulario){
                         }
                     }
                     if(contadorErrores1==0){
-                        var fase1=$('div[id="fase2"]');
+                        var fase1=$('div[id="fase3_"]');
                         fase1.hide(500);
                         var fase2=$('div[id="fase3"]');
                         fase2.fadeIn('slow');
@@ -729,7 +733,7 @@ function fnGuardarContrato(){
         data:solicitud
     }).done(function(response){
         var JSONParse=JSON.parse(response);
-        var contenido='<button class="btn btn-primary" onclick="fnGenerarPDFContrato('+JSONParse.message.content+')">Generar Contrato PDF</button>';
+        var contenido='<button class="btn btn-primary" onclick="fnGenerarPDFContrato('+JSONParse.message.content+')">Generar Contrato PDF</button><hr><button class="btn btn-primary" onclick="fnEnviarCorreo('+JSONParse.message.content+')">Enviar Contrato Por Correo</button>';
         
         if(JSONParse.httpResponse==200){
             fnTransaccionConfirmada('Transaccion','<br> Se ha emitido el contrato # '+JSONParse.message.content+' <br> '+contenido);
@@ -740,6 +744,9 @@ function fnGuardarContrato(){
 }
 function fnGenerarPDFContrato(contrato){
     window.location.replace('http://10.10.0.200:8081/sgd.reportes/JRTE0001_1/NU_CONTRATO-'+contrato);
+}
+function fnEnviarCorreo(contrato){
+    window.location.replace('http://10.10.0.200:8081/sgd.correo/JRTE0001_1/NU_CONTRATO-'+contrato);
 }
 
 $('input[name="de_adicionales"]' ).change( "click", function(){
@@ -785,13 +792,13 @@ function fnEliminarAsegurado(codigoFormulario){
     var contadorDeClonacion=$('input[name="contador-clonacion"]');
     if(contadorDeClonacion.val()>=1){
         contadorDeClonacion.val(parseInt(contadorDeClonacion.val())-1);
-        nm_completo.css('display','none');
-        tp_documento.css('display','none');
-        nu_documento.css('display','none');
-        cd_sexo.css('display','none');
-        fe_nacimiento.css('display','none');
-        cd_parentesco.css('display','none');
-        
+        $('div[id="nm_persona1_asegurado'+codigoFormulario+'"]').css('display','none');
+        $('div[id="tp_documento_asegurado'+codigoFormulario+'"]').css('display','none');
+        $('div[id="nu_documento_asegurado'+codigoFormulario+'"]').css('display','none');
+        $('div[id="cd_sexo_asegurado'+codigoFormulario+'"]').css('display','none');
+        $('div[id="fe_nacimiento_asegurado'+codigoFormulario+'"]').css('display','none');
+        $('div[id="cd_parentesco_asegurado'+codigoFormulario+'"]').css('display','none');
+        $('div[id="boton'+codigoFormulario+'"]').css('display','none');
     }else{
         var de_adicionales=$('input[name="de_adicionales"]');
         de_adicionales.prop('checked',false);
@@ -799,12 +806,12 @@ function fnEliminarAsegurado(codigoFormulario){
         
     }
     
-    nm_completo.prop('disabled',true);
+    /*nm_completo.prop('disabled',true);
     tp_documento.prop('disabled',true);
     nu_documento.prop('disabled',true);
     cd_sexo.prop('disabled',true);
     fe_nacimiento.prop('disabled',true);
-    cd_parentesco.prop('disabled',true);
+    cd_parentesco.prop('disabled',true);*/
     
     nm_completo.val('');
     tp_documento.val('');

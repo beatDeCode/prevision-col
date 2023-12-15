@@ -25,11 +25,19 @@
             </div>
             <div class="col-md-9">
                 <div id="preliminar-factura">
+                    <div class="card">
+                        <div class="card-header">
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Preliminar de la Cotización del Contrato</h5>
+                        </div>
+                    </div>
+                    <br>
                     <div class="container-fluid">
                         <div class="table-responsive">
                             <table class="table">
                                 <thead>
-                                <tr>
+                                <tr style="background-color:#e7eaed">
                                     <th style="font-size:13px;">Parentesco</th>
                                     <th style="font-size:13px;">Documento</th>
                                     <th style="font-size:13px;">Nombre</th>
@@ -51,7 +59,7 @@
                         onclick="fnDevolverFase(3)">Volver</button>
                     <button type="button" class="btn btn-sm" 
                     style="background-color: #7c90a7;color: white;margin-bottom:15px;" 
-                    onclick="fnMoverFase4('formulario-producto')">Siguiente</button>
+                    onclick="fnMoverFase3('formulario-producto')">Siguiente</button>
                 </center>
             </div>
         </div>

@@ -19,25 +19,18 @@
     @include('plantillas.cabeceraWizard',['barra'=>$barra3,'botonesWizard'=>$botonesWizard3])
     <br>
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-3">
+		<div id="factura">
 
-            </div>
-            <div class="col-md-9">
-                <div id="factura">
-
-                </div>
-                <hr class="hr-none">
-                <center>
-                    <button type="button" class="btn btn-sm" 
-                        style="background-color: #7c90a7;color: white;margin-bottom:15px;" 
-                        onclick="fnDevolverFase(3)">Volver</button>
-                    <button type="button" class="btn btn-sm" 
-                    style="background-color: #7c90a7;color: white;margin-bottom:15px;" 
-                    onclick="fnMoverFase4('formulario-producto')">Siguiente</button>
-                </center>
-                </div>
-        </div>
+		</div>
+        <hr class="hr-none">
+        <center>
+            <button type="button" class="btn btn-sm" 
+                style="background-color: #7c90a7;color: white;margin-bottom:15px;" 
+                onclick="fnDevolverFase(4)">Volver</button>
+            <button type="button" class="btn btn-sm" 
+            style="background-color: #7c90a7;color: white;margin-bottom:15px;" 
+            onclick="fnMoverFase4('formulario-producto')">Siguiente</button>
+        </center>
     </div>
     <!-- Cierre Cuerpo Fase I-->
 </div>

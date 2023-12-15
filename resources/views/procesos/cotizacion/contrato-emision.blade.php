@@ -44,7 +44,7 @@
             <center>
                 <button type="button" class="btn btn-sm" 
                 style="background-color: #7c90a7;color: white;margin-bottom:15px;" 
-                onclick="fnDevolverFase(4)">Volver</button>
+                onclick="fnDevolverFase(5)">Volver</button>
                 <button type="button" class="btn btn-sm" 
                 style="background-color: #7c90a7;color: white;margin-bottom:15px;" 
                 onclick="fnEmitir('formulario-finanzas')">Emitir</button>

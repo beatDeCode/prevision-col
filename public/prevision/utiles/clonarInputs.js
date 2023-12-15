@@ -83,6 +83,7 @@ function fnClonarInputsFase(fase){
         if(formulario[a]['name']!='_token' && formulario[a]['name']!='cd_persona'){
             var divOculto=$('div[id="'+formulario[a]['name']+''+valorContadorClonacion+'"]');
             divOculto.show();
+            
         }
     }
     $('div[id="boton'+valorContadorClonacion+'"]').show();
