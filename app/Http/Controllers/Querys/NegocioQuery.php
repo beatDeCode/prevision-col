@@ -89,7 +89,7 @@ class NegocioQuery{
         else 0 end,0) mt_prima_plan,
         siglas_moneda,
         :tp_documento||'-'||:nu_documento nu_documento,
-        :nm_persona1||' '||:ap_persona1 nm_completo,
+        :nm_persona1 nm_completo,
         (select de_grupo_familiar from gruposfamiliares
         where cd_grupo_familiar=:cd_grupo_familiar)grupo_familiar,
         (select de_producto from productos
@@ -152,7 +152,7 @@ class NegocioQuery{
         else 0 end,0) mt_prima_plan,
         siglas_moneda,
         :tp_documento||'-'||:nu_documento nu_documento,
-        :nm_persona1||' '||:ap_persona1 nm_completo,
+        :nm_persona1 nm_completo,
         (select de_grupo_familiar from gruposfamiliares
         where cd_grupo_familiar=:cd_grupo_familiar)grupo_familiar,
         (select de_producto from productos

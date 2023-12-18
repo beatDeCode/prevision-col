@@ -188,7 +188,7 @@ function fnValidarDocumento(){
 function fnValidarVacios(formulario){
     var contadorErrores=0;
     var valoresFormulario=$('form[name="'+formulario+'"]').serializeArray();
-    console.log(valoresFormulario);
+    //console.log(valoresFormulario);
     if(valoresFormulario.length>0){
         for(var a=0;a<valoresFormulario.length;a++){
             var select=$('select[name="'+valoresFormulario[a]['name']+'"]');

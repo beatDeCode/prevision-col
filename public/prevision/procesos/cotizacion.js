@@ -2,7 +2,7 @@ function fnDevolverFase(fase){
     if(fase==2){
         $('#fase2').hide();
         $('#fase1').show();
-        var botonResumen=$('button[id="devolver-pasos"]');
+        var botonResumen=$('a[id="devolver-pasos"]');
         botonResumen.css('display','block');
     }
     if(fase==3){
@@ -30,7 +30,7 @@ function fnMoverFase2(formulario){
         var divResumenAnterior=$('div[id="div-resumen-producto"]').html();
         divResumen.html('');
         divResumen.append(divResumenAnterior);
-        var botonResumen=$('button[id="devolver-pasos"]');
+        var botonResumen=$('a[id="devolver-pasos"]');
         botonResumen.css('display','none');
         
     }
@@ -39,6 +39,7 @@ function fnMoverFase2(formulario){
 function fnCrearPreliminar(){
     var tokenLaravel=$('input[name="_token"]').val();
     var contadorDeClonacion=$('input[name="contador-clonacion-asegurados"]').val();
+    var contadorDeClonacionAdicionales=$('input[name="contador-clonacion-adicionales"]').val();
     var cedulaTitular=$('input[name="nu_documento"]').val();
     var tipoDocumento=$('select[name="tp_documento"] option:selected').val();
     var nm_persona1=$('input[name="nm_persona1"]').val();
@@ -48,14 +49,18 @@ function fnCrearPreliminar(){
     var cd_grupo_familiar=$('select[name="cd_grupo_familiar"] option:selected').val();
     var cd_plan_pago=$('select[name="cd_plan_pago"] option:selected').val();
     var valoresFormulario=$('input[name="valores-formulario"]').val();
+    var valoresFormularioAdicionales=$('input[name="valores-formulario-adic"]').val();
     var tipoCalculo=$('select[name="cd_tipo_calculo"] option:selected').val();
     var de_adicionales=$('input[name="de_adicionales"]:checked').val();
+    var de_asegurados=$('input[name="de_asegurados"]:checked').val();
     var mt_prima=0;
     if($('input[name="mt_prima"]')){
         mt_prima=$('input[name="mt_prima"]').val();
     }   
     var valoresDesglosados=valoresFormulario.split(',');
+    var valoresDesglosadosAdicionales=valoresFormularioAdicionales.split(',');
     var formulario=[];
+    
     formulario.push({name:'nu_documento',value:cedulaTitular});
     formulario.push({name:'tp_documento',value:tipoDocumento});
     formulario.push({name:'nm_persona1',value:nm_persona1});
@@ -65,10 +70,12 @@ function fnCrearPreliminar(){
     formulario.push({name:'cd_grupo_familiar',value:cd_grupo_familiar});
     formulario.push({name:'cd_plan_pago',value:cd_plan_pago});
     formulario.push({name:'ca_clonacion',value:contadorDeClonacion});
+    formulario.push({name:'ca_clonacion_adicionales',value:contadorDeClonacionAdicionales});
     formulario.push({name:'cd_tipo_calculo',value:tipoCalculo});
     formulario.push({name:'mt_prima',value:mt_prima});
     formulario.push({name:'nu_documento',value:cedulaTitular});
     formulario.push({name:'de_adicionales',value:de_adicionales});
+    formulario.push({name:'de_asegurados',value:de_asegurados});
     for(var a=0;a<valoresDesglosados.length;a++){   
         if(valoresDesglosados[a]=='boton'){
             
@@ -85,6 +92,23 @@ function fnCrearPreliminar(){
             }
         }
     }
+    for(var a=0;a<valoresDesglosadosAdicionales.length;a++){   
+        if(valoresDesglosadosAdicionales[a]=='boton'){
+            
+        }else{
+            var select=$('select[name="'+valoresDesglosadosAdicionales[a]+'"]');
+            var input=$('input[name="'+valoresDesglosadosAdicionales[a]+'"]');
+            if(input.length==1){
+                var valorInput=$('input[name="'+valoresDesglosadosAdicionales[a]+'"]').val();
+                formulario.push({name:valoresDesglosadosAdicionales[a],value:valorInput});
+            }
+            if(select.length==1){
+                var valorSelect=$('select[name="'+valoresDesglosadosAdicionales[a]+'"] option:selected').val();
+                formulario.push({name:valoresDesglosadosAdicionales[a],value:valorSelect});
+            }
+        }
+    }
+    
     for(var b=0;b<contadorDeClonacion;b++){
         formulario.push({name:'nu_asegurado'+b,value:b});
         for(var c=0;c<valoresDesglosados.length;c++){
@@ -104,6 +128,25 @@ function fnCrearPreliminar(){
             }
         }
     }
+    for(var b=0;b<contadorDeClonacionAdicionales;b++){
+        formulario.push({name:'nu_adicional'+b,value:b});
+        for(var c=0;c<valoresDesglosadosAdicionales.length;c++){
+            if(valoresDesglosadosAdicionales[c]=='boton'){
+                
+            }else{
+                var select=$('select[name="'+valoresDesglosadosAdicionales[c]+''+b+'"]');
+                var input=$('input[name="'+valoresDesglosadosAdicionales[c]+'"]');
+                if(input.length==1){
+                    var valorInput=$('input[name="'+valoresDesglosadosAdicionales[c]+''+b+'"]').val();
+                    formulario.push({name:valoresDesglosadosAdicionales[c]+''+b,value:valorInput});
+                }
+                if(select.length==1){
+                    var valorSelect=$('select[name="'+valoresDesglosadosAdicionales[c]+''+b+'"] option:selected').val();
+                    formulario.push({name:valoresDesglosadosAdicionales[c]+''+b,value:valorSelect});
+                }
+            }
+        }
+    }
     $.ajax({
         url:'/prevision.procesos.cartera.generar-cotizacion',
         type:'POST',
@@ -111,8 +154,10 @@ function fnCrearPreliminar(){
         headers: {'X-CSRF-TOKEN': tokenLaravel},
         data:formulario
     }).done(function(response){
+        
         var JSONParse=JSON.parse(response);
         if(JSONParse.httpResponse==200){
+            console.log(JSONParse);
             var valoresCotizacion=JSONParse.message.content;
             var siglas=valoresCotizacion[0]['siglas_moneda'];
             var contenidoTitular='';
@@ -122,7 +167,7 @@ function fnCrearPreliminar(){
                 base+=parseFloat(valoresCotizacion[a]['mt_prima_plan']);
                 if(a==0){
                     var contenidoTitular=
-                    '<tr style="font-size:11px;text-align:center;">'+
+                    '<tr style="font-size:11px;text-align:center;padding: 1px;">'+
                         '<td style="font-size:13px;"><center>'+valoresCotizacion[a]['parentesco']+'</center></td>'+
                         '<td style="font-size:13px;"><center>'+valoresCotizacion[a]['nm_completo']+'</center></td>'+
                         '<td style="font-size:13px;"><center>'+valoresCotizacion[a]['nu_documento']+'</center></td>'+
@@ -134,13 +179,13 @@ function fnCrearPreliminar(){
                 }
                 if(a>0){
                     contenidoAsegurados+=
-                    '<tr style="font-size:11px;text-align:center;">'+
+                    '<tr style="font-size:11px;text-align:center;padding: 1px;">'+
                         '<td style="font-size:12px;"><center>'+valoresCotizacion[a]['parentesco']+'</center></td>'+
                         '<td style="font-size:12px;"><center>'+valoresCotizacion[a]['nm_completo']+'</center></td>'+
                         '<td style="font-size:12px;"><center>'+valoresCotizacion[a]['nu_documento']+'</center></td>'+
                         '<td style="font-size:12px;"><center>'+valoresCotizacion[a]['es_adicional']+'</center></td>'+
                         '<td style="font-size:12px;"><center>'+valoresCotizacion[a]['mt_prima_plan']+''+siglas+'</center> </td>'+
-                        '<td style="font-size:12px;"><center><a class="btn btn-primary" onclick="fnEliminarAsegurado('+valoresCotizacion[a]['nu_asegurado']+')"> <i class="typcn typcn-trash"></i></a> </center></td>'+
+                        '<td style="font-size:12px;padding:1px;"><center><a class="badge" style="background-color: #1d4068;color:white;text-align:left;font-size:12px;" onclick="fnEliminarAsegurado(\''+ valoresCotizacion[a]['nu_asegurado'] + '\') "> <i class="typcn typcn-trash"></i></a> </center></td>'+
                     '</tr>';
                 }
             }
@@ -167,16 +212,21 @@ function fnCrearPreliminar(){
             '</tr>';
             var detalleFactura=contenidoTitular+contenidoAsegurados+contenidoTotal;
             var tablaPreliminar=$('tbody[id="preliminar"]');
+            var tablaDivPreliminar=$('div[id="preliminar-factura"]');
             tablaPreliminar.html('');
             tablaPreliminar.append(detalleFactura);
+            tablaDivPreliminar.show();
+            tablaPreliminar.show();
         }
     }).fail(function(a,c,b){
+        console.log('Prueba',formulario);
         console.log(a,b,c);
     });
 }
 function fnCrearCotizacion(){
     var tokenLaravel=$('input[name="_token"]').val();
     var contadorDeClonacion=$('input[name="contador-clonacion-asegurados"]').val();
+    var contadorDeClonacionAdicionales=$('input[name="contador-clonacion-adicionales"]').val();
     var cedulaTitular=$('input[name="nu_documento"]').val();
     var tipoDocumento=$('select[name="tp_documento"] option:selected').val();
     var nm_persona1=$('input[name="nm_persona1"]').val();
@@ -186,14 +236,18 @@ function fnCrearCotizacion(){
     var cd_grupo_familiar=$('select[name="cd_grupo_familiar"] option:selected').val();
     var cd_plan_pago=$('select[name="cd_plan_pago"] option:selected').val();
     var valoresFormulario=$('input[name="valores-formulario"]').val();
+    var valoresFormularioAdicionales=$('input[name="valores-formulario-adic"]').val();
     var tipoCalculo=$('select[name="cd_tipo_calculo"] option:selected').val();
     var de_adicionales=$('input[name="de_adicionales"]:checked').val();
+    var de_asegurados=$('input[name="de_asegurados"]:checked').val();
     var mt_prima=0;
     if($('input[name="mt_prima"]')){
         mt_prima=$('input[name="mt_prima"]').val();
     }   
     var valoresDesglosados=valoresFormulario.split(',');
+    var valoresDesglosadosAdicionales=valoresFormularioAdicionales.split(',');
     var formulario=[];
+    
     formulario.push({name:'nu_documento',value:cedulaTitular});
     formulario.push({name:'tp_documento',value:tipoDocumento});
     formulario.push({name:'nm_persona1',value:nm_persona1});
@@ -203,11 +257,12 @@ function fnCrearCotizacion(){
     formulario.push({name:'cd_grupo_familiar',value:cd_grupo_familiar});
     formulario.push({name:'cd_plan_pago',value:cd_plan_pago});
     formulario.push({name:'ca_clonacion',value:contadorDeClonacion});
+    formulario.push({name:'ca_clonacion_adicionales',value:contadorDeClonacionAdicionales});
     formulario.push({name:'cd_tipo_calculo',value:tipoCalculo});
     formulario.push({name:'mt_prima',value:mt_prima});
     formulario.push({name:'nu_documento',value:cedulaTitular});
     formulario.push({name:'de_adicionales',value:de_adicionales});
-    console.log();
+    formulario.push({name:'de_asegurados',value:de_asegurados});
     for(var a=0;a<valoresDesglosados.length;a++){   
         if(valoresDesglosados[a]=='boton'){
             
@@ -224,7 +279,25 @@ function fnCrearCotizacion(){
             }
         }
     }
+    for(var a=0;a<valoresDesglosadosAdicionales.length;a++){   
+        if(valoresDesglosadosAdicionales[a]=='boton'){
+            
+        }else{
+            var select=$('select[name="'+valoresDesglosadosAdicionales[a]+'"]');
+            var input=$('input[name="'+valoresDesglosadosAdicionales[a]+'"]');
+            if(input.length==1){
+                var valorInput=$('input[name="'+valoresDesglosadosAdicionales[a]+'"]').val();
+                formulario.push({name:valoresDesglosadosAdicionales[a],value:valorInput});
+            }
+            if(select.length==1){
+                var valorSelect=$('select[name="'+valoresDesglosadosAdicionales[a]+'"] option:selected').val();
+                formulario.push({name:valoresDesglosadosAdicionales[a],value:valorSelect});
+            }
+        }
+    }
+    
     for(var b=0;b<contadorDeClonacion;b++){
+        formulario.push({name:'nu_asegurado'+b,value:b});
         for(var c=0;c<valoresDesglosados.length;c++){
             if(valoresDesglosados[c]=='boton'){
                 
@@ -238,6 +311,25 @@ function fnCrearCotizacion(){
                 if(select.length==1){
                     var valorSelect=$('select[name="'+valoresDesglosados[c]+''+b+'"] option:selected').val();
                     formulario.push({name:valoresDesglosados[c]+''+b,value:valorSelect});
+                }
+            }
+        }
+    }
+    for(var b=0;b<contadorDeClonacionAdicionales;b++){
+        formulario.push({name:'nu_adicional'+b,value:b});
+        for(var c=0;c<valoresDesglosadosAdicionales.length;c++){
+            if(valoresDesglosadosAdicionales[c]=='boton'){
+                
+            }else{
+                var select=$('select[name="'+valoresDesglosadosAdicionales[c]+''+b+'"]');
+                var input=$('input[name="'+valoresDesglosadosAdicionales[c]+'"]');
+                if(input.length==1){
+                    var valorInput=$('input[name="'+valoresDesglosadosAdicionales[c]+''+b+'"]').val();
+                    formulario.push({name:valoresDesglosadosAdicionales[c]+''+b,value:valorInput});
+                }
+                if(select.length==1){
+                    var valorSelect=$('select[name="'+valoresDesglosadosAdicionales[c]+''+b+'"] option:selected').val();
+                    formulario.push({name:valoresDesglosadosAdicionales[c]+''+b,value:valorSelect});
                 }
             }
         }
@@ -398,7 +490,6 @@ function fnMoverFase3_(formulario,formulario2,formulario3){
     var contadorDeClonacion=$('input[name="contador-clonacion-asegurados"]').val();
     var contadorDeClonacionAdicionales=$('input[name="contador-clonacion-adicionales"]').val();
     var auxiliarValiacionFase2=parseInt(validacionFase2)+parseInt(validacionFase3)+parseInt(validacionFase4);
-    console.log(auxiliarValiacionFase2);
     try {
         calcularEdad();
         fnValidarTelefono();
@@ -462,7 +553,7 @@ function fnMoverFase3_(formulario,formulario2,formulario3){
                         var divResumenAnterior=$('div[id="div-resumen-adicionales"]').html();
                         divResumen.html('');
                         divResumen.append(divResumenAnterior);
-                        fnCrearPreliminar();
+                        //fnCrearPreliminar();
                         //fnCrearCotizacion();
                     }
                     
@@ -780,6 +871,10 @@ function fnEnviarCorreo(contrato){
 }
 
 $('input[name="de_adicionales"]' ).change( "click", function(){
+    fnCambiarSelectParentesco('busquedaParentescoPorGrupoFamiliarAdicionales','cd_parentesco_adicional');
+    for(var a=0;a<3;a++){
+        fnCambiarSelectParentesco('busquedaParentescoPorGrupoFamiliarAdicionales','cd_parentesco_adicional'+a);
+    }
     var divAducionales=$('div[id="formulario-adicionales"]');
     var botonAdicionales=$('button[id="boton-adicionales"]');
     var adicionales=$('input[name="de_adicionales"]').is(":checked");
@@ -815,6 +910,10 @@ $('input[name="de_adicionales"]' ).change( "click", function(){
 });
 
 $('input[name="de_asegurados"]' ).change( "click", function(){
+    fnCambiarSelectParentesco('busquedaParentescoPorGrupoFamiliarAsegurados','cd_parentesco_asegurado');
+    for(var a=0;a<3;a++){
+        fnCambiarSelectParentesco('busquedaParentescoPorGrupoFamiliarAsegurados','cd_parentesco_asegurado'+a);
+    }
     var divAsegurados=$('div[id="formulario-asegurados"]');
     var botonAsegurados=$('button[id="boton-asegurados"]');
     var adicionales=$('input[name="de_asegurados"]').is(":checked");
@@ -851,81 +950,77 @@ $('input[name="de_asegurados"]' ).change( "click", function(){
 
 
 function fnEliminarAsegurado(codigoFormulario){
-    if(codigoFormulario==null || codigoFormulario=='null'){
-        codigoFormulario='';
-    }
-    var nm_completo=$('input[name="nm_persona1_asegurado'+codigoFormulario+'"]');
-    var tp_documento=$('select[name="tp_documento_asegurado'+codigoFormulario+'"]');
-    var nu_documento=$('input[name="nu_documento_asegurado'+codigoFormulario+'"]');
-    var cd_sexo=$('select[name="cd_sexo_asegurado'+codigoFormulario+'"]');
-    var fe_nacimiento=$('input[name="fe_nacimiento_asegurado'+codigoFormulario+'"]');
-    var cd_parentesco=$('select[name="cd_parentesco_asegurado'+codigoFormulario+'"]');
-
-    var contadorDeClonacion=$('input[name="contador-clonacion"]');
-    if(contadorDeClonacion.val()>=1){
-        contadorDeClonacion.val(parseInt(contadorDeClonacion.val())-1);
-        $('div[id="nm_persona1_asegurado'+codigoFormulario+'"]').css('display','none');
-        $('div[id="tp_documento_asegurado'+codigoFormulario+'"]').css('display','none');
-        $('div[id="nu_documento_asegurado'+codigoFormulario+'"]').css('display','none');
-        $('div[id="cd_sexo_asegurado'+codigoFormulario+'"]').css('display','none');
-        $('div[id="fe_nacimiento_asegurado'+codigoFormulario+'"]').css('display','none');
-        $('div[id="cd_parentesco_asegurado'+codigoFormulario+'"]').css('display','none');
-        $('div[id="boton'+codigoFormulario+'"]').css('display','none');
+    var explodeInput=codigoFormulario.split('_');
+    var nombreFormulario='';
+    var nombreChecked='';
+    console.log(codigoFormulario);
+    if(explodeInput.length>1){
+        if(explodeInput[0]=='as'){
+            nombreFormulario='asegurado'+explodeInput[1];
+            nombreChecked='asegurados';
+        }
+        if(explodeInput[0]=='ad'){
+            nombreFormulario='adicional'+explodeInput[1];
+            nombreChecked='adicionales';
+        }
     }else{
-        var de_adicionales=$('input[name="de_asegurados"]');
-        de_adicionales.prop('checked',false);
-       
-        
+        if(explodeInput=='as'){
+            nombreFormulario='asegurado';
+            nombreChecked='asegurados';
+        }else{
+            nombreFormulario='adicional';
+            nombreChecked='adicionales';
+        }
     }
-    
+
+    var nm_completo=$('input[name="nm_persona1_'+nombreFormulario+'"]');
+    var tp_documento=$('select[name="tp_documento_'+nombreFormulario+'"]');
+    var nu_documento=$('input[name="nu_documento_'+nombreFormulario+'"]');
+    var cd_sexo=$('select[name="cd_sexo_'+nombreFormulario+'"]');
+    var fe_nacimiento=$('input[name="fe_nacimiento_'+nombreFormulario+'"]');
+    var cd_parentesco=$('select[name="cd_parentesco_'+nombreFormulario+'"]');
+    var boton=$('button[id="boton-'+nombreChecked+'"]');
+    var contadorDeClonacion=$('input[name="contador-clonacion-'+nombreChecked+'"]');
+    contadorDeClonacion.val(parseInt(contadorDeClonacion.val())-1);
+    if(contadorDeClonacion.val()>=1){
+        nm_completo.css('display','none');
+        tp_documento.css('display','none');
+        nu_documento.css('display','none');
+        cd_sexo.css('display','none');
+        fe_nacimiento.css('display','none');
+        cd_parentesco.css('display','none');
+        boton.css('display','none');
+
+        nm_completo.prop('disabled',true);
+        tp_documento.prop('disabled',true);
+        nu_documento.prop('disabled',true);
+        cd_sexo.prop('disabled',true);
+        fe_nacimiento.prop('disabled',true);
+        cd_parentesco.prop('disabled',true);
+    }else{
+
+        nm_completo.prop('disabled',true);
+        tp_documento.prop('disabled',true);
+        nu_documento.prop('disabled',true);
+        cd_sexo.prop('disabled',true);
+        fe_nacimiento.prop('disabled',true);
+        cd_parentesco.prop('disabled',true);
+
+        var divFormulario=$('div[id="formulario-'+nombreChecked+'"]');
+        divFormulario.hide();
+        var de_adicionales=$('input[name="de_'+nombreChecked+'"]');
+        de_adicionales.prop('checked',false);
+    }
     nm_completo.val('');
     tp_documento.val('');
     nu_documento.val('');
     cd_sexo.val('');
     fe_nacimiento.val('');
     cd_parentesco.val('');
-
     fnCrearPreliminar();
 }
 
 
-function fnEliminarAdicional(codigoFormulario){
-    if(codigoFormulario==null || codigoFormulario=='null'){
-        codigoFormulario='';
-    }
-    var nm_completo=$('input[name="nm_persona1_adicional'+codigoFormulario+'"]');
-    var tp_documento=$('select[name="tp_documento_adicional'+codigoFormulario+'"]');
-    var nu_documento=$('input[name="nu_documento_adicional'+codigoFormulario+'"]');
-    var cd_sexo=$('select[name="cd_sexo_adicional'+codigoFormulario+'"]');
-    var fe_nacimiento=$('input[name="fe_nacimiento_adicional'+codigoFormulario+'"]');
-    var cd_parentesco=$('select[name="cd_parentesco_adicional'+codigoFormulario+'"]');
-
-    var contadorDeClonacion=$('input[name="contador-clonacion"]');
-    if(contadorDeClonacion.val()>=1){
-        contadorDeClonacion.val(parseInt(contadorDeClonacion.val())-1);
-        $('div[id="nm_persona1_adicional'+codigoFormulario+'"]').css('display','none');
-        $('div[id="tp_documento_adicional'+codigoFormulario+'"]').css('display','none');
-        $('div[id="nu_documento_adicional'+codigoFormulario+'"]').css('display','none');
-        $('div[id="cd_sexo_adicional'+codigoFormulario+'"]').css('display','none');
-        $('div[id="fe_nacimiento_adicional'+codigoFormulario+'"]').css('display','none');
-        $('div[id="cd_parentesco_adicional'+codigoFormulario+'"]').css('display','none');
-        $('div[id="boton'+codigoFormulario+'"]').css('display','none');
-    }else{
-        var de_adicionales=$('input[name="de_adicionales"]');
-        de_adicionales.prop('checked',false);
-       
-        
-    }
-    
-    nm_completo.val('');
-    tp_documento.val('');
-    nu_documento.val('');
-    cd_sexo.val('');
-    fe_nacimiento.val('');
-    cd_parentesco.val('');
-
-    fnCrearPreliminar();
-}
 
 function fnEsconderFormsAdicionales(){
     var divAsegurados=$('div[id="formulario-asegurados"]');
@@ -938,4 +1033,34 @@ function fnEsconderFormsAdicionales(){
     botonAdicionales.hide();
 }
 fnEsconderFormsAdicionales();
+
+
+function fnCambiarSelectParentesco(busqueda,select){
+
+    var tokenLaravel=$('input[name="_token"]').val();
+    var grupoFamiliar=$('select[name="cd_grupo_familiar"] option:selected').val();
+    var selectParentesco=$('select[name="'+select+'"]');
+    var formulario=[];
+    formulario.push({name:'tp_query',value:1});
+    formulario.push({name:'query',value:busqueda});
+    formulario.push({name:'cd_grupo_familiar',value:grupoFamiliar});
+    $.ajax({
+        url:'/prevision.general.querys',
+        type:'POST',
+        cache:false,
+        headers: {'X-CSRF-TOKEN': tokenLaravel},
+        data:formulario
+    }).done(function(response){
+        selectParentesco.find('option').remove().end();
+        selectParentesco.append($('<option>', {value:'', text:''}));
+        var JSONParse=JSON.parse(response);
+        if(JSONParse.httpResponse==200){
+            var valoresOption=JSONParse.message.content;
+            for(var a=0;a<valoresOption.length;a++){
+                selectParentesco.append($('<option>', {value:valoresOption[a]['value'], text:valoresOption[a]['text']}));
+            }
+            
+        }
+    });
+}
 

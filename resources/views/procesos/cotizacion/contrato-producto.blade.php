@@ -12,7 +12,7 @@
             'cd_cobertura|select|text|col-md-4|Cobertura|Empresa||display:none'=>array(),
             'mt_suma_asegurada|select|text|col-md-4|Monto a Riesgo||display:none'=>array(),
             'cd_grupo_familiar|select|text|col-md-4|Grupo Familiar||display:none'=>$busquedaGruposFamiliares,
-            'cd_plan_pago|select|text|col-md-4|Plan de Pago||display:none'=>$busquedaPlanesPago,
+            //'cd_plan_pago|select|text|col-md-4|Plan de Pago||display:none'=>$busquedaPlanesPago,
             //'cd_tipo_calculo|select|text|col-md-4|Tipo de Cáculo'=>$busquedaTipoCalculoPrima,
             ) ;
         $cantidadDeClonacion1=0;
@@ -62,7 +62,7 @@
                             <p class="card-subtitle mb-2 " id="resumen-adicionales">Sin Adicionales</p>
                             
                             <hr style="padding:5px;">
-                            <center><button id="devolver-pasos" class="btn btn-sm btn-primary" onclick="fnUbicacionResumen()" style="display:none;">Devolver</button></center>
+                            <center><a id="devolver-pasos" class="badge" onclick="fnUbicacionResumen()" class="badge" style="background-color: #1d4068;color:white;display:none;">Devolver</a></center>
                         </div>   
                     </div>
                     <br>
@@ -73,8 +73,6 @@
                     <div id="divcoberturas"></div>
                     <div id="divsumas"></div>
                     <div id="divgrupofamiliar"></div>
-                    <div id="divplanpago"></div>
-
                     <center>
                         <button type="button" class="btn btn-sm" id="boton-fase2"
                         style="background-color: #7c90a7;color: white;margin-bottom:15px;display:none;" 

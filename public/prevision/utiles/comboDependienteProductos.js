@@ -184,7 +184,7 @@ function fnDespliegueBotones(opciones,nombreFuncion,nombreTarjeta,nombreTitulo){
                 '<div class="card-body">'+
                     '<h5 class="card-title">'+opciones[a]['text']+'</h5>'+
                     '<p class="card-text">'+opciones[a]['de_tarjeta']+' </p>'+
-                   '<a href="#" onclick="'+nombreFuncion+'('+opciones[a]['value']+')" class="btn btn-primary btn-sm">Elegir</a>'+
+                   '<a  onclick="'+nombreFuncion+'('+opciones[a]['value']+')" class="badge" style="background-color: #1d4068;color:white;text-align:left;">Elegir</a>'+
                 '</div>'+
             '</div>'+
         '</div>';
@@ -206,7 +206,7 @@ function fnCambiarProducto(producto){
     elementoICobertura.addClass('typcn typcn-chevron-right');
     var inputLocalizacion=$('input[name="indicador-ubicacion-resumen"]');
     inputLocalizacion.val(2);
-    $('button[id="devolver-pasos"]').show();
+    $('a[id="devolver-pasos"]').show();
 }
 function fnCambiarCobertura(cobertura){
     
@@ -236,12 +236,13 @@ function fnCambiarSumas(suma){
     elementoICobertura.addClass('typcn typcn-chevron-right');
     var inputLocalizacion=$('input[name="indicador-ubicacion-resumen"]');
     inputLocalizacion.val(4);
+    $('button[id="boton-fase2"]').show();
     
 }
 function fnCambiarGrupoFamiliar(grupofamiliar){
     
     $('select[name="cd_grupo_familiar"]').val(grupofamiliar).change();
-    $('div[id="divgrupofamiliar"]').hide(350);
+    //$('div[id="divgrupofamiliar"]').hide(350);
     var resumen=$('p[id="resumen-grupo-familiar"]');
     resumen.html('');
     resumen.append($('select[name="cd_grupo_familiar"] option:selected').text());
@@ -249,9 +250,9 @@ function fnCambiarGrupoFamiliar(grupofamiliar){
     elementoIProducto.removeClass('typcn typcn-chevron-right');
     var elementoICobertura=$('i[id="i-plan-pago"]');
     elementoICobertura.addClass('typcn typcn-chevron-right');
-    var inputLocalizacion=$('input[name="indicador-ubicacion-resumen"]');
-    inputLocalizacion.val(5);
-    $('button[id="boton-fase2"]').show();
+    //var inputLocalizacion=$('input[name="indicador-ubicacion-resumen"]');
+    //inputLocalizacion.val(5);
+    
 }
 function fnCambiarPlanPago(planpago){
 
@@ -265,8 +266,7 @@ function fnCambiarPlanPago(planpago){
     elementoICobertura.addClass('typcn typcn-chevron-right');
     fnActivarBotonProducto(planpago,'plan-pago');
 
-}
-
+}   
 function fnUbicacionResumen(){
     var inputLocalizacion=$('input[name="indicador-ubicacion-resumen"]');
     var valorLocalizacion=inputLocalizacion.val();
@@ -278,7 +278,7 @@ function fnUbicacionResumen(){
         elementoIProducto.removeClass('typcn typcn-chevron-right');
         var elementoICobertura=$('i[id="i-grupo-familiar"]');
         elementoICobertura.addClass('typcn typcn-chevron-right');
-    }
+}
     if(valorLocalizacion==4){
         $('div[id="divgrupofamiliar"]').hide(350);
         $('div[id="divsumas"]').show(350);
@@ -304,7 +304,7 @@ function fnUbicacionResumen(){
         elementoICobertura.addClass('typcn typcn-chevron-right');
     }
     if(valorLocalizacion==1){
-        $('button[id="devolver-pasos"]').hide();
+        $('a[id="devolver-pasos"]').hide();
     }
     
     
@@ -312,3 +312,13 @@ function fnUbicacionResumen(){
         $('button[id="boton-fase2"]').hide();
     }
 }
+
+$('select[name="cd_plan_pago"').on('change',function(){
+    /*var divResumen=$('div[id="div-resumen-preliminar"]');
+    var divResumenAnterior=$('div[id="div-resumen-adicionales"]').html();
+    divResumen.html('');
+    divResumen.append(divResumenAnterior);*/
+    fnCrearPreliminar();
+});
+
+

@@ -20,30 +20,25 @@
     <br>
     <div class="container-fluid">
         <div class="row">
+            <select name="cd_plan_pago" style="display:none;"></select>
             <div class="col-md-3" id="div-resumen-preliminar">
 
             </div>
             <div class="col-md-9">
-                <div id="preliminar-factura">
-                    <div class="card">
-                        <div class="card-header">
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">Preliminar de la Cotización del Contrato</h5>
-                        </div>
-                    </div>
+                <div id="divplanpago"></div>
+                <div id="preliminar-factura" style="display:none;">
                     <br>
                     <div class="container-fluid">
                         <div class="table-responsive">
                             <table class="table">
                                 <thead>
                                 <tr style="background-color:#e7eaed">
-                                    <th style="font-size:13px;">Parentesco</th>
-                                    <th style="font-size:13px;">Documento</th>
-                                    <th style="font-size:13px;">Nombre</th>
-                                    <th style="font-size:13px;">¿Es Adicional?</th>
-                                    <th style="font-size:13px;">Monto Cuota</th>
-                                    <th style="font-size:13px;">-</th>
+                                    <th style="font-size:13px;text-align:center;">Parentesco</th>
+                                    <th style="font-size:13px;text-align:center;">Documento</th>
+                                    <th style="font-size:13px;text-align:center;">Nombre</th>
+                                    <th style="font-size:13px;text-align:center;">¿Es Adicional?</th>
+                                    <th style="font-size:13px;text-align:center;">Monto Cuota</th>
+                                    <th style="font-size:13px;"text-align:center;></th>
                                 </tr>
                                 </thead>
                                 <tbody id="preliminar" style="font-size:12px;">

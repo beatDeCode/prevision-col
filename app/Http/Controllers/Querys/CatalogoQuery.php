@@ -128,6 +128,7 @@ class CatalogoQuery{
    const busquedaGruposFamiliares="select cd_grupo_familiar value, initcap(de_grupo_familiar) text ,5 columnas, initcap(de_grupo_familiar) titulo, tx_icono, 'Grupo familiar' nombreTitulo,de_tarjeta
    from gruposfamiliares";
 
+
    const busquedaTipoCalculoPrima="
    select 1 value, 'Cálculo Por Tasa Riesgo' text from dual
    union all
@@ -156,6 +157,14 @@ class CatalogoQuery{
    select count(1) cuenta from grupofamiliarparentesco
    where cd_parentesco=:cd_parentesco
    and cd_grupo_familiar=:cd_grupo_familiar";
+
+   const busquedaParentescoPorGrupoFamiliarAsegurados="
+   select cd_parentesco value, de_parentesco text from parentescos 
+   where cd_parentesco in (select cd_parentesco from grupofamiliarparentesco where cd_grupo_familiar=:cd_grupo_familiar and cd_parentesco!=1)";
+
+   const busquedaParentescoPorGrupoFamiliarAdicionales="
+   select cd_parentesco value, de_parentesco text from parentescos 
+   where cd_parentesco not in (select cd_parentesco from grupofamiliarparentesco where cd_grupo_familiar=:cd_grupo_familiar)";
 
    //Sexos
 

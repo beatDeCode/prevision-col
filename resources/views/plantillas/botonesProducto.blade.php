@@ -25,7 +25,7 @@
                         <div class="card-body">
                             <h5 class="card-title">{{$boton['titulo']}}</h5>
                             <p class="card-text">{{$boton['de_tarjeta']}} </p>
-                            <a href="#" onclick="fnCambiarProducto({{$boton['value']}})" class="btn btn-primary btn-sm" >Elegir</a>
+                            <a href="#" onclick="fnCambiarProducto({{$boton['value']}})" class="badge" style="background-color: #1d4068;color:white;text-align:left;">Elegir</a>
                         </div>
                     </div>
                     
