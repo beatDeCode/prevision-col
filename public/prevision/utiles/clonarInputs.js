@@ -1,40 +1,3 @@
-/*function fnClonarInputs(){
-    var divClonarInputs=$('div[id="area-clonacion"]');
-    divClonarInputs.css('display','contents');
-    var inputContadorClonacion=$('input[name="contador-clonacion"]');
-    var valorContadorClonacion=inputContadorClonacion.val();
-    var nombreFormulario=$('input[name="nombre-formulario"]').val();
-    var formulario=$('form[name="'+nombreFormulario+'"]').serializeArray();
-    if(formulario.length>0){
-        for(var a=0;a<formulario.length;a++){
-            if( (formulario[a]['name']).substr(0,5).includes("clone") ){
-            }else{
-                if( (formulario[a]['name']).substr(0,6).includes("_token") ){
-
-                }else{
-                    var formAClonar=$('div[id="clone-'+formulario[a]['name']+'"]');
-                    divClonarInputs.append(formAClonar.clone());
-                    $('div[id="area-clonacion"]  div[id="clone-'+formulario[a]['name']+'"]').each(function(){
-                        $(this).attr('id',$(this).attr('id')+''+valorContadorClonacion);
-                    });
-                    $('div[id="area-clonacion"] label[id="'+formulario[a]['name']+'"]').each(function(){
-                        $(this).attr('id','clone'+$(this).attr('id')+''+valorContadorClonacion);
-                    });
-                    $('div[id="area-clonacion"] input[name="'+formulario[a]['name']+'"]').each(function(){
-                        $(this).attr('name','clone'+$(this).attr('name')+''+valorContadorClonacion);
-                    });
-                    $('div[id="area-clonacion"] select[name="'+formulario[a]['name']+'"]').each(function(){
-                        $(this).attr('name', 'clone'+$(this).attr('name')+''+valorContadorClonacion);
-                    });
-                }
-                
-            }
-            
-        }
-        inputContadorClonacion.val(parseInt(valorContadorClonacion)+1);
-    }
-} */
-
 function fnClonarInputs(){
     var nombreFormulario=$('input[name="nombre-formulario"]').val();
     var inputContadorClonacion=$('input[name="contador-clonacion"]'); 
@@ -52,11 +15,19 @@ function fnClonarInputs(){
 
 }
 
-function fnQuitarUltimoForm(){
-    var inputContadorClonacion=$('input[name="contador-clonacion"]'); 
-    var valoresFormulario=$('input[name="valores-formulario"]').val();
+function fnQuitarUltimoForm(fase){
+    var explodeFase=fase.split('_');
+    var nombreReemplazoContador='adicionales';
+    var nombreReempalzoValores='valores-formulario-adic';
+    if(explodeFase[0]=='formulario-asegurados'){
+        nombreReemplazoContador='asegurados';
+        nombreReempalzoValores='valores-formulario';
+    }
+    
+    var inputContadorClonacion=$('input[name="contador-clonacion-'+nombreReemplazoContador+'"]'); 
+    var valoresFormulario=$('input[name="'+nombreReempalzoValores+'"]').val();
     var valorContadorClonacion=inputContadorClonacion.val();
-    console.log(valorContadorClonacion);
+    console.log(explodeFase[0],nombreReempalzoValores,valorContadorClonacion);
     var valoresDesglosados=valoresFormulario.split(',');
     for(var a=0;a<valoresDesglosados.length;a++){
         
@@ -66,27 +37,59 @@ function fnQuitarUltimoForm(){
         var select=$('select[name="'+valoresDesglosados[a]+''+(parseInt(valorContadorClonacion)-1)+'"]');
         if(input){
             input.val('');
+            input.prop('disabled',true);
         }
         if(select){
             select.val('');
+            select.prop('disabled',true);
         }
     }
     inputContadorClonacion.val(parseInt(valorContadorClonacion)-1);
 }
 
-function fnClonarInputsFase(fase){
-    var nombreFormulario=$('input[name="nombre-formulario'+fase+'"]').val();
-    var inputContadorClonacion=$('input[name="contador-clonacion"]'); 
+function fnClonarInputsFaseAsegurados(){
+    var nombreFormulario='formulario-asegurados';
+    var inputContadorClonacion=$('input[name="contador-clonacion-asegurados"]'); 
     var valorContadorClonacion=inputContadorClonacion.val();
     var formulario=$('form[name="'+nombreFormulario+'"]').serializeArray();
     for(var a=0;a<formulario.length;a++){
         if(formulario[a]['name']!='_token' && formulario[a]['name']!='cd_persona'){
             var divOculto=$('div[id="'+formulario[a]['name']+''+valorContadorClonacion+'"]');
             divOculto.show();
-            
+            var input=$('input[name="'+formulario[a]['name']+''+valorContadorClonacion+'"]');
+            if(input){
+                input.prop('disabled',false);
+            }
+            var select=$('select[name="'+formulario[a]['name']+''+valorContadorClonacion+'"]');
+            if(select){
+                select.prop('disabled',false);
+            }
         }
     }
     $('div[id="boton'+valorContadorClonacion+'"]').show();
+    inputContadorClonacion.val(parseInt(valorContadorClonacion)+1);
+
+}
+function fnClonarInputsFaseAdicionales(){
+    var nombreFormulario='formulario-adicionales';
+    var inputContadorClonacion=$('input[name="contador-clonacion-adicionales"]'); 
+    var valorContadorClonacion=inputContadorClonacion.val();
+    var formulario=$('form[name="'+nombreFormulario+'"]').serializeArray();
+    for(var a=0;a<formulario.length;a++){
+        if(formulario[a]['name']!='_token' && formulario[a]['name']!='cd_persona'){
+            var divOculto=$('div[id="'+formulario[a]['name']+''+valorContadorClonacion+'"]');
+            divOculto.show();
+        }
+        var input=$('input[name="'+formulario[a]['name']+''+valorContadorClonacion+'"]');
+        if(input){
+            input.prop('disabled',false);
+        }
+        var select=$('select[name="'+formulario[a]['name']+''+valorContadorClonacion+'"]');
+        if(select){
+            select.prop('disabled',false);
+        }
+    }
+    $('div[id="boton-adic'+valorContadorClonacion+'"]').show();
     inputContadorClonacion.val(parseInt(valorContadorClonacion)+1);
 
 }

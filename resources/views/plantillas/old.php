@@ -1,24 +1,25 @@
 <div class="{{$input[3]}}" id="clone-{{$input[0]}}">
-                        <div class="form-group">
-                            <label for="{{$input[0]}}" id="{{$input[0]}}">{{$input[4]}}</label>
-                            <input type="{{$input[2]}}" class="form-control" placeholder="" aria-label="Username" 
-                            name="{{$input[0]}}" id="{{$input[0]}}">
-                            <center><div class="badge badge-outline-warning" style="margin-top:18px;font-size:11px;display:none;" id="div-{{$input[0]}}" ></div></center>
-                        </div>
-                    </div>
-                    <div class="{{$input[3]}}" id="clone-{{$input[0]}}">
-                    <div class="form-group">
-                        <label for="{{$input[0]}}" id="{{$input[0]}}" >{{$input[4]}}</label>
-                        <select class="form-control " id="{{$input[0]}}" name="{{$input[0]}}" style="padding: 14px;">
-                            <option value=""></option>
-                            @foreach($formulariosCreate[$key] as $option)
-                                <option value="{{$option['value']}}">{{$option['text']}}</option>
-                            @endforeach
-                        </select>
-                        <br>
-                        <center><div class="badge badge-outline-warning" style="margin-top:1px;font-size:11px;display:none;" id="div-{{$input[0]}}"></div></center>
-                    </div>
-                    </div>
+    <div class="form-group">
+        <label for="{{$input[0]}}" id="{{$input[0]}}">{{$input[4]}}</label>
+        <input type="{{$input[2]}}" class="form-control" placeholder="" aria-label="Username" 
+        name="{{$input[0]}}" id="{{$input[0]}}">
+        <center><div class="badge badge-outline-warning" style="margin-top:18px;font-size:11px;display:none;" id="div-{{$input[0]}}" ></div></center>
+    </div>
+</div>
+
+<div class="{{$input[3]}}" id="clone-{{$input[0]}}">
+    <div class="form-group">
+        <label for="{{$input[0]}}" id="{{$input[0]}}" >{{$input[4]}}</label>
+        <select class="form-control " id="{{$input[0]}}" name="{{$input[0]}}" style="padding: 14px;">
+            <option value=""></option>
+            @foreach($formulariosCreate[$key] as $option)
+                <option value="{{$option['value']}}">{{$option['text']}}</option>
+            @endforeach
+        </select>
+        <br>
+        <center><div class="badge badge-outline-warning" style="margin-top:1px;font-size:11px;display:none;" id="div-{{$input[0]}}"></div></center>
+    </div>
+</div>
 
 
                     
@@ -95,3 +96,66 @@
                             class="form-control shadow-none" placeholder="{{$input[4]}}" />
                             <span><label for="{{$input[0]}}">{{$input[4]}}</label></span>
                         </div>
+
+
+                        <!--
+                    <div class="{{$input[3]}}" id="{{$input[0].''.$a}}" style="display:none;" >
+
+                        <div class="form-label-group outline">
+                            <select class="custom-select" id="{{$input[0].''.$a}}" name="{{$input[0].''.$a}}" style="height:47px;font-size:13px;">
+                                <option value=""></option>
+                                @foreach($formulariosAClonar[$key] as $option)
+                                    <option value="{{$option['value']}}">{{$option['text']}}</option>
+                                @endforeach
+                            </select>
+                            <span><label for="{{$input[0].''.$a}}" id="{{$input[0].''.$a}}" >{{$input[4]}}</label></span>
+                        </div>
+                        <div id="error{{$input[0].''.$a}}" style="font-size:11px;display:none;color:red;"></div>
+                    </div>
+                    -->
+
+                    <!--<div class="{{$input[3]}}" id="{{$input[0].''.$a}}" style="display:none;">
+                            <div class="form-label-group outline">
+                                <input type="{{$input[2]}}" id="{{$input[0].''.$a}}" name="{{$input[0].''.$a}}"
+                                class="form-control shadow-none" placeholder="{{$input[4]}}" style="height:47px;font-size:13px;" />
+                                <span><label for="{{$input[0].''.$a}}" id="{{$input[0].''.$a}}">{{$input[4]}}</label></span>
+                            </div>
+                            <div id="error{{$input[0].''.$a}}" style="font-size:11px;display:none;color:red;"></div>
+                        </div>-->
+                        <!--
+                <div class="{{$input[3]}}" id="{{$input[0]}}">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span><label id="{{$input[0]}}" class="input-group-text" style="height:20;border-radius:8px;margin-top:10px;" id="basic-addon1">{{$input[4]}}</label></span>
+                    </div>
+                    <input type="{{$input[1]}}" class="form-control" name="{{$input[0]}}" aria-label="Username" aria-describedby="basic-addon1"
+                        style="height:20;font-size:12px;border-radius:8px;margin-top:10px;"  
+                    >
+                </div>
+                <div id="error{{$input[0]}}" style="font-size:11px;display:none;color:red;"></div>
+                </div>
+                -->
+
+                                <!--<div class="{{$input[3]}}" id="{{$input[0]}}" >
+
+                    <div class="form-label-group outline">
+                        <select class="custom-select" id="{{$input[0]}}" name="{{$input[0]}}" style="height:47px;font-size:13px;"  {{$input[5]}} >
+                            <option value=""></option>
+                            @foreach($formulariosCreate[$key] as $option)
+                                <option value="{{$option['value']}}">{{$option['text']}}</option>
+                            @endforeach
+                        </select>
+                        <span><label for="{{$input[0]}}" id="{{$input[0]}}" >{{$input[4]}}</label></span>
+                    </div>
+                    <div id="error{{$input[0]}}" style="font-size:11px;display:none;color:red;"></div>
+                </div>
+-->
+
+                    <!--<div class="{{$input[3]}}" id="{{$input[0]}}" >
+                        <div class="form-label-group outline">
+                            <input type="{{$input[2]}}" id="{{$input[0]}}" name="{{$input[0]}}"
+                            class="form-control shadow-none" placeholder="{{$input[4]}}" style="height:47px;font-size:13px;" {{$input[5]}} />
+                            <span><label for="{{$input[0]}}" id="{{$input[0]}}">{{$input[4]}}</label></span>
+                        </div>
+                        <div id="error{{$input[0]}}" style="font-size:11px;display:none;color:red;"></div>
+                    </div>-->

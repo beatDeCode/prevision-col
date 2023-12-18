@@ -38,7 +38,7 @@ function fnMoverFase2(formulario){
 }
 function fnCrearPreliminar(){
     var tokenLaravel=$('input[name="_token"]').val();
-    var contadorDeClonacion=$('input[name="contador-clonacion"]').val();
+    var contadorDeClonacion=$('input[name="contador-clonacion-asegurados"]').val();
     var cedulaTitular=$('input[name="nu_documento"]').val();
     var tipoDocumento=$('select[name="tp_documento"] option:selected').val();
     var nm_persona1=$('input[name="nm_persona1"]').val();
@@ -176,7 +176,7 @@ function fnCrearPreliminar(){
 }
 function fnCrearCotizacion(){
     var tokenLaravel=$('input[name="_token"]').val();
-    var contadorDeClonacion=$('input[name="contador-clonacion"]').val();
+    var contadorDeClonacion=$('input[name="contador-clonacion-asegurados"]').val();
     var cedulaTitular=$('input[name="nu_documento"]').val();
     var tipoDocumento=$('select[name="tp_documento"] option:selected').val();
     var nm_persona1=$('input[name="nm_persona1"]').val();
@@ -390,11 +390,15 @@ function fnArregloBorrarErrores(contadorDeClonacion){
         limpiarError3.html('');
     }
 }
-function fnMoverFase3_(formulario){
+function fnMoverFase3_(formulario,formulario2,formulario3){
     var tokenLaravel=$('input[name="_token"]').val();
     var validacionFase2=fnValidarVacios(formulario);
-    var contadorDeClonacion=$('input[name="contador-clonacion"]').val();
-    var auxiliarValiacionFase2=parseInt(validacionFase2) - (36-(parseInt(contadorDeClonacion)*5));
+    var validacionFase3=fnValidarVacios(formulario2);
+    var validacionFase4=fnValidarVacios(formulario3);
+    var contadorDeClonacion=$('input[name="contador-clonacion-asegurados"]').val();
+    var contadorDeClonacionAdicionales=$('input[name="contador-clonacion-adicionales"]').val();
+    var auxiliarValiacionFase2=parseInt(validacionFase2)+parseInt(validacionFase3)+parseInt(validacionFase4);
+    console.log(auxiliarValiacionFase2);
     try {
         calcularEdad();
         fnValidarTelefono();
@@ -403,6 +407,7 @@ function fnMoverFase3_(formulario){
             var documentoTitular=$('input[name="nu_documento"]').val();
             var producto=$('select[name="cd_producto"] option:selected').val();
             formulario.push({name:'ca_clonacion',value:contadorDeClonacion});
+            formulario.push({name:'ca_clonacion-adicionales',value:contadorDeClonacionAdicionales});
             formulario.push({name:'nu_documento',value:documentoTitular});
             formulario.push({name:'cd_producto',value:producto});
             if(contadorDeClonacion>=0){
@@ -412,6 +417,16 @@ function fnMoverFase3_(formulario){
                     for(var a=0;a<contadorDeClonacion;a++){
                         var documentoAseguradoExtra=$('input[name="nu_documento_asegurado'+a+'"]').val();
                         formulario.push({name:'nu_documento_asegurado'+a ,value:documentoAseguradoExtra});
+                    }
+                }
+            }
+            if(contadorDeClonacionAdicionales>=0){
+                var documentoAsegurado=$('input[name="nu_documento_adicional"]').val();
+                formulario.push({name:'nu_documento_adicional',value:documentoAsegurado});
+                if(contadorDeClonacionAdicionales>0){
+                    for(var a=0;a<contadorDeClonacion;a++){
+                        var documentoAseguradoExtra=$('input[name="nu_documento_adicional'+a+'"]').val();
+                        formulario.push({name:'nu_documento_adicional'+a ,value:documentoAseguradoExtra});
                     }
                 }
             }
@@ -465,7 +480,7 @@ function fnMoverFase3_(formulario){
 function fnMoverFase3(formulario){
     var tokenLaravel=$('input[name="_token"]').val();
     var validacionFase2=fnValidarVacios(formulario);
-    var contadorDeClonacion=$('input[name="contador-clonacion"]').val();
+    var contadorDeClonacion=$('input[name="contador-clonacion-asegurados"]').val();
     var auxiliarValiacionFase2=parseInt(validacionFase2) - (36-(parseInt(contadorDeClonacion)*5));
     try {
         calcularEdad();
@@ -676,7 +691,9 @@ function fnEmitir(){
 function fnGuardarContrato(){
     var solicitud=[];
     var cantidadDeClonacion=0;
-    cantidadDeClonacion=$('input[name="contador-clonacion"]').val();
+    cantidadDeClonacion=$('input[name="contador-clonacion-asegurados"]').val();
+    var cantidadDeClonacionAdicionales=0;
+    cantidadDeClonacionAdicionales=$('input[name="contador-clonacion-adicionales"]').val();
     solicitud.push( {name:'nm_persona1',value: $('input[name="nm_persona1"]').val() });
     solicitud.push( {name:'ap_persona1',value: $('input[name="ap_persona1"]').val() });
     solicitud.push( {name:'tp_documento',value: $('select[name="tp_documento"] option:selected').val() });
@@ -691,7 +708,7 @@ function fnGuardarContrato(){
     solicitud.push( {name:'nu_telefono',value: $('input[name="nu_telefono"]').val() });
     solicitud.push( {name:'de_correo',value: $('input[name="de_correo"]').val() });
     solicitud.push( {name:'ca_clonacion',value: cantidadDeClonacion });
-
+    
     solicitud.push( {name:'cd_producto',value: $('select[name="cd_producto"] option:selected').val() });
     solicitud.push( {name:'cd_cobertura',value: $('select[name="cd_cobertura"] option:selected').val() });
     solicitud.push( {name:'mt_suma_asegurada',value: $('select[name="mt_suma_asegurada"] option:selected').val() });
@@ -699,12 +716,25 @@ function fnGuardarContrato(){
     solicitud.push( {name:'cd_grupo_familiar',value: $('select[name="cd_grupo_familiar"] option:selected').val() });
     solicitud.push( {name:'cd_tipo_calculo',value: $('select[name="cd_tipo_calculo"] option:selected').val() });
 
-    solicitud.push( {name:'nm_persona1_asegurado',value: $('input[name="nm_persona1_asegurado"]').val() });
-    solicitud.push( {name:'tp_documento_asegurado',value: $('select[name="tp_documento_asegurado"] option:selected').val() });
-    solicitud.push( {name:'nu_documento_asegurado',value: $('input[name="nu_documento_asegurado"]').val() });
-    solicitud.push( {name:'cd_sexo_asegurado',value: $('select[name="cd_sexo_asegurado"] option:selected').val() });
-    solicitud.push( {name:'fe_nacimiento_asegurado',value: $('input[name="fe_nacimiento_asegurado"]').val() });
-    solicitud.push( {name:'cd_parentesco_asegurado',value: $('select[name="cd_parentesco_asegurado"] option:selected').val() });
+    var asegurados=$('input[name="de_asegurados"]').is(":checked");
+    if(asegurados==true){
+        solicitud.push( {name:'nm_persona1_asegurado',value: $('input[name="nm_persona1_asegurado"]').val() });
+        solicitud.push( {name:'tp_documento_asegurado',value: $('select[name="tp_documento_asegurado"] option:selected').val() });
+        solicitud.push( {name:'nu_documento_asegurado',value: $('input[name="nu_documento_asegurado"]').val() });
+        solicitud.push( {name:'cd_sexo_asegurado',value: $('select[name="cd_sexo_asegurado"] option:selected').val() });
+        solicitud.push( {name:'fe_nacimiento_asegurado',value: $('input[name="fe_nacimiento_asegurado"]').val() });
+        solicitud.push( {name:'cd_parentesco_asegurado',value: $('select[name="cd_parentesco_asegurado"] option:selected').val() });
+    }
+    var asegurados=$('input[name="de_adicionales"]').is(":checked");
+    if(adicionales==true){
+        solicitud.push( {name:'nm_persona1_adicional',value: $('input[name="nm_persona1_adicional"]').val() });
+        solicitud.push( {name:'tp_documento_adicional',value: $('select[name="tp_documento_adicional"] option:selected').val() });
+        solicitud.push( {name:'nu_documento_adicional',value: $('input[name="nu_documento_adicional"]').val() });
+        solicitud.push( {name:'cd_sexo_adicional',value: $('select[name="cd_sexo_adicional"] option:selected').val() });
+        solicitud.push( {name:'fe_nacimiento_adicional',value: $('input[name="fe_nacimiento_adicional"]').val() });
+        solicitud.push( {name:'cd_parentesco_adicional',value: $('select[name="cd_parentesco_adicional"] option:selected').val() });
+    }
+
     var tokenLaravel=$('input[name="_token"]').val();
     if(cantidadDeClonacion>0){
         for(var a=0;a<cantidadDeClonacion;a++){
@@ -750,7 +780,44 @@ function fnEnviarCorreo(contrato){
 }
 
 $('input[name="de_adicionales"]' ).change( "click", function(){
+    var divAducionales=$('div[id="formulario-adicionales"]');
+    var botonAdicionales=$('button[id="boton-adicionales"]');
     var adicionales=$('input[name="de_adicionales"]').is(":checked");
+    var nm_persona=$('input[name="nm_persona1_adicional"]');
+    var nu_documento=$('input[name="nu_documento_adicional"]');
+    var tp_documento=$('select[name="tp_documento_adicional"]');
+    var fe_nacimiento=$('input[name="fe_nacimiento_adicional"]');
+    var cd_sexo=$('select[name="cd_sexo_adicional"]');
+    var cd_parentesco=$('select[name="cd_parentesco_adicional"]');
+    var resumen=$('p[id="resumen-adicionales"]');
+    resumen.html('');
+     if(adicionales==true){
+        nm_persona.prop('disabled',false);
+        nu_documento.prop('disabled',false);
+        tp_documento.prop('disabled',false);
+        fe_nacimiento.prop('disabled',false);
+        cd_sexo.prop('disabled',false);
+        cd_parentesco.prop('disabled',false);
+        resumen.append('Con Adicionales');
+        divAducionales.show();
+        botonAdicionales.show();
+     }else{
+        nm_persona.prop('disabled',true);
+        nu_documento.prop('disabled',true);
+        tp_documento.prop('disabled',true);
+        fe_nacimiento.prop('disabled',true);
+        cd_sexo.prop('disabled',true);
+        cd_parentesco.prop('disabled',true);
+        resumen.append('Sin Adicionales');
+        divAducionales.hide();
+        botonAdicionales.hide();
+     }
+});
+
+$('input[name="de_asegurados"]' ).change( "click", function(){
+    var divAsegurados=$('div[id="formulario-asegurados"]');
+    var botonAsegurados=$('button[id="boton-asegurados"]');
+    var adicionales=$('input[name="de_asegurados"]').is(":checked");
     var nm_persona=$('input[name="nm_persona1_asegurado"]');
     var nu_documento=$('input[name="nu_documento_asegurado"]');
     var tp_documento=$('select[name="tp_documento_asegurado"]');
@@ -767,6 +834,8 @@ $('input[name="de_adicionales"]' ).change( "click", function(){
         cd_sexo.prop('disabled',false);
         cd_parentesco.prop('disabled',false);
         resumen.append('Con Adicionales');
+        divAsegurados.show();
+        botonAsegurados.show();
      }else{
         nm_persona.prop('disabled',true);
         nu_documento.prop('disabled',true);
@@ -775,8 +844,11 @@ $('input[name="de_adicionales"]' ).change( "click", function(){
         cd_sexo.prop('disabled',true);
         cd_parentesco.prop('disabled',true);
         resumen.append('Sin Adicionales');
+        divAsegurados.hide();
+        botonAsegurados.hide();
      }
 });
+
 
 function fnEliminarAsegurado(codigoFormulario){
     if(codigoFormulario==null || codigoFormulario=='null'){
@@ -800,18 +872,11 @@ function fnEliminarAsegurado(codigoFormulario){
         $('div[id="cd_parentesco_asegurado'+codigoFormulario+'"]').css('display','none');
         $('div[id="boton'+codigoFormulario+'"]').css('display','none');
     }else{
-        var de_adicionales=$('input[name="de_adicionales"]');
+        var de_adicionales=$('input[name="de_asegurados"]');
         de_adicionales.prop('checked',false);
        
         
     }
-    
-    /*nm_completo.prop('disabled',true);
-    tp_documento.prop('disabled',true);
-    nu_documento.prop('disabled',true);
-    cd_sexo.prop('disabled',true);
-    fe_nacimiento.prop('disabled',true);
-    cd_parentesco.prop('disabled',true);*/
     
     nm_completo.val('');
     tp_documento.val('');
@@ -823,4 +888,54 @@ function fnEliminarAsegurado(codigoFormulario){
     fnCrearPreliminar();
 }
 
+
+function fnEliminarAdicional(codigoFormulario){
+    if(codigoFormulario==null || codigoFormulario=='null'){
+        codigoFormulario='';
+    }
+    var nm_completo=$('input[name="nm_persona1_adicional'+codigoFormulario+'"]');
+    var tp_documento=$('select[name="tp_documento_adicional'+codigoFormulario+'"]');
+    var nu_documento=$('input[name="nu_documento_adicional'+codigoFormulario+'"]');
+    var cd_sexo=$('select[name="cd_sexo_adicional'+codigoFormulario+'"]');
+    var fe_nacimiento=$('input[name="fe_nacimiento_adicional'+codigoFormulario+'"]');
+    var cd_parentesco=$('select[name="cd_parentesco_adicional'+codigoFormulario+'"]');
+
+    var contadorDeClonacion=$('input[name="contador-clonacion"]');
+    if(contadorDeClonacion.val()>=1){
+        contadorDeClonacion.val(parseInt(contadorDeClonacion.val())-1);
+        $('div[id="nm_persona1_adicional'+codigoFormulario+'"]').css('display','none');
+        $('div[id="tp_documento_adicional'+codigoFormulario+'"]').css('display','none');
+        $('div[id="nu_documento_adicional'+codigoFormulario+'"]').css('display','none');
+        $('div[id="cd_sexo_adicional'+codigoFormulario+'"]').css('display','none');
+        $('div[id="fe_nacimiento_adicional'+codigoFormulario+'"]').css('display','none');
+        $('div[id="cd_parentesco_adicional'+codigoFormulario+'"]').css('display','none');
+        $('div[id="boton'+codigoFormulario+'"]').css('display','none');
+    }else{
+        var de_adicionales=$('input[name="de_adicionales"]');
+        de_adicionales.prop('checked',false);
+       
+        
+    }
+    
+    nm_completo.val('');
+    tp_documento.val('');
+    nu_documento.val('');
+    cd_sexo.val('');
+    fe_nacimiento.val('');
+    cd_parentesco.val('');
+
+    fnCrearPreliminar();
+}
+
+function fnEsconderFormsAdicionales(){
+    var divAsegurados=$('div[id="formulario-asegurados"]');
+    var divAdicionales=$('div[id="formulario-adicionales"]');
+    var botonAsegurados=$('button[id="boton-asegurados"]');
+    var botonAdicionales=$('button[id="boton-adicionales"]');
+    divAsegurados.hide();
+    divAdicionales.hide();
+    botonAsegurados.hide();
+    botonAdicionales.hide();
+}
+fnEsconderFormsAdicionales();
 

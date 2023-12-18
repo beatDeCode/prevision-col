@@ -241,9 +241,12 @@ class Contrato extends Controller{
         try {
             $retornoAsegurados=array();
             $contadorClonacion=$request->post('ca_clonacion');
+            $contadorClonacionAdicionales=$request->post('ca_clonacion-adicionales');
+
             $instanciaAuditoria=new Auditoria;
             $documentoTitular=$request->post('nu_documento');
             $producto=$request->post('cd_producto');
+
             $arrayTitular=array('cd_input'=>'nu_documento','nu_documento'=>$documentoTitular,'cd_producto'=>$producto);
             $busquedaDocumentoTitular=$instanciaAuditoria->fnBusquedaParametrizada(
                 'busquedaDocumentoContrato',
@@ -273,6 +276,20 @@ class Contrato extends Controller{
                     $contadorGlobal+=1;
                     $busquedaDocumentoAseguradoExtra=$request->post('nu_documento_asegurado'.$a);
                     $arrayAseguradoExtra=array('cd_input'=>'nu_documento_asegurado'.$a,'nu_documento'=>$busquedaDocumentoAseguradoExtra,'cd_producto'=>$producto);
+                    $documentoAseguradoExtra=$instanciaAuditoria->fnBusquedaParametrizada(
+                        'busquedaDocumentoContrato',
+                        $arrayAseguradoExtra,
+                        2
+                    );
+                    $retornoAsegurados[$contadorGlobal]=$documentoAseguradoExtra[0];
+                }
+            } 
+            if($contadorClonacionAdicionales>0){
+                
+                for($a=0;$a<$contadorClonacionAdicionales;$a++){
+                    $contadorGlobal+=1;
+                    $busquedaDocumentoAseguradoExtra=$request->post('nu_documento_adicional'.$a);
+                    $arrayAseguradoExtra=array('cd_input'=>'nu_documento_adicional'.$a,'nu_documento'=>$busquedaDocumentoAseguradoExtra,'cd_producto'=>$producto);
                     $documentoAseguradoExtra=$instanciaAuditoria->fnBusquedaParametrizada(
                         'busquedaDocumentoContrato',
                         $arrayAseguradoExtra,
