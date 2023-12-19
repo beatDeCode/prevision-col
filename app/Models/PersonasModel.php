@@ -197,6 +197,7 @@ class PersonasModel extends Model
     }
     function fnCreateAsegurados($request,$contrato,$titular){
         $arrayAsegurados='';
+        $varAseguradoAdc='';
         try {
             $arraySecuencias=array();
             $instanciaAuditoria=new Auditoria;
@@ -224,102 +225,203 @@ class PersonasModel extends Model
             //Almacenamos la informacion del titular en la tabla CONTRATOENDOSOASEGURADOSO
             $instanciaContratoAsegurados->fnCreate($arrayTitular);
 
-            //Guardamos el asegurado en la tabla PERSONAS
-            $secuenciaPersona=$instanciaAuditoria->fnBuscarSecuenciaCatalogo('busquedaSecuenciaPersonas',array())[0]['secuencia'];
-            $arrayAsegurados1=array(
-                'nm_persona1'=>$request->post('nm_persona1_asegurado'),
-                'ap_persona1'=>$request->post('ap_persona1_asegurado'),
-                'tp_documento'=>$request->post('tp_documento_asegurado'),
-                'nu_documento'=>$request->post('nu_documento_asegurado'),
-                'fe_nacimiento'=>$request->post('fe_nacimiento_asegurado'),
-                'cd_sexo'=>$request->post('cd_sexo_asegurado'),
-                'nm_completo'=>$request->post('nm_persona1_asegurado').' '.$request->post('ap_persona1_asegurado'),
-                'cd_persona'=>$secuenciaPersona,
-                'st_persona'=>1,
-            );
-            $this->create(
-                $arrayAsegurados1
-            );
+            if($request->post('de_asegurados') =='on'){
+                //Guardamos el asegurado en la tabla PERSONAS
+                $secuenciaPersona=$instanciaAuditoria->fnBuscarSecuenciaCatalogo('busquedaSecuenciaPersonas',array())[0]['secuencia'];
+                $arrayAsegurados1=array(
+                    'nm_persona1'=>$request->post('nm_persona1_asegurado'),
+                    'ap_persona1'=>$request->post('ap_persona1_asegurado'),
+                    'tp_documento'=>$request->post('tp_documento_asegurado'),
+                    'nu_documento'=>$request->post('nu_documento_asegurado'),
+                    'fe_nacimiento'=>$request->post('fe_nacimiento_asegurado'),
+                    'cd_sexo'=>$request->post('cd_sexo_asegurado'),
+                    'nm_completo'=>$request->post('nm_persona1_asegurado').' '.$request->post('ap_persona1_asegurado'),
+                    'cd_persona'=>$secuenciaPersona,
+                    'st_persona'=>1,
+                );
+                $this->create(
+                    $arrayAsegurados1
+                );
 
-            //Chequeamos si el parentesco es adicional.
-            $confirmaAdicional=$instanciaAuditoria->fnBuscarSecuenciaCatalogo('busquedaConfirmarAdicional',
-            array(
-                'cd_grupo_familiar'=>$request->post('cd_grupo_familiar'),
-                'cd_parentesco'=>$request->post('cd_parentesco_asegurado'),
-            ))[0]['cuenta'];
+                //Chequeamos si el parentesco es adicional.
+                $confirmaAdicional=$instanciaAuditoria->fnBuscarSecuenciaCatalogo('busquedaConfirmarAdicional',
+                array(
+                    'cd_grupo_familiar'=>$request->post('cd_grupo_familiar'),
+                    'cd_parentesco'=>$request->post('cd_parentesco_asegurado'),
+                ))[0]['cuenta'];
 
-            //Si es adicional colocamos un valor a la tasa sino es 0
-            if($confirmaAdicional==0){
-                $tasaRiesgo=1.78;
-            }else{
-                $tasaRiesgo=0;
-            }
+                //Si es adicional colocamos un valor a la tasa sino es 0
+                if($confirmaAdicional==0){
+                    $tasaRiesgo=1.78;
+                }else{
+                    $tasaRiesgo=0;
+                }
 
-            //Almacenamos la informacion del asegurado en la tabla CONTRATOENDOSOASEGURADOSO
-            $arrayAseguradosEndoso1=array(
-                "cd_persona"=>$secuenciaPersona,
-                "fe_exlusion"=>'',
-                "fe_inclusion"=>$fecha,
-                "ta_riesgo"=>$tasaRiesgo,
-                "cd_parentesco"=>$request->post('cd_parentesco_asegurado'),
-                "nu_endoso"=>0,
-                "nu_certificado"=>0,
-                "cd_empresa"=>15,
-                "cd_producto"=>$request->post('cd_producto'),
-                "nu_contrato"=>$contrato
-            );
-            $instanciaContratoAsegurados->fnCreate($arrayAseguradosEndoso1);
-            $varAseguradoAdc='';
-            //Recorrido de asegurados            
-            $contadorClonacion=$request->post('ca_clonacion');
-            if($contadorClonacion>0){
-                for($a=0;$a<$contadorClonacion;$a++){
-                    $secuenciaPersonaAsegurada=$instanciaAuditoria->fnBuscarSecuenciaCatalogo('busquedaSecuenciaPersonas',array())[0]['secuencia'];
-                    //Guardamos los asegurados en la tabla PERSONAS
-                    $arrayAsegurados2=array(
-                        'nm_persona1'=>$request->post('nm_persona1_asegurado'.$a),
-                        'ap_persona1'=>$request->post('ap_persona1_asegurado'.$a),
-                        'tp_documento'=>$request->post('tp_documento_asegurado'.$a),
-                        'nu_documento'=>$request->post('nu_documento_asegurado'.$a),
-                        'fe_nacimiento'=>$request->post('fe_nacimiento_asegurado'.$a),
-                        'cd_sexo'=>$request->post('cd_sexo_asegurado'.$a),
-                        'nm_completo'=>$request->post('nm_persona1_asegurado'.$a).' '.$request->post('ap_persona1_asegurado'.$a),
-                        'cd_persona'=>$secuenciaPersonaAsegurada,
-                        'st_persona'=>1,
-                    );
-                    $this->create(
-                        $arrayAsegurados2
-                    );
-                    $arrayAsegurados2=array();
-                    //Chequeamos si el parentesco es adicional.
-                    $confirmaAdicional=$instanciaAuditoria->fnBuscarSecuenciaCatalogo('busquedaConfirmarAdicional',
-                    array(
-                        'cd_grupo_familiar'=>$request->post('cd_grupo_familiar'),
-                        'cd_parentesco'=>$request->post('cd_parentesco_asegurado'.$a),
-                    ))[0]['cuenta'];
-                    if($confirmaAdicional==0){
-                        $tasaRiesgo=1.78;
-                    }else{
-                        $tasaRiesgo=0;
+                //Almacenamos la informacion del asegurado en la tabla CONTRATOENDOSOASEGURADOSO
+                $arrayAseguradosEndoso1=array(
+                    "cd_persona"=>$secuenciaPersona,
+                    "fe_exlusion"=>'',
+                    "fe_inclusion"=>$fecha,
+                    "ta_riesgo"=>$tasaRiesgo,
+                    "cd_parentesco"=>$request->post('cd_parentesco_asegurado'),
+                    "nu_endoso"=>0,
+                    "nu_certificado"=>0,
+                    "cd_empresa"=>15,
+                    "cd_producto"=>$request->post('cd_producto'),
+                    "nu_contrato"=>$contrato
+                );
+                $instanciaContratoAsegurados->fnCreate($arrayAseguradosEndoso1);
+                $varAseguradoAdc='';
+                //Recorrido de asegurados            
+                $contadorClonacion=$request->post('ca_clonacion');
+                if($contadorClonacion>0){
+                    for($a=0;$a<$contadorClonacion;$a++){
+                        $secuenciaPersonaAsegurada=$instanciaAuditoria->fnBuscarSecuenciaCatalogo('busquedaSecuenciaPersonas',array())[0]['secuencia'];
+                        //Guardamos los asegurados en la tabla PERSONAS
+                        $arrayAsegurados2=array(
+                            'nm_persona1'=>$request->post('nm_persona1_asegurado'.$a),
+                            'ap_persona1'=>$request->post('ap_persona1_asegurado'.$a),
+                            'tp_documento'=>$request->post('tp_documento_asegurado'.$a),
+                            'nu_documento'=>$request->post('nu_documento_asegurado'.$a),
+                            'fe_nacimiento'=>$request->post('fe_nacimiento_asegurado'.$a),
+                            'cd_sexo'=>$request->post('cd_sexo_asegurado'.$a),
+                            'nm_completo'=>$request->post('nm_persona1_asegurado'.$a).' '.$request->post('ap_persona1_asegurado'.$a),
+                            'cd_persona'=>$secuenciaPersonaAsegurada,
+                            'st_persona'=>1,
+                        );
+                        $this->create(
+                            $arrayAsegurados2
+                        );
+                        $arrayAsegurados2=array();
+                        //Chequeamos si el parentesco es adicional.
+                        $confirmaAdicional=$instanciaAuditoria->fnBuscarSecuenciaCatalogo('busquedaConfirmarAdicional',
+                        array(
+                            'cd_grupo_familiar'=>$request->post('cd_grupo_familiar'),
+                            'cd_parentesco'=>$request->post('cd_parentesco_asegurado'.$a),
+                        ))[0]['cuenta'];
+                        if($confirmaAdicional==0){
+                            $tasaRiesgo=1.78;
+                        }else{
+                            $tasaRiesgo=0;
+                        }
+                        $varAseguradoAdc=$request->post('cd_parentesco_asegurado'.$a);
+
+                        //Almacenamos la informacion del asegurado en la tabla CONTRATOENDOSOASEGURADOSO
+                        $arrayAseguradosEndoso2=array(
+                            "cd_persona"=>$secuenciaPersonaAsegurada,
+                            "fe_exlusion"=>'',
+                            "fe_inclusion"=>$fecha,
+                            "ta_riesgo"=>$tasaRiesgo,
+                            "cd_parentesco"=>$request->post('cd_parentesco_asegurado'.$a),
+                            "nu_endoso"=>0,
+                            "nu_certificado"=>0,
+                            "cd_empresa"=>15,
+                            "cd_producto"=>$request->post('cd_producto'),
+                            "nu_contrato"=>$contrato
+                        );
+                        $instanciaContratoAsegurados->fnCreate($arrayAseguradosEndoso2);
                     }
-                    $varAseguradoAdc=$request->post('cd_parentesco_asegurado'.$a);
-
-                    //Almacenamos la informacion del asegurado en la tabla CONTRATOENDOSOASEGURADOSO
-                    $arrayAseguradosEndoso2=array(
-                        "cd_persona"=>$secuenciaPersonaAsegurada,
-                        "fe_exlusion"=>'',
-                        "fe_inclusion"=>$fecha,
-                        "ta_riesgo"=>$tasaRiesgo,
-                        "cd_parentesco"=>$request->post('cd_parentesco_asegurado'.$a),
-                        "nu_endoso"=>0,
-                        "nu_certificado"=>0,
-                        "cd_empresa"=>15,
-                        "cd_producto"=>$request->post('cd_producto'),
-                        "nu_contrato"=>$contrato
-                    );
-                    $instanciaContratoAsegurados->fnCreate($arrayAseguradosEndoso2);
                 }
             }
+            if($request->post('de_adicionales')=='on'){
+                //Guardamos el asegurado en la tabla PERSONAS
+                $secuenciaPersona=$instanciaAuditoria->fnBuscarSecuenciaCatalogo('busquedaSecuenciaPersonas',array())[0]['secuencia'];
+                $arrayAsegurados1=array(
+                    'nm_persona1'=>$request->post('nm_persona1_adicional'),
+                    'ap_persona1'=>$request->post('ap_persona1_adicional'),
+                    'tp_documento'=>$request->post('tp_documento_adicional'),
+                    'nu_documento'=>$request->post('nu_documento_adicional'),
+                    'fe_nacimiento'=>$request->post('fe_nacimiento_adicional'),
+                    'cd_sexo'=>$request->post('cd_sexo_adicional'),
+                    'nm_completo'=>$request->post('nm_persona1_adicional').' '.$request->post('ap_persona1_adicional'),
+                    'cd_persona'=>$secuenciaPersona,
+                    'st_persona'=>1,
+                );
+                $this->create(
+                    $arrayAsegurados1
+                );
+
+                //Chequeamos si el parentesco es adicional.
+                $confirmaAdicional=$instanciaAuditoria->fnBuscarSecuenciaCatalogo('busquedaConfirmarAdicional',
+                array(
+                    'cd_grupo_familiar'=>$request->post('cd_grupo_familiar'),
+                    'cd_parentesco'=>$request->post('cd_parentesco_adicional'),
+                ))[0]['cuenta'];
+
+                //Si es adicional colocamos un valor a la tasa sino es 0
+                if($confirmaAdicional==0){
+                    $tasaRiesgo=1.78;
+                }else{
+                    $tasaRiesgo=0;
+                }
+
+                //Almacenamos la informacion del asegurado en la tabla CONTRATOENDOSOASEGURADOSO
+                $arrayAseguradosEndoso1=array(
+                    "cd_persona"=>$secuenciaPersona,
+                    "fe_exlusion"=>'',
+                    "fe_inclusion"=>$fecha,
+                    "ta_riesgo"=>$tasaRiesgo,
+                    "cd_parentesco"=>$request->post('cd_parentesco_adicional'),
+                    "nu_endoso"=>0,
+                    "nu_certificado"=>0,
+                    "cd_empresa"=>15,
+                    "cd_producto"=>$request->post('cd_producto'),
+                    "nu_contrato"=>$contrato
+                );
+                $instanciaContratoAsegurados->fnCreate($arrayAseguradosEndoso1);
+                $varAseguradoAdc='';
+                //Recorrido de asegurados            
+                $contadorClonacion=$request->post('ca_clonacion');
+                if($contadorClonacion>0){
+                    for($a=0;$a<$contadorClonacion;$a++){
+                        $secuenciaPersonaAsegurada=$instanciaAuditoria->fnBuscarSecuenciaCatalogo('busquedaSecuenciaPersonas',array())[0]['secuencia'];
+                        //Guardamos los asegurados en la tabla PERSONAS
+                        $arrayAsegurados2=array(
+                            'nm_persona1'=>$request->post('nm_persona1_adicional'.$a),
+                            'ap_persona1'=>$request->post('ap_persona1_adicional'.$a),
+                            'tp_documento'=>$request->post('tp_documento_adicional'.$a),
+                            'nu_documento'=>$request->post('nu_documento_adicional'.$a),
+                            'fe_nacimiento'=>$request->post('fe_nacimiento_adicional'.$a),
+                            'cd_sexo'=>$request->post('cd_sexo_adicional'.$a),
+                            'nm_completo'=>$request->post('nm_persona1_adicional'.$a).' '.$request->post('ap_persona1_adicional'.$a),
+                            'cd_persona'=>$secuenciaPersonaAsegurada,
+                            'st_persona'=>1,
+                        );
+                        $this->create(
+                            $arrayAsegurados2
+                        );
+                        $arrayAsegurados2=array();
+                        //Chequeamos si el parentesco es adicional.
+                        $confirmaAdicional=$instanciaAuditoria->fnBuscarSecuenciaCatalogo('busquedaConfirmarAdicional',
+                        array(
+                            'cd_grupo_familiar'=>$request->post('cd_grupo_familiar'),
+                            'cd_parentesco'=>$request->post('cd_parentesco_adicional'.$a),
+                        ))[0]['cuenta'];
+                        if($confirmaAdicional==0){
+                            $tasaRiesgo=1.78;
+                        }else{
+                            $tasaRiesgo=0;
+                        }
+                        $varAseguradoAdc=$request->post('cd_parentesco_adicional'.$a);
+
+                        //Almacenamos la informacion del asegurado en la tabla CONTRATOENDOSOASEGURADOSO
+                        $arrayAseguradosEndoso2=array(
+                            "cd_persona"=>$secuenciaPersonaAsegurada,
+                            "fe_exlusion"=>'',
+                            "fe_inclusion"=>$fecha,
+                            "ta_riesgo"=>$tasaRiesgo,
+                            "cd_parentesco"=>$request->post('cd_parentesco_adicional'.$a),
+                            "nu_endoso"=>0,
+                            "nu_certificado"=>0,
+                            "cd_empresa"=>15,
+                            "cd_producto"=>$request->post('cd_producto'),
+                            "nu_contrato"=>$contrato
+                        );
+                        $instanciaContratoAsegurados->fnCreate($arrayAseguradosEndoso2);
+                    }
+                }
+            }
+            
 
         } catch (Exception $th) {
             print_r($th);

@@ -166,34 +166,36 @@ function fnCrearPreliminar(){
             for(var a=0;a<valoresCotizacion.length;a++){
                 base+=parseFloat(valoresCotizacion[a]['mt_prima_plan']);
                 if(a==0){
+                    var mtPrimaCuotaDecimales=parseFloat(valoresCotizacion[a]['mt_prima_plan']).toFixed(2);
                     var contenidoTitular=
                     '<tr style="font-size:11px;text-align:center;padding: 1px;">'+
                         '<td style="font-size:13px;"><center>'+valoresCotizacion[a]['parentesco']+'</center></td>'+
                         '<td style="font-size:13px;"><center>'+valoresCotizacion[a]['nm_completo']+'</center></td>'+
                         '<td style="font-size:13px;"><center>'+valoresCotizacion[a]['nu_documento']+'</center></td>'+
                         '<td style="font-size:13px;"><center>'+valoresCotizacion[a]['es_adicional']+'</center></td>'+
-                        '<td style="font-size:13px;"><center>'+valoresCotizacion[a]['mt_prima_plan']+' '+siglas+'</center></td>'+
+                        '<td style="font-size:13px;"><center>'+mtPrimaCuotaDecimales+' '+siglas+'</center></td>'+
                         '<td style="font-size:13px;"></td>'+
                     '<tr/>'
                     ;
                 }
                 if(a>0){
+                    var mtPrimaCuotaDecimales=parseFloat(valoresCotizacion[a]['mt_prima_plan']).toFixed(2);
                     contenidoAsegurados+=
                     '<tr style="font-size:11px;text-align:center;padding: 1px;">'+
                         '<td style="font-size:12px;"><center>'+valoresCotizacion[a]['parentesco']+'</center></td>'+
                         '<td style="font-size:12px;"><center>'+valoresCotizacion[a]['nm_completo']+'</center></td>'+
                         '<td style="font-size:12px;"><center>'+valoresCotizacion[a]['nu_documento']+'</center></td>'+
                         '<td style="font-size:12px;"><center>'+valoresCotizacion[a]['es_adicional']+'</center></td>'+
-                        '<td style="font-size:12px;"><center>'+valoresCotizacion[a]['mt_prima_plan']+''+siglas+'</center> </td>'+
+                        '<td style="font-size:12px;"><center>'+mtPrimaCuotaDecimales+''+siglas+'</center> </td>'+
                         '<td style="font-size:12px;padding:1px;"><center><a class="badge" style="background-color: #1d4068;color:white;text-align:left;font-size:12px;" onclick="fnEliminarAsegurado(\''+ valoresCotizacion[a]['nu_asegurado'] + '\') "> <i class="typcn typcn-trash"></i></a> </center></td>'+
                     '</tr>';
                 }
             }
             var subTotal=base*(0.16);
             var total=base+subTotal;
-            var baseConDecimales=base.toFixed(3);
-            var subTotalConDecimales=subTotal.toFixed(3);
-            var totalConDecimales=total.toFixed(3);
+            var baseConDecimales=base.toFixed(2);
+            var subTotalConDecimales=subTotal.toFixed(2);
+            var totalConDecimales=total.toFixed(2);
             var contenidoTotal=
             '<tr >'+
             '<td colspan="3"></td>'+
@@ -263,6 +265,7 @@ function fnCrearCotizacion(){
     formulario.push({name:'nu_documento',value:cedulaTitular});
     formulario.push({name:'de_adicionales',value:de_adicionales});
     formulario.push({name:'de_asegurados',value:de_asegurados});
+    console.log();
     for(var a=0;a<valoresDesglosados.length;a++){   
         if(valoresDesglosados[a]=='boton'){
             
@@ -347,7 +350,7 @@ function fnCrearCotizacion(){
             var valorArea=$('select[name="nu_area"] option:selected').text();
             var valorTelefono=$('input[name="nu_telefono"]').val();
             var valorCorreo=$('input[name="de_correo"]').val();
-            var tipoCalculo=$('select[name="cd_tipo_calculo"] option:selected').val();
+            //var tipoCalculo=$('select[name="cd_tipo_calculo"] option:selected').val();
             var cobertura=$('select[name="cd_cobertura"] option:selected').text();
             var planpago=$('select[name="cd_plan_pago"] option:selected').text();
             var siglas=valoresCotizacion[0]['siglas_moneda'];
@@ -386,14 +389,16 @@ function fnCrearCotizacion(){
                     ;
                 }
                 if(a>0){
+                    var mtPrimaDecimales=parseFloat(valoresCotizacion[a]['mt_prima']).toFixed(2);
+                    var mtPrimaCuotaDecimales=parseFloat(valoresCotizacion[a]['mt_prima_plan']).toFixed(2);
                     contenidoAsegurados+=
                     '<tr class="details" style="font-size:11px;text-align:center;">'+
                         '<td><center>'+valoresCotizacion[a]['parentesco']+'</center></td>'+
                         '<td><center>'+valoresCotizacion[a]['nm_completo']+'</center></td>'+
                         '<td><center>'+valoresCotizacion[a]['nu_documento']+'</center></td>'+
                         '<td><center>'+valoresCotizacion[a]['es_adicional']+'</center></td>'+
-                        '<td><center>'+valoresCotizacion[a]['mt_prima']+''+siglas+'</center></td>'+
-                        '<td><center>'+valoresCotizacion[a]['mt_prima_plan']+''+siglas+'</center></td>'+
+                        '<td><center>'+mtPrimaDecimales+''+siglas+'</center></td>'+
+                        '<td><center>'+mtPrimaCuotaDecimales+''+siglas+'</center></td>'+
                         
                     '</tr>';
                 }
@@ -783,8 +788,7 @@ function fnGuardarContrato(){
     var solicitud=[];
     var cantidadDeClonacion=0;
     cantidadDeClonacion=$('input[name="contador-clonacion-asegurados"]').val();
-    var cantidadDeClonacionAdicionales=0;
-    cantidadDeClonacionAdicionales=$('input[name="contador-clonacion-adicionales"]').val();
+    var cantidadDeClonacionAdicionales=$('input[name="contador-clonacion-adicionales"]').val();
     solicitud.push( {name:'nm_persona1',value: $('input[name="nm_persona1"]').val() });
     solicitud.push( {name:'ap_persona1',value: $('input[name="ap_persona1"]').val() });
     solicitud.push( {name:'tp_documento',value: $('select[name="tp_documento"] option:selected').val() });
@@ -799,7 +803,8 @@ function fnGuardarContrato(){
     solicitud.push( {name:'nu_telefono',value: $('input[name="nu_telefono"]').val() });
     solicitud.push( {name:'de_correo',value: $('input[name="de_correo"]').val() });
     solicitud.push( {name:'ca_clonacion',value: cantidadDeClonacion });
-    
+    solicitud.push( {name:'ca_clonacion-adicionales',value: cantidadDeClonacionAdicionales});
+
     solicitud.push( {name:'cd_producto',value: $('select[name="cd_producto"] option:selected').val() });
     solicitud.push( {name:'cd_cobertura',value: $('select[name="cd_cobertura"] option:selected').val() });
     solicitud.push( {name:'mt_suma_asegurada',value: $('select[name="mt_suma_asegurada"] option:selected').val() });
@@ -815,8 +820,18 @@ function fnGuardarContrato(){
         solicitud.push( {name:'cd_sexo_asegurado',value: $('select[name="cd_sexo_asegurado"] option:selected').val() });
         solicitud.push( {name:'fe_nacimiento_asegurado',value: $('input[name="fe_nacimiento_asegurado"]').val() });
         solicitud.push( {name:'cd_parentesco_asegurado',value: $('select[name="cd_parentesco_asegurado"] option:selected').val() });
+        if(cantidadDeClonacion>0){
+            for(var a=0;a<cantidadDeClonacion;a++){
+                solicitud.push( {name:'cd_parentesco_asegurado'+a,value: $('select[name="cd_parentesco_asegurado'+a+'"] option:selected').val() });
+                solicitud.push( {name:'nm_persona1_asegurado'+a,value: $('input[name="nm_persona1_asegurado'+a+'"]').val() });
+                solicitud.push( {name:'tp_documento_asegurado'+a,value: $('select[name="tp_documento_asegurado'+a+'"] option:selected').val() });
+                solicitud.push( {name:'nu_documento_asegurado'+a,value: $('input[name="nu_documento_asegurado'+a+'"]').val() });
+                solicitud.push( {name:'cd_sexo_asegurado'+a,value: $('select[name="cd_sexo_asegurado'+a+'"] option:selected').val() });
+                solicitud.push( {name:'fe_nacimiento_asegurado'+a,value: $('input[name="fe_nacimiento_asegurado'+a+'"]').val() });
+            }
+        }
     }
-    var asegurados=$('input[name="de_adicionales"]').is(":checked");
+    var adicionales=$('input[name="de_adicionales"]').is(":checked");
     if(adicionales==true){
         solicitud.push( {name:'nm_persona1_adicional',value: $('input[name="nm_persona1_adicional"]').val() });
         solicitud.push( {name:'tp_documento_adicional',value: $('select[name="tp_documento_adicional"] option:selected').val() });
@@ -824,19 +839,23 @@ function fnGuardarContrato(){
         solicitud.push( {name:'cd_sexo_adicional',value: $('select[name="cd_sexo_adicional"] option:selected').val() });
         solicitud.push( {name:'fe_nacimiento_adicional',value: $('input[name="fe_nacimiento_adicional"]').val() });
         solicitud.push( {name:'cd_parentesco_adicional',value: $('select[name="cd_parentesco_adicional"] option:selected').val() });
+        if(cantidadDeClonacionAdicionales>0){
+            for(var a=0;a<cantidadDeClonacionAdicionales;a++){
+                solicitud.push( {name:'cd_parentesco_adicional'+a,value: $('select[name="cd_parentesco_adicional'+a+'"] option:selected').val() });
+                solicitud.push( {name:'nm_persona1_adicional'+a,value: $('input[name="nm_persona1_adicional'+a+'"]').val() });
+                solicitud.push( {name:'tp_documento_adicional'+a,value: $('select[name="tp_documento_adicional'+a+'"] option:selected').val() });
+                solicitud.push( {name:'nu_documento_adicional'+a,value: $('input[name="nu_documento_adicional'+a+'"]').val() });
+                solicitud.push( {name:'cd_sexo_adicional'+a,value: $('select[name="cd_sexo_adicional'+a+'"] option:selected').val() });
+                solicitud.push( {name:'fe_nacimiento_adicional'+a,value: $('input[name="fe_nacimiento_adicional'+a+'"]').val() });
+            }
+        }
     }
 
     var tokenLaravel=$('input[name="_token"]').val();
-    if(cantidadDeClonacion>0){
-        for(var a=0;a<cantidadDeClonacion;a++){
-            solicitud.push( {name:'cd_parentesco_asegurado'+a,value: $('select[name="cd_parentesco_asegurado'+a+'"] option:selected').val() });
-            solicitud.push( {name:'nm_persona1_asegurado'+a,value: $('input[name="nm_persona1_asegurado'+a+'"]').val() });
-            solicitud.push( {name:'tp_documento_asegurado'+a,value: $('select[name="tp_documento_asegurado'+a+'"] option:selected').val() });
-            solicitud.push( {name:'nu_documento_asegurado'+a,value: $('input[name="nu_documento_asegurado'+a+'"]').val() });
-            solicitud.push( {name:'cd_sexo_asegurado'+a,value: $('select[name="cd_sexo_asegurado'+a+'"] option:selected').val() });
-            solicitud.push( {name:'fe_nacimiento_asegurado'+a,value: $('input[name="fe_nacimiento_asegurado'+a+'"]').val() });
-        }
-    }
+    var de_adicionales=$('input[name="de_adicionales"]:checked').val();
+    var de_asegurados=$('input[name="de_asegurados"]:checked').val();
+    solicitud.push( {name:'de_asegurados',value:de_asegurados });
+    solicitud.push( {name:'de_adicionales',value: de_adicionales });
     var formaPago=$('select[name="cd_forma_pago"] option:selected').val();
     solicitud.push( {name:'cd_forma_pago',value: formaPago});
     solicitud.push( {name:'cd_intermediario',value: $('select[name="cd_intermediario"] option:selected').val() });
@@ -846,6 +865,7 @@ function fnGuardarContrato(){
         solicitud.push( {name:'nu_documento_domicilio',value: $('input[name="nu_documento_domicilio"]').val() });
         solicitud.push( {name:'tp_documento_domicilio',value: $('select[name="tp_documento_domicilio"] option:selected').val() });
     }
+    console.log(solicitud);
     $.ajax({
         url:'/prevision.procesos.cartera.emision-contrato',
         type:'POST',
@@ -853,6 +873,7 @@ function fnGuardarContrato(){
         headers: {'X-CSRF-TOKEN': tokenLaravel},
         data:solicitud
     }).done(function(response){
+        console.log(response);
         var JSONParse=JSON.parse(response);
         var contenido='<button class="btn btn-primary" onclick="fnGenerarPDFContrato('+JSONParse.message.content+')">Generar Contrato PDF</button><hr><button class="btn btn-primary" onclick="fnEnviarCorreo('+JSONParse.message.content+')">Enviar Contrato Por Correo</button>';
         
@@ -863,6 +884,7 @@ function fnGuardarContrato(){
         console.log(a,b,c);
     });
 }
+
 function fnGenerarPDFContrato(contrato){
     window.location.replace('http://10.10.0.200:8081/sgd.reportes/JRTE0001_1/NU_CONTRATO-'+contrato);
 }

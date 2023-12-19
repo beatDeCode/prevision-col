@@ -400,6 +400,8 @@ class Contrato extends Controller{
     function fnEmision(Request $request){
         $retorno='';
         try {
+            //print_r($request->post('de_asegurados'));
+            //print_r($request->post('de_asegurados'));
             $instanciaPersonas=new PersonasModel;
             $secuenciaPersona=$instanciaPersonas->fnCreateTitular($request);
 
