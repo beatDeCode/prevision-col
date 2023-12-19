@@ -217,11 +217,16 @@ class NegocioQuery{
     select 
         (select ca_recibos from planpagodetalle ppde where ppde.cd_plan_pago=ccen.CD_PLAN_PAGO ) ca_recibo,
         (select nu_meses_recibo from planpagodetalle ppde where ppde.cd_plan_pago=ccen.CD_PLAN_PAGO ) nu_meses_recibo,
-        round((
-        ((select mt_suma_asegurada from coberturadetalle where cd_cobertura_detalle=ccen.cd_cobertura_detalle ) *
-        (select po_tasa_riesgo from productotasariesgo where cd_producto=ccen.cd_producto and cd_grupo_familiar=ccen.cd_grupo_familiar) )
-        /100
-        )/(select ca_recibos from planpagodetalle ppde where ppde.cd_plan_pago=ccen.CD_PLAN_PAGO ),2) mt_prima_recibo,
+        round((select  
+        sum(((ta_riesgo) *
+        (select mt_suma_asegurada from coberturadetalle where cd_cobertura_detalle=ccen.cd_cobertura_detalle ) )/100) 
+        from contratoendosoasegurados cceg
+        where cceg.nu_contrato=:cd_contrato
+        and cceg.CD_EMPRESA=ccen.cd_empresa
+        and cceg.NU_CONTRATO=ccen.nu_contrato
+        and cceg.CD_PRODUCTO=ccen.cd_producto
+        and cceg.nu_endoso=ccen.nu_endoso
+        and cceg.nu_endoso=0)/ (select ca_recibos from planpagodetalle ppde where ppde.cd_plan_pago=ccen.CD_PLAN_PAGO ),2 ) mt_prima_recibo,
         ccer.nu_certificado,
         ccer.cd_producto,
         ccen.nu_endoso,
@@ -287,7 +292,149 @@ class NegocioQuery{
     from temporalcolectivo temp
     where nu_temporal=:nu_temporal
     and error is not null
-    order by to_number(nu_linea) asc,nu_documento_beneficiario";
+    order by to_number(nu_linea) asc,nu_documento_beneficiario";   
 
+    const busquedaInformacionEmision="
+    select
+    (select nm_completo from personas where cd_persona=ccer.cd_persona_asegurada) nm_completo,
+    (select tp_documento||'-'||nu_documento from personas where cd_persona=ccer.cd_persona_asegurada) nu_documento,
+    (select (select de_sexo from sexos where cd_sexo=pers.cd_sexo) from personas pers where cd_persona=ccer.cd_persona_asegurada) de_sexo,
+    (select '01/01/2000' from personas where cd_persona=ccer.cd_persona_asegurada) fe_nacimiento,
+    (select  
+        (select de_direccion from personadireccion where cd_persona=ccer.cd_persona_asegurada)
+    from personas where cd_persona=ccer.cd_persona_asegurada) de_direccion,
+    (select  
+        (select
+            (select de_estado from estados where cd_estado=pedi.cd_estado)
+        from personadireccion pedi where cd_persona=ccer.cd_persona_asegurada)
+    from personas where cd_persona=ccer.cd_persona_asegurada) de_estado,
+    (select  
+        (select
+            (select de_municipio from municipios where cd_municipio=pedi.cd_municipio)
+        from personadireccion pedi where cd_persona=ccer.cd_persona_asegurada)
+    from personas where cd_persona=ccer.cd_persona_asegurada) de_municipio,
+    (select  
+        (select
+            (select de_parroquia from parroquias where cd_parroquia=pedi.cd_parroquia)
+        from personadireccion pedi where cd_persona=ccer.cd_persona_asegurada)
+    from personas where cd_persona=ccer.cd_persona_asegurada) de_parroquia,
+    (select de_correo from personacorreo  where cd_persona=ccer.cd_persona_asegurada) de_correo,
+    (select nu_area||' '||nu_telefono from personatelefono  where cd_persona=ccer.cd_persona_asegurada) nu_telefono,
     
+
+    ccer.cd_producto,
+    (select de_producto from productos where cd_producto=ccer.cd_producto ) de_producto,
+    ccer.nu_contrato,
+    ccer.nu_certificado,
+    ccer.nu_ultimo_endoso,
+    'Desde '||to_char(ccer.fe_desde,'dd/mm/yyyy') ||' Hasta '||to_char(ccer.fe_hasta,'dd/mm/yyyy') fe_vigencia,
+    (select de_cobertura_detalle from coberturadetalle where cd_cobertura_detalle=ccen.cd_cobertura_detalle)de_cobertura_detalle,
+    (select de_grupo_familiar from gruposfamiliares where cd_grupo_familiar=ccen.cd_grupo_familiar)de_grupo_familiar,
+    (select de_moneda from moneda where cd_moneda=cont.cd_moneda)de_moneda,
+    (select de_plan_pago from planespago where cd_plan_pago=ccen.cd_plan_pago) de_plan_pago,
+    (select ca_recibos||' Cuotas' from planpagodetalle where cd_plan_pago=ccen.cd_plan_pago) nu_cuotas,
+    (select de_cobertura 
+    from coberturas 
+    where cd_cobertura in ((select cd_cobertura from coberturadetalle where cd_cobertura_detalle=ccen.cd_cobertura_detalle)))de_cobertura,
+    round(((select mt_suma_asegurada from coberturadetalle 
+    where cd_cobertura_detalle in (
+        (select cd_cobertura_detalle from contratocertificadoendoso where 
+        nu_contrato=ccer.nu_contrato
+        and cd_producto=ccer.cd_producto
+        and nu_certificado=ccer.nu_certificado
+        and nu_endoso=ccer.nu_ultimo_endoso) 
+    )) * 
+    (select sum(ta_riesgo) from contratoendosoasegurados cceg
+    where cceg.cd_producto=ccer.cd_producto
+    and cceg.CD_EMPRESA=ccer.CD_EMPRESA
+    and cceg.NU_CONTRATO=ccer.NU_CONTRATO
+    and cceg.nu_certificado=ccer.nu_certificado
+    and cceg.nu_endoso=ccer.nu_ultimo_endoso)
+    
+    ) / 100 , 2) mt_prima ,
+    round(
+        (
+        ((select mt_suma_asegurada from coberturadetalle 
+    where cd_cobertura_detalle in (
+        (select cd_cobertura_detalle from contratocertificadoendoso where 
+        nu_contrato=ccer.nu_contrato
+        and cd_producto=ccer.cd_producto
+        and nu_certificado=ccer.nu_certificado
+        and nu_endoso=ccer.nu_ultimo_endoso) 
+    )) * 
+    (select sum(ta_riesgo) from contratoendosoasegurados cceg
+    where cceg.cd_producto=ccer.cd_producto
+    and cceg.CD_EMPRESA=ccer.CD_EMPRESA
+    and cceg.NU_CONTRATO=ccer.NU_CONTRATO
+    and cceg.nu_certificado=ccer.nu_certificado
+    and cceg.nu_endoso=ccer.nu_ultimo_endoso)
+    
+    ) / 100
+    )/(select ca_recibos from planpagodetalle where cd_plan_pago=ccen.cd_plan_pago), 2) mt_prima_plan
+    
+    from contrato cont,
+    contratocertificado ccer,
+    contratocertificadoendoso ccen
+    where cont.cd_producto=ccer.cd_producto
+    and cont.nu_contrato=ccer.nu_contrato
+    and ccer.cd_producto=ccen.cd_producto
+    and ccer.nu_contrato=ccen.nu_contrato
+    and ccer.nu_ultimo_endoso=ccen.nu_endoso
+    and cont.nu_contrato=:cd_contrato
+    ";
+
+    const busquedaInformacionAsegurados=
+    "select 
+    (SELECT TP_DOCUMENTO||'-'||NU_DOCUMENTO FROM PERSONAS WHERE CD_PERSONA=CCEG.CD_PERSONA) NU_DOCUMENTO,
+    (SELECT NM_COMPLETO FROM PERSONAS WHERE CD_PERSONA=CCEG.CD_PERSONA) NM_COMPLETO,
+    (SELECT DE_PARENTESCO FROM PARENTESCOS WHERE CD_PARENTESCO=CCEG.CD_PARENTESCO) de_parentesco,
+    (SELECT '01/01/2020' FROM PERSONAS WHERE CD_PERSONA=CCEG.CD_PERSONA) fe_nacimiento,
+    round(((select mt_suma_asegurada from coberturadetalle 
+    where cd_cobertura_detalle in (
+        (select cd_cobertura_detalle from contratocertificadoendoso where 
+        nu_contrato=cceg.nu_contrato
+        and cd_producto=cceg.cd_producto
+        and nu_certificado=cceg.nu_certificado
+        and nu_endoso=cceg.nu_endoso) 
+    )) * cceg.ta_riesgo) / 100 , 2) mt_prima ,
+    round(
+    (
+        ((select mt_suma_asegurada from coberturadetalle 
+        where cd_cobertura_detalle in (
+            (select cd_cobertura_detalle from contratocertificadoendoso where 
+            nu_contrato=cceg.nu_contrato
+            and cd_producto=cceg.cd_producto
+            and nu_certificado=cceg.nu_certificado
+            and nu_endoso=cceg.nu_endoso) 
+        )) * cceg.ta_riesgo) / 100 
+    )/ 
+    (select ca_recibos from planpagodetalle where cd_plan_pago in(
+    (select  cd_plan_pago from contratocertificadoendoso 
+    where nu_contrato=ccer.nu_contrato
+    and cd_producto=ccer.cd_producto
+    and cd_empresa=ccer.cd_empresa
+    and nu_certificado=ccer.nu_certificado
+    and nu_endoso=ccer.nu_ultimo_endoso)))
+    ,2) mt_prima_plan
+    
+    from contratoendosoasegurados cceg, contratocertificado ccer
+    where cceg.cd_producto=ccer.cd_producto
+    and cceg.CD_EMPRESA=ccer.CD_EMPRESA
+    and cceg.NU_CONTRATO=ccer.NU_CONTRATO
+    and cceg.nu_certificado=ccer.nu_certificado
+    and cceg.nu_endoso=ccer.nu_ultimo_endoso
+    and cceg.nu_contrato=:cd_contrato";
+
+    const busquedainformacionRecibos="
+    select 
+    case when st_recibo=1 then 'Pendiente' else 'Cobrado' end st_recibo,
+    cd_recibo,
+    to_char(fe_desde,'dd/mm/yyyy') fe_desde,
+    to_char(fe_hasta,'dd/mm/yyyy')fe_hasta,
+    mt_recibo
+    from recibos
+    where nu_contrato= :cd_contrato 
+    and st_recibo in (1,4)
+    order by cd_recibo desc";
+
 }

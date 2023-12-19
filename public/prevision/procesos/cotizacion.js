@@ -154,10 +154,10 @@ function fnCrearPreliminar(){
         headers: {'X-CSRF-TOKEN': tokenLaravel},
         data:formulario
     }).done(function(response){
-        
+        console.log(response);
         var JSONParse=JSON.parse(response);
         if(JSONParse.httpResponse==200){
-            console.log(JSONParse);
+           
             var valoresCotizacion=JSONParse.message.content;
             var siglas=valoresCotizacion[0]['siglas_moneda'];
             var contenidoTitular='';
@@ -865,7 +865,6 @@ function fnGuardarContrato(){
         solicitud.push( {name:'nu_documento_domicilio',value: $('input[name="nu_documento_domicilio"]').val() });
         solicitud.push( {name:'tp_documento_domicilio',value: $('select[name="tp_documento_domicilio"] option:selected').val() });
     }
-    console.log(solicitud);
     $.ajax({
         url:'/prevision.procesos.cartera.emision-contrato',
         type:'POST',
@@ -875,11 +874,9 @@ function fnGuardarContrato(){
     }).done(function(response){
         console.log(response);
         var JSONParse=JSON.parse(response);
-        var contenido='<button class="btn btn-primary" onclick="fnGenerarPDFContrato('+JSONParse.message.content+')">Generar Contrato PDF</button><hr><button class="btn btn-primary" onclick="fnEnviarCorreo('+JSONParse.message.content+')">Enviar Contrato Por Correo</button>';
-        
-        if(JSONParse.httpResponse==200){
-            fnTransaccionConfirmada('Transaccion','<br> Se ha emitido el contrato # '+JSONParse.message.content+' <br> '+contenido);
-        }
+        setTimeout(function(){
+            window.location.replace('/prevision.procesos.cartera.vista-emision/'+JSONParse.message.content); 
+        },500);
     }).fail(function(a,b,c){
         console.log(a,b,c);
     });
@@ -888,8 +885,15 @@ function fnGuardarContrato(){
 function fnGenerarPDFContrato(contrato){
     window.location.replace('http://10.10.0.200:8081/sgd.reportes/JRTE0001_1/NU_CONTRATO-'+contrato);
 }
-function fnEnviarCorreo(contrato){
-    window.location.replace('http://10.10.0.200:8081/sgd.correo/JRTE0001_1/NU_CONTRATO-'+contrato);
+function fnEnviarCorreoPDF(contrato,documento,nombre,correo){
+    /*$.ajax({
+        url:'http://10.10.0.200:8081/sgd.correo/JRTE0001_1/'+contrato+'/'+documento+'/'+nombre+'/'+correo,
+        type:'GET',
+        crossDomain: true,
+    }).done(function(response){
+        console.log(response,'http://10.10.0.200:8081/sgd.correo/JRTE0001_1/'+contrato+'/'+documento+'/'+nombreAux+'/'+correo);
+    });*/
+    window.open('http://10.10.0.200:8081/sgd.correo/JRTE0001_1/'+contrato+'/'+documento+'/'+nombre+'/'+correo, '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes')
 }
 
 $('input[name="de_adicionales"]' ).change( "click", function(){

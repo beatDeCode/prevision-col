@@ -26,7 +26,8 @@ class Contrato extends Controller{
         $tarjeta=array('cotizacion-producto|Cotizacion');
         return view('prueba-steps',compact('scripts','tarjeta','menu','submenu'));
     }
-    public function fnCotizacion(){
+    
+    public function fnCotizacion(Request $request){
         $menu=5;
         $submenu=6;
         //<!-- desglose columas|nombre|active/none|linkedin/dribbble|icono-->
@@ -115,6 +116,9 @@ class Contrato extends Controller{
         'busquedaFormasPago','busquedaBancos','busquedaTipoCalculoPrima'
         ));
     }
+    public function fnGenerarCotizacionaa(Request $request){
+        print_r($request->all());
+    }
     function fnGenerarCotizacion(Request $request){
         $busquedaCotizacionTitular='procesoCotizacion';
         try {
@@ -130,13 +134,13 @@ class Contrato extends Controller{
                 'tp_documento_asegurado',
                 'nu_documento_asegurado',
                 'cd_parentesco_asegurado',
-                'nm_persona1_asegurado'
+                'nm_persona1_asegurado',
             );
             $arrayInputsAdicionales=array(
                 'tp_documento_adicional',
                 'nu_documento_adicional',
                 'cd_parentesco_adicional',
-                'nm_persona1_adicional'
+                'nm_persona1_adicional',
             );
             /**Llenar valores del titular */
             $arrayTitular=array(
@@ -202,11 +206,11 @@ class Contrato extends Controller{
                         $arrayAseguradosOtros['nu_asegurado']='as_'.$a;
                         $arrayAseguradosOtros['mt_prima']=0;
                         /**Procesamos la cotizacion para el asegurado restante*/
-                        $cotizacionOtrosAsegurado=$instanciaAuditoria->fnBusquedaParametrizada(
+                        $cotizacionOtrosAsegurado[$a]=$instanciaAuditoria->fnBusquedaParametrizada(
                             $busquedaCotizacionTitular,
                             $arrayAseguradosOtros,
                             2
-                        );
+                        )[0];
                         //print_r($cotizacionOtrosAsegurado);
                         /**Agregamos al arreglo global de cotizacion para el asegurado restante*/
                         //$cotizacionOtrosAsegurado[0];
@@ -261,11 +265,12 @@ class Contrato extends Controller{
                         
                         $arrayAdicionalesOtros['mt_prima']=0;
                         /**Procesamos la cotizacion para el asegurado restante*/
-                        $cotizacionOtrosAdicionales=$instanciaAuditoria->fnBusquedaParametrizada(
+                        $cotizacionOtrosAdicionales[$a]=$instanciaAuditoria->fnBusquedaParametrizada(
                             $busquedaCotizacionTitular,
                             $arrayAdicionalesOtros,
                             2
-                        );
+                        )[0];
+
                         //print_r($cotizacionOtrosAdicionales[0]);
                         /**Agregamos al arreglo global de cotizacion para el asegurado restante*/
                         //$retornoAsegurados[$contadorRetornos]=
@@ -435,7 +440,43 @@ class Contrato extends Controller{
         return json_encode($retorno);
     }
 
-
+    function fnVistaEmision($contrato){
+        $contratoEmision=array();
+        $contratoAsegurados=array();
+        $contratoRecibos=array();
+        $menu=5;
+        $submenu=6;
+        $scripts=array(
+            '/prevision/utiles/validacionFormulario.js',
+            '/prevision/utiles/sweetAlertsPersonalizados.js',
+            '/prevision/utiles/comboDependienteProductos.js',
+            '/prevision/utiles/comboDependienteEstados.js',
+            '/prevision/procesos/cotizacion.js',
+            '/prevision/utiles/clonarInputs.js');
+        
+        try {
+            $instanciaAuditoria=new Auditoria;
+            $parametros=array('cd_contrato'=>$contrato);
+            $contratoEmision=$instanciaAuditoria->fnBusquedaParametrizada(
+                'busquedaInformacionEmision',
+                $parametros,
+                2
+            );
+            $contratoAsegurados=$instanciaAuditoria->fnBusquedaParametrizada(
+                'busquedaInformacionAsegurados',
+                $parametros,
+                2
+            );
+            $contratoRecibos=$instanciaAuditoria->fnBusquedaParametrizada(
+                'busquedainformacionRecibos',
+                $parametros,
+                2
+            );
+        } catch (Exception $th) {
+            print_r($th);
+        }
+        return view('procesos.cotizacion.contrato-vista-emision',compact('contratoEmision','contratoAsegurados','contratoRecibos','menu','submenu','scripts'));
+    }
     
 }
 

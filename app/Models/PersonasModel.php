@@ -371,7 +371,7 @@ class PersonasModel extends Model
                 $instanciaContratoAsegurados->fnCreate($arrayAseguradosEndoso1);
                 $varAseguradoAdc='';
                 //Recorrido de asegurados            
-                $contadorClonacion=$request->post('ca_clonacion');
+                $contadorClonacion=$request->post('ca_clonacion-adicionales');
                 if($contadorClonacion>0){
                     for($a=0;$a<$contadorClonacion;$a++){
                         $secuenciaPersonaAsegurada=$instanciaAuditoria->fnBuscarSecuenciaCatalogo('busquedaSecuenciaPersonas',array())[0]['secuencia'];
@@ -403,7 +403,6 @@ class PersonasModel extends Model
                             $tasaRiesgo=0;
                         }
                         $varAseguradoAdc=$request->post('cd_parentesco_adicional'.$a);
-
                         //Almacenamos la informacion del asegurado en la tabla CONTRATOENDOSOASEGURADOSO
                         $arrayAseguradosEndoso2=array(
                             "cd_persona"=>$secuenciaPersonaAsegurada,

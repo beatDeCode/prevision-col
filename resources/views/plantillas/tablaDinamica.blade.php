@@ -1,29 +1,24 @@
+@if(sizeof($cabecera)>0)
 <div class="table-responsive">
-    <table class="table table-striped display" id="tabla-{{$modelo}}" style="width:100%" >
-    <thead>
-    <tr>
-        @if(sizeof($camposCabecera)>0)
-            @foreach($camposCabecera as $campo)
-                <th><center>{{explode('|',$campo)[1]}}</center></th>
+    <table class="table">
+        <thead>
+        <tr>
+            @foreach($cabecera as $campo)
+            <th style="font-size:11px">{{$campo}}</th>
             @endforeach
-
-        @elseif(sizeof($camposCabecera)==0)
-            <th><center>Información</center></th>
-        @endif
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        @if(sizeof($camposCabecera)>0 && sizeof($valoresCuerpo)>0)
-            @foreach($valoresCuerpo as $valor)
-                @foreach($camposCabecera as $campo)
-                    <td><center>{{$valor[explode('|',$campo)[0]] }}</center></td>
-                @endforeach
+        </tr>
+        </thead>
+        <tbody>
+        @if(sizeof($datos)>0)
+            @foreach($datos as $dato)
+                <tr>
+                    @foreach($indices as $indice)
+                    <td style="font-size:12px">{{$dato[$indice]}}</td>
+                    @endforeach
+                </tr>
             @endforeach
-        @elseif(sizeof($camposCabecera)==0 && sizeof($valoresCuerpo)==0)
-            <td><center>La tabla no contiene información</center></td>
         @endif
-    </tr>
-    </tbody>
-</table>
+        </tbody>
+    </table>
 </div>
+@endif
