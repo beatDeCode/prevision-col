@@ -301,18 +301,18 @@ class NegocioQuery{
     (select (select de_sexo from sexos where cd_sexo=pers.cd_sexo) from personas pers where cd_persona=ccer.cd_persona_asegurada) de_sexo,
     (select '01/01/2000' from personas where cd_persona=ccer.cd_persona_asegurada) fe_nacimiento,
     (select  
-        (select de_direccion from personadireccion where cd_persona=ccer.cd_persona_asegurada)
-    from personas where cd_persona=ccer.cd_persona_asegurada) de_direccion,
-    (select  
         (select
             (select de_estado from estados where cd_estado=pedi.cd_estado)
         from personadireccion pedi where cd_persona=ccer.cd_persona_asegurada)
-    from personas where cd_persona=ccer.cd_persona_asegurada) de_estado,
+    from personas where cd_persona=ccer.cd_persona_asegurada)||', '||
     (select  
         (select
             (select de_municipio from municipios where cd_municipio=pedi.cd_municipio)
         from personadireccion pedi where cd_persona=ccer.cd_persona_asegurada)
-    from personas where cd_persona=ccer.cd_persona_asegurada) de_municipio,
+    from personas where cd_persona=ccer.cd_persona_asegurada)||', '||
+    (select  
+        (select de_direccion from personadireccion where cd_persona=ccer.cd_persona_asegurada)
+    from personas where cd_persona=ccer.cd_persona_asegurada) de_direccion,
     (select  
         (select
             (select de_parroquia from parroquias where cd_parroquia=pedi.cd_parroquia)

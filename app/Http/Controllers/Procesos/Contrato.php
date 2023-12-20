@@ -452,7 +452,9 @@ class Contrato extends Controller{
             '/prevision/utiles/comboDependienteProductos.js',
             '/prevision/utiles/comboDependienteEstados.js',
             '/prevision/procesos/cotizacion.js',
-            '/prevision/utiles/clonarInputs.js');
+            '/prevision/utiles/clonarInputs.js',
+            '/js/qrcodejs/qrcode.min.js',
+            '/js/qrcodejs/emision.js',);
         
         try {
             $instanciaAuditoria=new Auditoria;
