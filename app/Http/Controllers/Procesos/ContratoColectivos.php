@@ -21,7 +21,7 @@ class ContratoColectivos extends Controller{
         $scripts=array(
             '/prevision/utiles/validacionFormulario.js',
             '/prevision/utiles/sweetAlertsPersonalizados.js',
-            '/prevision/utiles/comboDependienteProductos.js',
+            '/prevision/utiles/comboDependienteProductosColectivos.js',
             '/prevision/utiles/comboDependienteEstados.js',
             '/prevision/procesos/cotizacionColectivos.js',
             '/prevision/utiles/clonarInputs.js');

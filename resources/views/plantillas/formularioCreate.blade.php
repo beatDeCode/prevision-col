@@ -3,7 +3,7 @@
     <div class="row">
         @if(sizeof($formulariosCreate)>0)
             @foreach(array_keys($formulariosCreate) as $key)
-                <?php $input=explode('|',$key); ?>
+                <?php $input=explode('|',$key);?>
                 @if($input[1]=='input' )
                     @if($input[2]!='hidden')
                         <div class="{{$input[3]}}" id="{{$input[0]}}">

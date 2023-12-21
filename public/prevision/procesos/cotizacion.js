@@ -647,6 +647,7 @@ function fnEsconderDomicilio(){
     $('div[id="tp_documento_domicilio"]').css('display','none');
     $('div[id="tp_cuenta"]').css('display','none');
     $('div[id="nu_cuenta"]').css('display','none');
+    $('div[id="cd_banco"]').css('display','none');
     $('div[id="titulo2"]').css('display','none');
 }
 fnEsconderDomicilio();
@@ -658,6 +659,7 @@ $('select[name="cd_forma_pago"]').on('change',function(){
             $('div[id="tp_documento_domicilio"]').css('display','none');
             $('div[id="nu_documento_domicilio"]').css('display','none');
             $('div[id="tp_cuenta"]').css('display','none');
+            $('div[id="cd_banco"]').css('display','none');
             $('div[id="nu_cuenta"]').css('display','none');
             $('div[id="titulo2"]').css('display','none');
         }
@@ -666,6 +668,7 @@ $('select[name="cd_forma_pago"]').on('change',function(){
             $('div[id="nu_documento_domicilio"]').css('display','inline');
             $('div[id="tp_documento_domicilio"]').css('display','inline');
             $('div[id="tp_cuenta"]').css('display','inline');
+            $('div[id="cd_banco"]').css('display','inline');
             $('div[id="nu_cuenta"]').css('display','inline');
             
         }
@@ -735,7 +738,9 @@ function fnEmitir(){
                     var tipoDocumentoDomiclio=$('select[name="tp_documento_domicilio"] option:selected').val();
                     var documentoDomiclio=$('input[name="nu_documento_domicilio"]').val();
                     var tipoCuenta=$('select[name="tp_cuenta"] option:selected').val(); 
+                    var cdBanco=$('select[name="cd_banco"] option:selected').val(); 
                     var cuenta=$('input[name="nu_cuenta"]').val(); 
+                    
                     var div=$('div[id="errornu_cuenta"]');
                     if(cuenta.length!=20){
                         div.show();
@@ -745,6 +750,7 @@ function fnEmitir(){
                         formulario.push({value:'tp_documento_domicilio',text:tipoDocumentoDomiclio});
                         formulario.push({value:'nu_documento_domicilio',text:documentoDomiclio});
                         formulario.push({value:'tp_cuenta',text:tipoCuenta});
+                        formulario.push({value:'cd_banco',text:cdBanco});
                         formulario.push({value:'nu_cuenta',text:cuenta});
                         var formularioRequest=[];
                         var tokenLaravel=$('input[name="_token"]').val();
@@ -753,6 +759,7 @@ function fnEmitir(){
                         formularioRequest.push({name:'tp_query',value:2});
                         formularioRequest.push({name:'query',value:busqueda});
                         formularioRequest.push({name:'nu_cuenta',value:cuenta});
+                        formularioRequest.push({name:'cd_banco',value:cdBanco});
                         $.ajax({
                             url:'/prevision.general.querys',
                             type:'POST',
@@ -979,8 +986,12 @@ function fnEliminarAsegurado(codigoFormulario){
     var explodeInput=codigoFormulario.split('_');
     var nombreFormulario='';
     var nombreChecked='';
-    console.log(codigoFormulario);
-    if(explodeInput.length>1){
+    var contarDesglose=explodeInput.length;
+    console.log(contarDesglose);
+    if(contarDesglose>1){
+        
+    }
+    /*if(explodeInput.length>1){
         if(explodeInput[0]=='as'){
             nombreFormulario='asegurado'+explodeInput[1];
             nombreChecked='asegurados';
@@ -998,7 +1009,7 @@ function fnEliminarAsegurado(codigoFormulario){
             nombreChecked='adicionales';
         }
     }
-
+    
     var nm_completo=$('input[name="nm_persona1_'+nombreFormulario+'"]');
     var tp_documento=$('select[name="tp_documento_'+nombreFormulario+'"]');
     var nu_documento=$('input[name="nu_documento_'+nombreFormulario+'"]');
@@ -1044,6 +1055,7 @@ function fnEliminarAsegurado(codigoFormulario){
     fe_nacimiento.val('');
     cd_parentesco.val('');
     fnCrearPreliminar();
+    */
 }
 
 

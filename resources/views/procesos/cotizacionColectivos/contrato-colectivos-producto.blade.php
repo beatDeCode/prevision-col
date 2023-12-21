@@ -8,14 +8,14 @@
             '3|3. Emisión|none|dribbble|typcn typcn-image',
         );
         $formulariosCreate1=array(
-            'cd_tipo_calculo|select|text|col-md-4|Tipo de Cáculo'=>$busquedaTipoCalculoPrima,
-            'cd_producto|select|text|col-md-4|Producto'=>$busquedaProductos,
-            'cd_cobertura|select|text|col-md-4|Cobertura|Empresa'=>array(),
-            'mt_suma_asegurada|select|text|col-md-4|Monto a Riesgo'=>array(),
-            'cd_grupo_familiar|select|text|col-md-4|Grupo Familiar'=>$busquedaGruposFamiliares,
-            'cd_plan_pago|select|text|col-md-4|Plan de Pago'=>$busquedaPlanesPago,
+            'cd_tipo_calculo|select|text|col-md-4|Tipo de Cáculo|'=>$busquedaTipoCalculoPrima,
+            'cd_producto|select|text|col-md-4|Producto|'=>$busquedaProductos,
+            'cd_cobertura|select|text|col-md-4|Cobertura|Empresa|'=>array(),
+            'mt_suma_asegurada|select|text|col-md-4|Monto a Riesgo|'=>array(),
+            'cd_grupo_familiar|select|text|col-md-4|Grupo Familiar|'=>$busquedaGruposFamiliares,
+            'cd_plan_pago|select|text|col-md-4|Plan de Pago|'=>$busquedaPlanesPago,
             
-            'div_mt_prima|div|text|col-md-4|Pr'=> array(),
+            'div_mt_prima|div|text|col-md-4|Pr|'=> array(),
             ) ;
         $cantidadDeClonacion1=0;
         $formulariosAClonar1=array();

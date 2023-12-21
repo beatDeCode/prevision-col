@@ -211,7 +211,7 @@ class NegocioQuery{
         )
     ";
 
-    const busquedaCodigoVerificadorBanco='select count(1) cuenta from bancos where cd_verificador=substr( :nu_cuenta ,1,4)';
+    const busquedaCodigoVerificadorBanco='select count(1) cuenta from bancos where cd_verificador=substr(:nu_cuenta ,1,4) and cd_banco=:cd_banco';
 
     const busquedaInformacionContrato='
     select 
