@@ -147,6 +147,7 @@ function fnCrearPreliminar(){
             }
         }
     }
+    fnAlertaDeEsperaTransccion();
     $.ajax({
         url:'/prevision.procesos.cartera.generar-cotizacion',
         type:'POST',
@@ -157,7 +158,7 @@ function fnCrearPreliminar(){
         console.log(response);
         var JSONParse=JSON.parse(response);
         if(JSONParse.httpResponse==200){
-           
+            swal.close();
             var valoresCotizacion=JSONParse.message.content;
             var siglas=valoresCotizacion[0]['siglas_moneda'];
             var contenidoTitular='';
@@ -337,6 +338,7 @@ function fnCrearCotizacion(){
             }
         }
     }
+    fnAlertaDeEsperaTransccion();
     $.ajax({
         url:'/prevision.procesos.cartera.generar-cotizacion',
         type:'POST',
@@ -344,6 +346,7 @@ function fnCrearCotizacion(){
         headers: {'X-CSRF-TOKEN': tokenLaravel},
         data:formulario
     }).done(function(response){
+        swal.close();
         var JSONParse=JSON.parse(response);
         if(JSONParse.httpResponse==200){
             var valoresCotizacion=JSONParse.message.content;
@@ -872,6 +875,7 @@ function fnGuardarContrato(){
         solicitud.push( {name:'nu_documento_domicilio',value: $('input[name="nu_documento_domicilio"]').val() });
         solicitud.push( {name:'tp_documento_domicilio',value: $('select[name="tp_documento_domicilio"] option:selected').val() });
     }
+    fnAlertaDeEsperaTransccion();
     $.ajax({
         url:'/prevision.procesos.cartera.emision-contrato',
         type:'POST',
@@ -879,7 +883,7 @@ function fnGuardarContrato(){
         headers: {'X-CSRF-TOKEN': tokenLaravel},
         data:solicitud
     }).done(function(response){
-        console.log(response);
+        swal.close();
         var JSONParse=JSON.parse(response);
         setTimeout(function(){
             window.location.replace('/prevision.procesos.cartera.vista-emision/'+JSONParse.message.content); 

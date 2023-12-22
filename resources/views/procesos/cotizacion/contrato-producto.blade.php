@@ -1,4 +1,4 @@
-<div id="fase1" style="display:none;">
+<div id="fase1" style="display:block;">
     <!-- Fase 1-->
     <!-- Declaracion Variables-->
     <?php 
