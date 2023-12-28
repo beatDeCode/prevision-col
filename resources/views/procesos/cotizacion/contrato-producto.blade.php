@@ -71,6 +71,7 @@
                     <div id="divcoberturas"></div>
                     <div id="divsumas"></div>
                     <div id="divgrupofamiliar"></div>
+                    <br>
                     <center>
                         <button type="button" class="btn btn-sm" id="boton-fase2"
                         style="background-color: #7c90a7;color: white;margin-bottom:15px;display:none;" 

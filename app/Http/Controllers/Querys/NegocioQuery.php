@@ -245,15 +245,17 @@ class NegocioQuery{
     )a2";
     const primasPorPlanesPago="
     select 
-        round(:mt_prima /ca_recibos,2) ||''|| :de_siglas_moneda mt_prima,
+        ppde.ca_recibos || ' Cuota(s) de ' || round(:mt_prima /ca_recibos,2) ||''|| :de_siglas_moneda mt_prima,
         plan.cd_plan_pago value,
         plan.DE_PLAN_PAGO text,
         4 columnas,
         'Planes de pago ' nombreTitulo,
         de_tarjeta
+        
     from planespago plan,
     planpagodetalle ppde
     where plan.CD_PLAN_PAGO = ppde.CD_PLAN_PAGO
+    order by ca_recibos
     ";
     
 

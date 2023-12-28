@@ -8,14 +8,12 @@ function fnDevolverFase(fase){
     if(fase==3){
         $('#fase3_').hide();
         $('#fase2').show();
+        var divBotonesCotizacion=$('div[id="botones-cotizacion"]');
+        divBotonesCotizacion.hide(350);
     }
     if(fase==4){
-        $('#fase3').hide();
-        $('#fase3_').show();
-    }
-    if(fase==5){
         $('#fase4').hide();
-        $('#fase3').show();
+        $('#fase3_').show();
     }
 }
 function fnMoverFase2(formulario){
@@ -582,68 +580,74 @@ function fnMoverFase3(formulario){
     var validacionFase2=fnValidarVacios(formulario);
     var contadorDeClonacion=$('input[name="contador-clonacion-asegurados"]').val();
     var auxiliarValiacionFase2=parseInt(validacionFase2) - (36-(parseInt(contadorDeClonacion)*5));
-    try {
-        calcularEdad();
-        fnValidarTelefono();
-        if(auxiliarValiacionFase2<=0){
-            var formulario=[];
-            var documentoTitular=$('input[name="nu_documento"]').val();
-            var producto=$('select[name="cd_producto"] option:selected').val();
-            formulario.push({name:'ca_clonacion',value:contadorDeClonacion});
-            formulario.push({name:'nu_documento',value:documentoTitular});
-            formulario.push({name:'cd_producto',value:producto});
-            
-            if(contadorDeClonacion>=0){
-                var documentoAsegurado=$('input[name="nu_documento_asegurado"]').val();
-                formulario.push({name:'nu_documento_asegurado',value:documentoAsegurado});
-                if(contadorDeClonacion>0){
-                    for(var a=0;a<contadorDeClonacion;a++){
-                        var documentoAseguradoExtra=$('input[name="nu_documento_asegurado'+a+'"]').val();
-                        formulario.push({name:'nu_documento_asegurado'+a ,value:documentoAseguradoExtra});
-                    }
-                }
-            }
-            $.ajax({
-                url:'/prevision.procesos.cartera.valida-asegurados',
-                type:'POST',
-                cache:false,
-                headers: {'X-CSRF-TOKEN': tokenLaravel},
-                data:formulario
-            }).done(function(response){
-                console.log(response);
-                var JSONParse=JSON.parse(response);
-                if(JSONParse.httpResponse==200){
-                    var contenido=JSONParse.message.content;
-                    var contadorErrores1=0;
-                    if(contenido.length>0){
-                        for(var a=0;a<contenido.length;a++){
-                            if(contenido[a]['cuenta']==1){
-                                contadorErrores1+=1;
-                                var div=$('div[id="error'+contenido[a]['value']+'"]');
-                                div.html('');
-                                div.append(contenido[a]['error']);
-                                div.show();
-                            }
+    var planpago=$('select[name="cd_plan_pago"] option:selected').val();
+    if(planpago){
+        try {
+            calcularEdad();
+            fnValidarTelefono();
+            if(auxiliarValiacionFase2<=0){
+                var formulario=[];
+                var documentoTitular=$('input[name="nu_documento"]').val();
+                var producto=$('select[name="cd_producto"] option:selected').val();
+                formulario.push({name:'ca_clonacion',value:contadorDeClonacion});
+                formulario.push({name:'nu_documento',value:documentoTitular});
+                formulario.push({name:'cd_producto',value:producto});
+                
+                if(contadorDeClonacion>=0){
+                    var documentoAsegurado=$('input[name="nu_documento_asegurado"]').val();
+                    formulario.push({name:'nu_documento_asegurado',value:documentoAsegurado});
+                    if(contadorDeClonacion>0){
+                        for(var a=0;a<contadorDeClonacion;a++){
+                            var documentoAseguradoExtra=$('input[name="nu_documento_asegurado'+a+'"]').val();
+                            formulario.push({name:'nu_documento_asegurado'+a ,value:documentoAseguradoExtra});
                         }
                     }
-                    if(contadorErrores1==0){
-                        var fase1=$('div[id="fase3_"]');
-                        fase1.hide(500);
-                        var fase2=$('div[id="fase3"]');
-                        fase2.fadeIn('slow');
-                        fnCrearCotizacion();
-                    }
-                    
-                    
                 }
-            }).fail(function(a,b,c){
-                console.log(a,b,c);
-            });
-           
+                $.ajax({
+                    url:'/prevision.procesos.cartera.valida-asegurados',
+                    type:'POST',
+                    cache:false,
+                    headers: {'X-CSRF-TOKEN': tokenLaravel},
+                    data:formulario
+                }).done(function(response){
+                    console.log(response);
+                    var JSONParse=JSON.parse(response);
+                    if(JSONParse.httpResponse==200){
+                        var contenido=JSONParse.message.content;
+                        var contadorErrores1=0;
+                        if(contenido.length>0){
+                            for(var a=0;a<contenido.length;a++){
+                                if(contenido[a]['cuenta']==1){
+                                    contadorErrores1+=1;
+                                    var div=$('div[id="error'+contenido[a]['value']+'"]');
+                                    div.html('');
+                                    div.append(contenido[a]['error']);
+                                    div.show();
+                                }
+                            }
+                        }
+                        if(contadorErrores1==0){
+                            var fase1=$('div[id="fase3_"]');
+                            fase1.hide(500);
+                            var fase2=$('div[id="fase4"]');
+                            fase2.fadeIn('slow');
+                            fnCrearCotizacion();
+                        }
+                        
+                        
+                    }
+                }).fail(function(a,b,c){
+                    console.log(a,b,c);
+                });
+               
+            }
+        } catch (error) {
+            console.log(error);
         }
-    } catch (error) {
-        console.log(error);
+    }else{
+
     }
+    
 }
 
 function fnEsconderDomicilio(){
@@ -1101,7 +1105,7 @@ function fnCambiarSelectParentesco(busqueda,select){
 }
 
 function fnMostrarPlanesConPrimaCalculada(){
-    //var formularioTitular=$('form[name="formulario-titular"]');
+    fnAlertaDeEsperaTransccion();
     var formularioAsegurados=$('form[name="formulario-asegurados"]').serializeArray();
     var formularioAdicionales=$('form[name="formulario-adicionales"]').serializeArray();
     var sumaAsegurada=$('select[name="mt_suma_asegurada"] option:selected').val();
@@ -1141,6 +1145,7 @@ function fnMostrarPlanesConPrimaCalculada(){
             fase1.hide(500);
             var fase2=$('div[id="fase3_"]');
             fase2.fadeIn('slow');
+            swal.close();
             var botones=fnDespliegueBotones(valoresOption,'fnCambiarPlanPago','plan-pago','Planes de Pago',2);
             var divGrupoFamiliar=$('div[id="divplanpago"]');
             divGrupoFamiliar.html('');

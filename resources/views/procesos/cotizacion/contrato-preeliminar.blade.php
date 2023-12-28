@@ -26,6 +26,19 @@
             </div>
             <div class="col-md-9">
                 <div id="divplanpago"></div>
+                <br>
+                <hr>
+                <div id="botones-cotizacion" style="display:none">
+                <div class="col-md-12" style="margin-top:10px;"><div class="badge" style="background-color: #1d4068;color:white;text-align:left;">Cotizacion</div><hr class="hr-none"></div>
+                <br>    
+                <center>
+                    <button class="btn btn-sm btn-outline-info btn-icon-text" onclick="fnGenerarPDFContrato()">
+                    <i class="typcn typcn-download-outline"></i> Visualizar </button>
+                    <button class="btn btn-sm btn-outline-info btn-icon-text" onclick="
+                    fnEnviarCorreoPDF()"><i class="typcn typcn-mail"></i> Cotizar Por Correo
+                    </button>
+                </center>
+                </div>
                 <!--<div id="preliminar-factura" style="display:none;">
                     <br>
                     <div class="container-fluid">

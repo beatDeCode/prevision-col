@@ -197,8 +197,8 @@ function fnDespliegueBotones(opciones,nombreFuncion,nombreTarjeta,nombreTitulo,i
         }
         if(inMuestraPrima==2){
             costos='<p class="card-text" style="text-align:left !important;" >Costos: </p>';
-            pixelesTarjetas=350;
-            botonesPrima+='<p class="badge bg-primary col-md-12" style="font-size:25px;color:white;text-align:right;">'+opciones[a]['mt_prima']+' / '+opciones[a]['text']+'</p>';
+            pixelesTarjetas=300;
+            botonesPrima+='<p class="badge col-md-10 offset-md-1" style="font-size:23px;color:white;text-align:center;background-color:#48d17fd4;">'+opciones[a]['mt_prima']+'</p>';
             
         }
         botones+=
@@ -220,7 +220,7 @@ function fnDespliegueBotones(opciones,nombreFuncion,nombreTarjeta,nombreTitulo,i
         '</div>';
         botonesPrima='';
     }
-    var cierreRow='</div><hr class="hr-none"></div>';
+    var cierreRow='</div></div>';
     return row+''+botones+''+cierreRow;
 
 }
@@ -332,11 +332,14 @@ function fnUbicacionResumen(){
 }
 
 $('select[name="cd_plan_pago"').on('change',function(){
+    var divBotonesCotizacion=$('div[id="botones-cotizacion"]');
+    divBotonesCotizacion.show(350);
+    
     /*var divResumen=$('div[id="div-resumen-preliminar"]');
     var divResumenAnterior=$('div[id="div-resumen-adicionales"]').html();
     divResumen.html('');
     divResumen.append(divResumenAnterior);*/
-    fnCrearPreliminar();
+    //fnCrearPreliminar();
 });
 
 

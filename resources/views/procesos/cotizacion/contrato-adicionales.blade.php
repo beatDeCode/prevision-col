@@ -135,10 +135,8 @@
                     onclick="fnDevolverFase(2)">Volver</button>
                 <button type="button" class="btn btn-sm" 
                 style="background-color: #7c90a7;color: white;margin-bottom:15px;" 
-                onclick="fnMoverFase3_('formulario-titular','formulario-asegurados','formulario-adicionales')">Cotizar</button>
-                <button type="button" class="btn btn-sm" 
-                style="background-color: #7c90a7;color: white;margin-bottom:15px;" 
-                onclick="fnMostrarPlanesConPrimaCalculada()">Probar Precio</button>
+                onclick="fnMostrarPlanesConPrimaCalculada('formulario-titular','formulario-asegurados','formulario-adicionales')">Cotizar</button>
+
             </center>
             </div>
         </div>
