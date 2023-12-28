@@ -9,7 +9,7 @@
         );
         $formulariosCreate1=array(
             'cd_producto|select|text|col-md-4|Producto||display:none'=>$busquedaProductos,
-            'cd_cobertura|select|text|col-md-4|Cobertura|Empresa||display:none'=>array(),
+            //'cd_cobertura|select|text|col-md-4|Cobertura|Empresa||display:none'=>array(),
             'mt_suma_asegurada|select|text|col-md-4|Monto a Riesgo||display:none'=>array(),
             'cd_grupo_familiar|select|text|col-md-4|Grupo Familiar||display:none'=>$busquedaGruposFamiliares,
             //'cd_plan_pago|select|text|col-md-4|Plan de Pago||display:none'=>$busquedaPlanesPago,
@@ -46,8 +46,6 @@
                             <p class="card-subtitle mb-2 " id="p-producto"><i id="i-producto" class="typcn typcn-chevron-right" style="color:red"></i><a style="font-weight:bold;" >Producto:</a></p> 
                             <p class="card-subtitle mb-2 " id="resumen-producto"></p> 
 
-                            <p class="card-subtitle mb-2 " id="p-cobertura"><i id="i-cobertura" class="" style="color:red"></i><a style="font-weight:bold;">Cobertura:</a></p> 
-                            <p class="card-subtitle mb-2 " id="resumen-cobertura"></p> 
 
                             <p class="card-subtitle mb-2 " id="p-suma"><i id="i-suma" class="" style="color:red"></i><a style="font-weight:bold;">Monto a Riesgo:</a></p> 
                             <p class="card-subtitle mb-2 " id="resumen-suma"></p> 

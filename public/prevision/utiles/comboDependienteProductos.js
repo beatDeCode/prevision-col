@@ -1,8 +1,8 @@
 $('select[name="cd_producto"').on('change',function(){
-    var busqueda='busquedaCoberturas';
+    var busqueda='busquedaSumasAseguradas';
     var tokenLaravel=$('input[name="_token"]').val();
     var producto=$('select[name="cd_producto"] option:selected').val();
-    var selectCobertura=$('select[name="cd_cobertura"]');
+    var selectCobertura=$('select[name="mt_suma_asegurada"]');
     fnActivarBotonProducto(producto,'producto');
     var formulario=[];
     formulario.push({name:'tp_query',value:1});
@@ -23,17 +23,22 @@ $('select[name="cd_producto"').on('change',function(){
             for(var a=0;a<valoresOption.length;a++){
                 selectCobertura.append($('<option>', {value:valoresOption[a]['value'], text:valoresOption[a]['text']}));
             }
-            var botones=fnDespliegueBotones(valoresOption,'fnCambiarCobertura','cobertura','Coberturas');
+            /*var botones=fnDespliegueBotones(valoresOption,'fnCambiarCobertura','cobertura','Coberturas');
             var divCoberturas=$('div[id="divcoberturas"]');
             divCoberturas.html('');
             divCoberturas.append(botones);
-            divCoberturas.show(350);
+            divCoberturas.show(350);*/
+            var botones=fnDespliegueBotones(valoresOption,'fnCambiarSumas','sumas','Monto a Riesgo',1);
+            var divCoberturas=$('div[id="divsumas"]');
+            divCoberturas.html('');
+            divCoberturas.append(botones);
+            divCoberturas.show();
             
         }
 
     });
 });
-
+/*
 $('select[name="cd_cobertura"').on('change',function(){
     var busqueda='busquedaSumasAseguradas';
     var tokenLaravel=$('input[name="_token"]').val();
@@ -69,7 +74,7 @@ $('select[name="cd_cobertura"').on('change',function(){
         }
     });
 });
-
+*/
 $('select[name="mt_suma_asegurada"').on('change',function(){
     var busqueda='busquedaGruposFamiliares';
     var tokenLaravel=$('input[name="_token"]').val();
@@ -95,6 +100,7 @@ $('select[name="mt_suma_asegurada"').on('change',function(){
             for(var a=0;a<valoresOption.length;a++){
                 busquedaGruposFamiliares.append($('<option>', {value:valoresOption[a]['value'], text:valoresOption[a]['text']}));
             }
+            
             var botones=fnDespliegueBotones(valoresOption,'fnCambiarGrupoFamiliar','grupo-familiar','Grupo Familiar');
             var divGrupoFamiliar=$('div[id="divgrupofamiliar"]');
             divGrupoFamiliar.html('');
@@ -130,11 +136,7 @@ $('select[name="cd_grupo_familiar"').on('change',function(){
             for(var a=0;a<valoresOption.length;a++){
                 planesPago.append($('<option>', {value:valoresOption[a]['value'], text:valoresOption[a]['text']}));
             }
-            var botones=fnDespliegueBotones(valoresOption,'fnCambiarPlanPago','plan-pago','Planes de Pago');
-            var divGrupoFamiliar=$('div[id="divplanpago"]');
-            divGrupoFamiliar.html('');
-            divGrupoFamiliar.append(botones);
-            divGrupoFamiliar.show(350);
+            
             
         }
     });
@@ -163,7 +165,7 @@ function fnActivarBotonProducto(producto,nombreProducto){
     }
 }
 
-function fnDespliegueBotones(opciones,nombreFuncion,nombreTarjeta,nombreTitulo){
+function fnDespliegueBotones(opciones,nombreFuncion,nombreTarjeta,nombreTitulo,inMuestraPrima){
     var row='<div class="container-fluid">'+
         '<div class="row">'+
             '<div class="col-md-12" style="margin-top:10px;">'+
@@ -176,18 +178,47 @@ function fnDespliegueBotones(opciones,nombreFuncion,nombreTarjeta,nombreTitulo){
     '</div>'+
     '<div class="container-fluid"><div class="row">';
     var botones='';
+    var botonesPrima='';
+    var botonesPrimaAdicional='';
+    var pixelesTarjetas=215;
+    var costos='';
     for(var a=0;a<opciones.length;a++){
+        if(inMuestraPrima==1){
+            costos='<p class="card-text" style="text-align:left !important;" >Costos: </p>';
+            pixelesTarjetas=350;
+            var prima=(opciones[a]['prima']).split('|');
+            for(var b=0;b<prima.length;b++){
+                var valores=(prima[b]).split('-');
+                botonesPrima+='<a class="badge col-md-5 " style="background-color:'+valores[0]+';color:white;margin:5px;">'+valores[1]+' '+valores[2]+'</a> ';
+            }
+            botonesPrimaAdicional=
+            '<a class="badge col-md-6" style="background-color:#f2125e;color:white;margin:5px;">ADICIONAL '+(opciones[a]['prima_adicional'])+'</a>';
+            ;
+        }
+        if(inMuestraPrima==2){
+            costos='<p class="card-text" style="text-align:left !important;" >Costos: </p>';
+            pixelesTarjetas=350;
+            botonesPrima+='<p class="badge bg-primary col-md-12" style="font-size:25px;color:white;text-align:right;">'+opciones[a]['mt_prima']+' / '+opciones[a]['text']+'</p>';
+            
+        }
         botones+=
         '<div class="col-sm-'+opciones[a]['columnas']+'">'+
             '<br>'+
-            '<div id="card-'+nombreTarjeta+'-'+opciones[a]['value']+'" class="card text-right" style="border-radius:10px;border: 2px solid lightgray;">'+
+            '<div id="card-'+nombreTarjeta+'-'+opciones[a]['value']+'" class="card text-right" style="height:'+pixelesTarjetas+'px;border-radius:15px;border: 2px solid lightgray;">'+
                 '<div class="card-body">'+
+                    costos+
+                    '<div class="row">'+botonesPrima+botonesPrimaAdicional+'</div>'+
+                    '<br>'+
                     '<h5 class="card-title">'+opciones[a]['text']+'</h5>'+
                     '<p class="card-text">'+opciones[a]['de_tarjeta']+' </p>'+
+                    
+                '</div>'+
+                '<div class="card-footer">'+
                    '<a  onclick="'+nombreFuncion+'('+opciones[a]['value']+')" class="badge" style="background-color: #1d4068;color:white;text-align:left;">Elegir</a>'+
                 '</div>'+
             '</div>'+
         '</div>';
+        botonesPrima='';
     }
     var cierreRow='</div><hr class="hr-none"></div>';
     return row+''+botones+''+cierreRow;
@@ -200,18 +231,20 @@ function fnCambiarProducto(producto){
     var resumen=$('p[id="resumen-producto"]');
     resumen.html('');
     resumen.append($('select[name="cd_producto"] option:selected').text());
+    
     var elementoIProducto=$('i[id="i-producto"]');
     elementoIProducto.removeClass('typcn typcn-chevron-right');
-    var elementoICobertura=$('i[id="i-cobertura"]');
+    var elementoICobertura=$('i[id="i-suma"]');
     elementoICobertura.addClass('typcn typcn-chevron-right');
     var inputLocalizacion=$('input[name="indicador-ubicacion-resumen"]');
     inputLocalizacion.val(2);
     $('a[id="devolver-pasos"]').show();
 }
+/*
 function fnCambiarCobertura(cobertura){
     
     $('select[name="cd_cobertura"]').val(cobertura).change();
-    $('div[id="divcoberturas"]').hide(350);
+    $('div[id="divcoberturas"]').hide();
     var resumen=$('p[id="resumen-cobertura"]');
     resumen.html('');
     resumen.append($('select[name="cd_cobertura"] option:selected').text());
@@ -220,22 +253,23 @@ function fnCambiarCobertura(cobertura){
     var elementoICobertura=$('i[id="i-suma"]');
     elementoICobertura.addClass('typcn typcn-chevron-right');
     var inputLocalizacion=$('input[name="indicador-ubicacion-resumen"]');
-    inputLocalizacion.val(3);
-}
+    inputLocalizacion.val(2);
+}*/
 
 function fnCambiarSumas(suma){
-    
+    console.log(suma);
     $('select[name="mt_suma_asegurada"]').val(suma).change();
     $('div[id="divsumas"]').hide(350);
     var resumen=$('p[id="resumen-suma"]');
     resumen.html('');
     resumen.append($('select[name="mt_suma_asegurada"] option:selected').text());
+    console.log($('select[name="mt_suma_asegurada"] option:selected').text());
     var elementoIProducto=$('i[id="i-suma"]');
     elementoIProducto.removeClass('typcn typcn-chevron-right');
     var elementoICobertura=$('i[id="i-grupo-familiar"]');
     elementoICobertura.addClass('typcn typcn-chevron-right');
     var inputLocalizacion=$('input[name="indicador-ubicacion-resumen"]');
-    inputLocalizacion.val(4);
+    inputLocalizacion.val(3);
     $('button[id="boton-fase2"]').show();
     
 }
@@ -271,44 +305,28 @@ function fnUbicacionResumen(){
     var inputLocalizacion=$('input[name="indicador-ubicacion-resumen"]');
     var valorLocalizacion=inputLocalizacion.val();
     inputLocalizacion.val(valorLocalizacion-1);
-    if(valorLocalizacion==5){
-        $('div[id="divplanpago"]').hide(350);
-        $('div[id="divgrupofamiliar"]').show(350);
-        var elementoIProducto=$('i[id="i-plan-pago"]');
-        elementoIProducto.removeClass('typcn typcn-chevron-right');
-        var elementoICobertura=$('i[id="i-grupo-familiar"]');
-        elementoICobertura.addClass('typcn typcn-chevron-right');
-}
-    if(valorLocalizacion==4){
+    var valorGeneral=valorLocalizacion-1;
+    if(valorGeneral==2){
         $('div[id="divgrupofamiliar"]').hide(350);
         $('div[id="divsumas"]').show(350);
+        var elementoIProducto=$('i[id="i-plan-pago"]');
+        elementoIProducto.removeClass('typcn typcn-chevron-right');
         var elementoIProducto=$('i[id="i-grupo-familiar"]');
         elementoIProducto.removeClass('typcn typcn-chevron-right');
         var elementoICobertura=$('i[id="i-suma"]');
         elementoICobertura.addClass('typcn typcn-chevron-right');
     }
-    if(valorLocalizacion==3){
+    if(valorGeneral==1){
         $('div[id="divsumas"]').hide(350);
-        $('div[id="divcoberturas"]').show(350);
-        var elementoIProducto=$('i[id="i-suma"]');
-        elementoIProducto.removeClass('typcn typcn-chevron-right');
-        var elementoICobertura=$('i[id="i-cobertura"]');
-        elementoICobertura.addClass('typcn typcn-chevron-right');
-    }
-    if(valorLocalizacion==2){
-        $('div[id="divcoberturas"]').hide(350);
         $('div[id="divproductos"]').show(350);
-        var elementoIProducto=$('i[id="i-cobertura"]');
+        var elementoIProducto=$('i[id="i-suma"]');
         elementoIProducto.removeClass('typcn typcn-chevron-right');
         var elementoICobertura=$('i[id="i-producto"]');
         elementoICobertura.addClass('typcn typcn-chevron-right');
-    }
-    if(valorLocalizacion==1){
         $('a[id="devolver-pasos"]').hide();
-    }
-    
-    
-    if(valorLocalizacion<=5){
+    }    
+
+    if(valorLocalizacion<=3){
         $('button[id="boton-fase2"]').hide();
     }
 }

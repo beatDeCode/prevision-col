@@ -120,10 +120,21 @@ class CatalogoQuery{
    //CoberturaDetalle
 
    const busquedaSumasAseguradas="
-      select cd_cobertura_detalle value, de_cobertura_detalle text ,4 columnas, de_cobertura_detalle titulo, tx_icono, 'Montos a Riesgo' nombreTitulo,de_tarjeta
-      from coberturadetalle cobe
-      where cd_cobertura=:cd_cobertura
-      order by mt_suma_asegurada";
+   select cd_cobertura_detalle value,
+      de_cobertura_detalle text ,
+      4 columnas,
+      de_cobertura_detalle titulo,
+      tx_icono, 'Montos a Riesgo' nombreTitulo,
+      de_tarjeta,
+      (SELECT LISTAGG((select de_color_prima ||'-'||de_abreviatura from gruposfamiliares where cd_grupo_familiar=prod.cd_grupo_familiar)||'-'||(select round((mt_suma_asegurada*po_tasa_riesgo)/100,2) from coberturadetalle where cd_cobertura_detalle=cobe.cd_cobertura_detalle)||(select ' '||de_siglas_moneda from moneda where cd_moneda=cobe.cd_moneda ), '|') 
+      WITHIN GROUP (ORDER BY cd_producto)  
+      from productotasariesgo prod
+      where cd_producto=:cd_producto) prima,
+      (select round((mt_suma_asegurada*(1.48))/100,2) from coberturadetalle where cd_cobertura_detalle=cobe.cd_cobertura_detalle)||
+      (select ' '||de_siglas_moneda from moneda where cd_moneda=cobe.cd_moneda ) prima_adicional
+   from coberturadetalle cobe
+   where cd_cobertura=1
+   order by mt_suma_asegurada";
 
    const busquedaGruposFamiliares="select cd_grupo_familiar value, initcap(de_grupo_familiar) text ,5 columnas, initcap(de_grupo_familiar) titulo, tx_icono, 'Grupo familiar' nombreTitulo,de_tarjeta
    from gruposfamiliares";

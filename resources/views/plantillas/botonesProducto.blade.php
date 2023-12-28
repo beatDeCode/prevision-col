@@ -20,11 +20,13 @@
                 <div class="col-sm-{{$boton['columnas']}}">
                     <br>
                     
-                    <div id="card-producto-{{$boton['value']}}" class="card text-right" style="border-radius:10px;border: 2px solid lightgray;">
-                        <div class="card-header"></div>
+                    <div id="card-producto-{{$boton['value']}}" class="card text-right" style="height:200px;border-radius:10px;border: 2px solid lightgray;">
                         <div class="card-body">
                             <h5 class="card-title">{{$boton['titulo']}}</h5>
                             <p class="card-text">{{$boton['de_tarjeta']}} </p>
+                            
+                        </div>
+                        <div class="card-footer">
                             <a href="#" onclick="fnCambiarProducto({{$boton['value']}})" class="badge" style="background-color: #1d4068;color:white;text-align:left;">Elegir</a>
                         </div>
                     </div>

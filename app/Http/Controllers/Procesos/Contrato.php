@@ -479,6 +479,87 @@ class Contrato extends Controller{
         }
         return view('procesos.cotizacion.contrato-vista-emision',compact('contratoEmision','contratoAsegurados','contratoRecibos','menu','submenu','scripts'));
     }
+    function fnCotizaPlanesPago(Request $request){
+        $solicitud=array_keys($request->all());
+        $asegurados=[];
+        $adicionales=[];
+        $titular=[];
+        $acumuladoPrima=0.0;
+        $siglasMoneda='';
+        $query='procesoCotizacionPorPlan';
+        $instanciaAuditoria=new Auditoria;
+        $parametrosTitular=array(
+            'cd_producto'=>$request->post('cd_producto'),
+            'cd_grupo_familiar'=>$request->post('cd_grupo_familiar'),
+            'mt_suma_asegurada'=>$request->post('mt_suma_asegurada'),
+            'cd_parentesco'=>$request->post('cd_parentesco'),
+        );
+        
+        $titular=$instanciaAuditoria->fnBusquedaParametrizada(
+            $query,
+            $parametrosTitular,
+            2
+        );
+        $siglasMoneda=$titular[0]['siglas_moneda'];
+        $acumuladoPrima+=$titular[0]['mt_prima'];
+        for($a=0;$a<sizeof($solicitud);$a++){
+            if($solicitud[$a]=='_token'){}
+            if(preg_match('/asegurado/',$solicitud[$a])){
+                //print_r($solicitud[$a]);
+                $parametrosAsegurados=array(
+                    'cd_producto'=>$request->post('cd_producto'),
+                    'cd_grupo_familiar'=>$request->post('cd_grupo_familiar'),
+                    'mt_suma_asegurada'=>$request->post('mt_suma_asegurada'),
+                    'cd_parentesco'=>$request->post($solicitud[$a]),
+                );
+                
+                $asegurados=$instanciaAuditoria->fnBusquedaParametrizada(
+                    $query,
+                    $parametrosAsegurados,
+                    2
+                );
+                $acumuladoPrima+=$asegurados[0]['mt_prima'];
+                
+            }
+            if(preg_match('/adicional/',$solicitud[$a])){
+                //print_r($solicitud[$a]);
+                $parametrosAdicional=array(
+                    'cd_producto'=>$request->post('cd_producto'),
+                    'cd_grupo_familiar'=>$request->post('cd_grupo_familiar'),
+                    'mt_suma_asegurada'=>$request->post('mt_suma_asegurada'),
+                    'cd_parentesco'=>$request->post($solicitud[$a]),
+                );
+                $adicionales=$instanciaAuditoria->fnBusquedaParametrizada(
+                    $query,
+                    $parametrosAdicional,
+                    2
+                );
+                $acumuladoPrima+=$adicionales[0]['mt_prima'];
+            }
+        }
+        $parametrosPlanesPorPrima=array(
+            'mt_prima'=>$acumuladoPrima,
+            'de_siglas_moneda'=>$siglasMoneda
+
+        );
+        $query='primasPorPlanesPago';
+        $planesPorPrima=$instanciaAuditoria->fnBusquedaParametrizada(
+            $query,
+            $parametrosPlanesPorPrima,
+            2
+        );
+        $retorno=array(
+            'httpResponse'=>200,
+            'message'=>array(
+                'validate'=>'',
+                'content'=>$planesPorPrima,
+                'object'=>array(),
+            ),
+            'error'=>1
+        ); 
+        return json_encode($retorno);
+
+    }
     
 }
 

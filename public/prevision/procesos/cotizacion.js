@@ -490,6 +490,7 @@ function fnArregloBorrarErrores(contadorDeClonacion){
         limpiarError3.html('');
     }
 }
+/*
 function fnMoverFase3_(formulario,formulario2,formulario3){
     var tokenLaravel=$('input[name="_token"]').val();
     var validacionFase2=fnValidarVacios(formulario);
@@ -575,7 +576,7 @@ function fnMoverFase3_(formulario,formulario2,formulario3){
     } catch (error) {
         console.log(error);
     }
-}
+}*/
 function fnMoverFase3(formulario){
     var tokenLaravel=$('input[name="_token"]').val();
     var validacionFase2=fnValidarVacios(formulario);
@@ -897,13 +898,6 @@ function fnGenerarPDFContrato(contrato){
     window.location.replace('http://10.10.0.200:8081/sgd.reportes/JRTE0001_1/NU_CONTRATO-'+contrato);
 }
 function fnEnviarCorreoPDF(contrato,documento,nombre,correo){
-    /*$.ajax({
-        url:'http://10.10.0.200:8081/sgd.correo/JRTE0001_1/'+contrato+'/'+documento+'/'+nombre+'/'+correo,
-        type:'GET',
-        crossDomain: true,
-    }).done(function(response){
-        console.log(response,'http://10.10.0.200:8081/sgd.correo/JRTE0001_1/'+contrato+'/'+documento+'/'+nombreAux+'/'+correo);
-    });*/
     window.open('http://10.10.0.200:8081/sgd.correo/JRTE0001_1/'+contrato+'/'+documento+'/'+nombre+'/'+correo, '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes')
 }
 
@@ -1104,5 +1098,62 @@ function fnCambiarSelectParentesco(busqueda,select){
             
         }
     });
+}
+
+function fnMostrarPlanesConPrimaCalculada(){
+    //var formularioTitular=$('form[name="formulario-titular"]');
+    var formularioAsegurados=$('form[name="formulario-asegurados"]').serializeArray();
+    var formularioAdicionales=$('form[name="formulario-adicionales"]').serializeArray();
+    var sumaAsegurada=$('select[name="mt_suma_asegurada"] option:selected').val();
+    var grupoFamiliar=$('select[name="cd_grupo_familiar"] option:selected').val();
+    var producto=$('select[name="cd_producto"] option:selected').val();
+    var tokenLaravel=$('input[name="_token"]').val();
+    var solicitud=[];
+    solicitud.push({name:'cd_parentesco',value:1});
+    solicitud.push({name:'cd_producto',value:producto});
+    solicitud.push({name:'mt_suma_asegurada',value:sumaAsegurada});
+    solicitud.push({name:'cd_grupo_familiar',value:grupoFamiliar});
+    if(formularioAsegurados.length>0){
+        for(var a=0;a<formularioAsegurados.length;a++){
+            if((formularioAsegurados[a]['name']).includes('cd_parentesco')==true){
+                solicitud.push({name:formularioAsegurados[a]['name'],value:formularioAsegurados[a]['value']});
+            }
+        }
+    }
+    if(formularioAdicionales.length>0){
+        for(var b=0;b<formularioAdicionales.length;b++){
+            if((formularioAdicionales[b]['name']).includes('cd_parentesco')==true){
+                solicitud.push({name:formularioAdicionales[b]['name'],value:formularioAdicionales[b]['value']});
+            }
+        }
+    }
+    $.ajax({
+        url:'/prevision.procesos.cartera.cotiza-por-planespago',
+        type:'POST',
+        cache:false,
+        headers: {'X-CSRF-TOKEN': tokenLaravel},
+        data:solicitud
+    }).done(function(response){
+        var JSONParse=JSON.parse(response);
+        if(JSONParse.httpResponse==200){
+            var valoresOption=JSONParse.message.content;
+            var fase1=$('div[id="fase2"]');
+            fase1.hide(500);
+            var fase2=$('div[id="fase3_"]');
+            fase2.fadeIn('slow');
+            var botones=fnDespliegueBotones(valoresOption,'fnCambiarPlanPago','plan-pago','Planes de Pago',2);
+            var divGrupoFamiliar=$('div[id="divplanpago"]');
+            divGrupoFamiliar.html('');
+            divGrupoFamiliar.append(botones);
+            divGrupoFamiliar.show(350);
+            var divResumenAnterior=$('div[id="div-resumen-adicionales"]').html();
+            var divResumen=$('div[id="div-resumen-preliminar"]');
+            divResumen.html('');
+            divResumen.append(divResumenAnterior);
+            
+        }
+    }).fail(function(a,b,c){
+        console.log(a,b,c);
+    })
 }
 

@@ -46,6 +46,8 @@ Route::middleware(['autorizacion.defecto'])->group(function () {
     Route::post('/prevision.procesos.cartera.valida-asegurados',[Contrato::class, 'fnValidarAsegurados']);
     Route::post('/prevision.procesos.cartera.emision-contrato',[Contrato::class, 'fnEmision']);
     Route::get('/prevision.procesos.cartera.vista-emision/{contrato}',[Contrato::class, 'fnVistaEmision']);
+    Route::post('/prevision.procesos.cartera.cotiza-por-planespago',[Contrato::class, 'fnCotizaPlanesPago']);
+    
     
     Route::get('/prevision.procesos.cartera.cotizacion-colectivos',[ContratoColectivos::class, 'fnCotizacion']);
     Route::post('/prevision.procesos.cartera.valida-asegurados-colectivo',[ContratoColectivos::class, 'fnValidarCarga']);

@@ -26,7 +26,7 @@
             </div>
             <div class="col-md-9">
                 <div id="divplanpago"></div>
-                <div id="preliminar-factura" style="display:none;">
+                <!--<div id="preliminar-factura" style="display:none;">
                     <br>
                     <div class="container-fluid">
                         <div class="table-responsive">
@@ -47,6 +47,7 @@
                         </div>
                     </div>
                 </div>
+                -->
                 <hr class="hr-none">
                 <center>
                     <button type="button" class="btn btn-sm" 

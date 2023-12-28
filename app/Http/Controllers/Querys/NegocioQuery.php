@@ -198,6 +198,65 @@ class NegocioQuery{
     )a2
     ";
 
+    const procesoCotizacionPorPlan="
+    select 
+    case when es_calcuble=1
+    then 
+        round(((tasa_riesgo*mt_suma_asegurada)/100),2)
+    else 0 end mt_prima,
+    mt_suma_asegurada,
+    siglas_moneda,
+    es_adicional
+    from (
+        select 
+        case when cuenta>0
+        then case when :cd_parentesco=1 then 1 else 0 end else 1 end es_calcuble,
+        case when cuenta>0
+        then 'No' else 'Si' end es_adicional,
+        case when cuenta>0
+        then
+            case when :cd_parentesco=1
+            then
+                (select po_tasa_riesgo from productotasariesgo
+                where cd_producto=:cd_producto
+                and cd_grupo_familiar=:cd_grupo_familiar)
+            else
+                0
+            end
+        else
+            1.78
+        end
+        tasa_riesgo,
+        (select mt_suma_asegurada from coberturadetalle
+        where cd_cobertura_detalle=:mt_suma_asegurada
+        )mt_suma_asegurada,
+        (select
+        (select de_siglas_moneda from moneda where cd_moneda=code.cd_moneda) 
+        from coberturadetalle code
+        where cd_cobertura_detalle=:mt_suma_asegurada
+        )siglas_moneda
+        from (
+            select 
+                (select count(1) from grupofamiliarparentesco
+            where cd_parentesco=:cd_parentesco
+            and cd_grupo_familiar=:cd_grupo_familiar) cuenta
+            from dual
+        )a1
+    )a2";
+    const primasPorPlanesPago="
+    select 
+        round(:mt_prima /ca_recibos,2) ||''|| :de_siglas_moneda mt_prima,
+        plan.cd_plan_pago value,
+        plan.DE_PLAN_PAGO text,
+        4 columnas,
+        'Planes de pago ' nombreTitulo,
+        de_tarjeta
+    from planespago plan,
+    planpagodetalle ppde
+    where plan.CD_PLAN_PAGO = ppde.CD_PLAN_PAGO
+    ";
+    
+
     const busquedaDocumentoContrato="
         select :cd_input value, cuenta, 
             case when cuenta>0 then
