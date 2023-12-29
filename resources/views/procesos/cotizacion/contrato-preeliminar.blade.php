@@ -32,10 +32,10 @@
                 <div class="col-md-12" style="margin-top:10px;"><div class="badge" style="background-color: #1d4068;color:white;text-align:left;">Cotizacion</div><hr class="hr-none"></div>
                 <br>    
                 <center>
-                    <button class="btn btn-sm btn-outline-info btn-icon-text" onclick="fnGenerarPDFContrato()">
+                    <button class="btn btn-sm btn-outline-info btn-icon-text" onclick="fnCrearCotizacion()">
                     <i class="typcn typcn-download-outline"></i> Visualizar </button>
                     <button class="btn btn-sm btn-outline-info btn-icon-text" onclick="
-                    fnEnviarCorreoPDF()"><i class="typcn typcn-mail"></i> Cotizar Por Correo
+                    fnMostrarGenerarCotizacion()"><i class="typcn typcn-mail"></i> Cotizar Por Correo
                     </button>
                 </center>
                 </div>

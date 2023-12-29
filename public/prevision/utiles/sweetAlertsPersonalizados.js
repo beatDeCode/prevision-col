@@ -68,6 +68,20 @@ function fnAlertDetalleFormulario(html,titulo){
   return alerta;
 }
 
+function fnSWDetalleHtml(contenidohtml,tituloBotonConfirmar,indicadorBotonConfirmar){
+  var alerta=
+  Swal.fire({
+      html: contenidohtml,
+      showConfirmButton:indicadorBotonConfirmar,
+      confirmButtonText:tituloBotonConfirmar,
+      showDenyButton:true,
+      customClass:'swal-wide',
+      denyButtonText:'Volver',
+      allowOutsideClick: false
+    });
+  return alerta;
+}
+
 function fnRetornarValorFormulario(nombreInput){
   var retorno='';
   var valorSelect=$('select[name="'+nombreInput+'"] option:selected').html();

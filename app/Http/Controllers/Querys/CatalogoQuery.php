@@ -95,6 +95,7 @@ class CatalogoQuery{
    const busquedaSecuenciaRecibo="
    select recibos_seq.nextval secuencia from dual
    ";
+   const busquedaSecuenciaTempCotizacion="select tempcotizacion_seq.nextval secuencia from dual";
 
    
 

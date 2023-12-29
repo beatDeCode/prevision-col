@@ -427,9 +427,10 @@ function fnCrearCotizacion(){
             '</tr>';
             var detalleFactura=contenidoTitular+contenidoAsegurados;
             var tablaFactura=fnArmarFactura(contenidoCabecera,detalleFactura,contenidoTotal);
-            var div=$('div[id="factura"]');
+            /*var div=$('div[id="factura"]');
             div.html('');
-            div.append(tablaFactura);
+            div.append(tablaFactura);*/
+            fnSWDetalleHtml(tablaFactura);
         }
     }).fail(function(a,c,b){
         console.log(a,b,c);
@@ -627,10 +628,10 @@ function fnMoverFase3(formulario){
                             }
                         }
                         if(contadorErrores1==0){
-                            var fase1=$('div[id="fase3_"]');
+                            /*var fase1=$('div[id="fase3_"]');
                             fase1.hide(500);
                             var fase2=$('div[id="fase4"]');
-                            fase2.fadeIn('slow');
+                            fase2.fadeIn('slow');*/
                             fnCrearCotizacion();
                         }
                         
@@ -993,71 +994,6 @@ function fnEliminarAsegurado(codigoFormulario){
     if(contarDesglose>1){
         
     }
-    /*if(explodeInput.length>1){
-        if(explodeInput[0]=='as'){
-            nombreFormulario='asegurado'+explodeInput[1];
-            nombreChecked='asegurados';
-        }
-        if(explodeInput[0]=='ad'){
-            nombreFormulario='adicional'+explodeInput[1];
-            nombreChecked='adicionales';
-        }
-    }else{
-        if(explodeInput=='as'){
-            nombreFormulario='asegurado';
-            nombreChecked='asegurados';
-        }else{
-            nombreFormulario='adicional';
-            nombreChecked='adicionales';
-        }
-    }
-    
-    var nm_completo=$('input[name="nm_persona1_'+nombreFormulario+'"]');
-    var tp_documento=$('select[name="tp_documento_'+nombreFormulario+'"]');
-    var nu_documento=$('input[name="nu_documento_'+nombreFormulario+'"]');
-    var cd_sexo=$('select[name="cd_sexo_'+nombreFormulario+'"]');
-    var fe_nacimiento=$('input[name="fe_nacimiento_'+nombreFormulario+'"]');
-    var cd_parentesco=$('select[name="cd_parentesco_'+nombreFormulario+'"]');
-    var boton=$('button[id="boton-'+nombreChecked+'"]');
-    var contadorDeClonacion=$('input[name="contador-clonacion-'+nombreChecked+'"]');
-    contadorDeClonacion.val(parseInt(contadorDeClonacion.val())-1);
-    if(contadorDeClonacion.val()>=1){
-        nm_completo.css('display','none');
-        tp_documento.css('display','none');
-        nu_documento.css('display','none');
-        cd_sexo.css('display','none');
-        fe_nacimiento.css('display','none');
-        cd_parentesco.css('display','none');
-        boton.css('display','none');
-
-        nm_completo.prop('disabled',true);
-        tp_documento.prop('disabled',true);
-        nu_documento.prop('disabled',true);
-        cd_sexo.prop('disabled',true);
-        fe_nacimiento.prop('disabled',true);
-        cd_parentesco.prop('disabled',true);
-    }else{
-
-        nm_completo.prop('disabled',true);
-        tp_documento.prop('disabled',true);
-        nu_documento.prop('disabled',true);
-        cd_sexo.prop('disabled',true);
-        fe_nacimiento.prop('disabled',true);
-        cd_parentesco.prop('disabled',true);
-
-        var divFormulario=$('div[id="formulario-'+nombreChecked+'"]');
-        divFormulario.hide();
-        var de_adicionales=$('input[name="de_'+nombreChecked+'"]');
-        de_adicionales.prop('checked',false);
-    }
-    nm_completo.val('');
-    tp_documento.val('');
-    nu_documento.val('');
-    cd_sexo.val('');
-    fe_nacimiento.val('');
-    cd_parentesco.val('');
-    fnCrearPreliminar();
-    */
 }
 
 
@@ -1113,6 +1049,7 @@ function fnMostrarPlanesConPrimaCalculada(){
     var producto=$('select[name="cd_producto"] option:selected').val();
     var tokenLaravel=$('input[name="_token"]').val();
     var solicitud=[];
+
     solicitud.push({name:'cd_parentesco',value:1});
     solicitud.push({name:'cd_producto',value:producto});
     solicitud.push({name:'mt_suma_asegurada',value:sumaAsegurada});
@@ -1160,5 +1097,83 @@ function fnMostrarPlanesConPrimaCalculada(){
     }).fail(function(a,b,c){
         console.log(a,b,c);
     })
+
+}
+
+
+function fnMostrarGenerarCotizacion(){
+    fnAlertaDeEsperaTransccion();
+    
+    var formularioAsegurados=$('form[name="formulario-asegurados"]').serializeArray();
+    var formularioAdicionales=$('form[name="formulario-adicionales"]').serializeArray();
+    var sumaAsegurada=$('select[name="mt_suma_asegurada"] option:selected').val();
+    var grupoFamiliar=$('select[name="cd_grupo_familiar"] option:selected').val();
+    var producto=$('select[name="cd_producto"] option:selected').val();
+    var planpago=$('select[name="cd_plan_pago"] option:selected').val();
+    var tokenLaravel=$('input[name="_token"]').val();
+
+    var nombre=$('input[name="nm_persona1"]').val();
+    var apellido=$('input[name="ap_persona1"]').val();
+    var documento=$('select[name="tp_documento"] option:selected').val()+'-'+$('input[name="nu_documento"]').val();
+    var telefono=$('select[name="nu_area"] option:selected').val()+'-'+$('input[name="nu_telefono"]').val();
+    var correo=$('input[name="de_correo"]').val();
+    var solicitud=[];
+    
+    solicitud.push({name:'cd_parentesco',value:1});
+    solicitud.push({name:'cd_producto',value:producto});
+    solicitud.push({name:'mt_suma_asegurada',value:sumaAsegurada});
+    solicitud.push({name:'cd_grupo_familiar',value:grupoFamiliar});
+    solicitud.push({name:'nm_persona1',value:nombre});
+    solicitud.push({name:'ap_persona1',value:apellido});
+    solicitud.push({name:'nu_documento',value:documento});
+    solicitud.push({name:'nu_telefono',value:telefono});
+    solicitud.push({name:'de_correo',value:correo});
+    solicitud.push({name:'cd_plan_pago',value:planpago});
+    if(formularioAsegurados.length>0){
+        for(var a=0;a<formularioAsegurados.length;a++){
+            if((formularioAsegurados[a]['name']).includes('cd_parentesco')==true){
+                solicitud.push({name:formularioAsegurados[a]['name'],value:formularioAsegurados[a]['value']});
+            }
+        }
+    }
+    if(formularioAdicionales.length>0){
+        for(var b=0;b<formularioAdicionales.length;b++){
+            if((formularioAdicionales[b]['name']).includes('cd_parentesco')==true){
+                solicitud.push({name:formularioAdicionales[b]['name'],value:formularioAdicionales[b]['value']});
+            }
+        }
+    }
+    $.ajax({
+        url:'/prevision.procesos.cartera.cotiza-por-correo',
+        type:'POST',
+        cache:false,
+        headers: {'X-CSRF-TOKEN': tokenLaravel},
+        data:solicitud
+    }).done(function(response){
+        var JSONParse=JSON.parse(response);
+        console.log(response);
+        if(JSONParse.httpResponse==200){
+            swal.close();
+            /*var valoresOption=JSONParse.message.content;
+            var fase1=$('div[id="fase2"]');
+            fase1.hide(500);
+            var fase2=$('div[id="fase3_"]');
+            fase2.fadeIn('slow');
+            swal.close();
+            var botones=fnDespliegueBotones(valoresOption,'fnCambiarPlanPago','plan-pago','Planes de Pago',2);
+            var divGrupoFamiliar=$('div[id="divplanpago"]');
+            divGrupoFamiliar.html('');
+            divGrupoFamiliar.append(botones);
+            divGrupoFamiliar.show(350);
+            var divResumenAnterior=$('div[id="div-resumen-adicionales"]').html();
+            var divResumen=$('div[id="div-resumen-preliminar"]');
+            divResumen.html('');
+            divResumen.append(divResumenAnterior);*/
+            
+        }
+    }).fail(function(a,b,c){
+        console.log(a,b,c);
+    })
+
 }
 
