@@ -68,7 +68,7 @@
                         onclick="fnDevolverFase(3)">Volver</button>
                     <button type="button" class="btn btn-sm" 
                     style="background-color: #7c90a7;color: white;margin-bottom:15px;" 
-                    onclick="fnMoverFase3('formulario-producto')">Siguiente</button>
+                    onclick="fnMoverFase4('formulario-producto')">Siguiente</button>
                 </center>
             </div>
         </div>

@@ -1,6 +1,6 @@
 <?php
 
-
+/*
 return [
     'oracle' => [
         'driver'         => 'oracle',
@@ -16,9 +16,9 @@ return [
         'edition'        => env('DB_EDITION', 'ora$base'),
         'server_version' => env('DB_SERVER_VERSION', '11g'),
     ],
-];
+];*/
 
-/*
+
 return [
     'oracle' => [
         'driver'         => 'oracle',
@@ -35,5 +35,5 @@ return [
         'server_version' => env('DB_SERVER_VERSION', '11g'),
     ],
 ];
-*/
+
 

@@ -10,7 +10,7 @@
 
         $formulariosCreate1=array(
             'titulo1|hr|text|col-md-6|Datos Pagos|'=>array(),
-            'cd_intermediario|select|text|col-md-4|Intermediario|'=>$busquedaIntermediarios,
+            //'cd_intermediario|select|text|col-md-4|Intermediario|'=>$busquedaIntermediarios,
             'cd_forma_pago|select|text|col-md-4|Forma de Pago|'=>$busquedaFormasPago,
 
             'titulo2|hr|text|col-md-6|Domicilio Bancario|'=>array(),

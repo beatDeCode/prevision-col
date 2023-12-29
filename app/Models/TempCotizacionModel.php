@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Auditoria;
 
 class TempCotizacionModel extends Model{
-    protected $table="TEMPCOTIZACION";
+    protected $table="TEMPORALCOTIZACION";
     public $timestamps=false;
     public $incrementing=false;
-    public $fillable=["nu_documento",
+    public $fillable=[
+    "nu_documento",
     "nu_telefono",
     "de_correo",
     "mt_prima",

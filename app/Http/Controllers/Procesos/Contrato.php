@@ -631,7 +631,7 @@ class Contrato extends Controller{
             'mt_suma_asegurada'=>$request->post('mt_suma_asegurada'),
             'cd_plan_pago'=>$request->post('cd_plan_pago'),
             'nm_persona1'=>$request->post('nm_persona1'),
-            'nm_apellido1'=>$request->post('nm_apellido1'),
+            'ap_persona1'=>$request->post('ap_persona1'),
             'nu_documento'=>$request->post('nu_documento'),
             'nu_telefono'=>$request->post('nu_telefono'),
             'de_correo'=>$request->post('de_correo'),

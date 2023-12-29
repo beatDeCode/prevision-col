@@ -264,7 +264,6 @@ function fnCrearCotizacion(){
     formulario.push({name:'nu_documento',value:cedulaTitular});
     formulario.push({name:'de_adicionales',value:de_adicionales});
     formulario.push({name:'de_asegurados',value:de_asegurados});
-    console.log();
     for(var a=0;a<valoresDesglosados.length;a++){   
         if(valoresDesglosados[a]=='boton'){
             
@@ -427,9 +426,10 @@ function fnCrearCotizacion(){
             '</tr>';
             var detalleFactura=contenidoTitular+contenidoAsegurados;
             var tablaFactura=fnArmarFactura(contenidoCabecera,detalleFactura,contenidoTotal);
-            /*var div=$('div[id="factura"]');
+            var div=$('div[id="factura"]');
             div.html('');
-            div.append(tablaFactura);*/
+            div.append(tablaFactura);
+
             fnSWDetalleHtml(tablaFactura);
         }
     }).fail(function(a,c,b){
@@ -611,7 +611,7 @@ function fnMoverFase3(formulario){
                     headers: {'X-CSRF-TOKEN': tokenLaravel},
                     data:formulario
                 }).done(function(response){
-                    console.log(response);
+                   
                     var JSONParse=JSON.parse(response);
                     if(JSONParse.httpResponse==200){
                         var contenido=JSONParse.message.content;
@@ -662,7 +662,6 @@ function fnEsconderDomicilio(){
 fnEsconderDomicilio();
 $('select[name="cd_forma_pago"]').on('change',function(){
     var formaPago=$('select[name="cd_forma_pago"] option:selected').val();
-    console.log(formaPago);
     if(formaPago){
         if(formaPago==1){
             $('div[id="tp_documento_domicilio"]').css('display','none');
@@ -684,7 +683,7 @@ $('select[name="cd_forma_pago"]').on('change',function(){
     }
 });
 function fnMoverFase4(){
-    var fase1=$('div[id="fase3"]');
+    var fase1=$('div[id="fase3_"]');
     fase1.hide(500);
     var fase2=$('div[id="fase4"]');
     fase2.fadeIn('slow');
@@ -730,16 +729,15 @@ function validarFormularioArray(array){
 }
 function fnEmitir(){
     var formulario=[];
-    var intermediario=$('select[name="cd_intermediario"]').val();
     var formaPago=$('select[name="cd_forma_pago"]').val(); 
-    formulario.push({value:'cd_intermediario',text:intermediario});
     formulario.push({value:'cd_forma_pago',text:formaPago});
     
     var cantidadErrores=
     validarFormularioArray(formulario);
 
     if(cantidadErrores==0){
-        contenidoHtml=$('div[id="factura"]').html();
+        var contenidoHtml=$('div[id="factura"]').html();
+
         var sweetAlert=fnAlertDetalleFormulario(contenidoHtml,'Transacción');
         sweetAlert.then((response) =>{
             if(response.isConfirmed){
@@ -874,7 +872,6 @@ function fnGuardarContrato(){
     solicitud.push( {name:'de_adicionales',value: de_adicionales });
     var formaPago=$('select[name="cd_forma_pago"] option:selected').val();
     solicitud.push( {name:'cd_forma_pago',value: formaPago});
-    solicitud.push( {name:'cd_intermediario',value: $('select[name="cd_intermediario"] option:selected').val() });
     if(formaPago==2){
         solicitud.push( {name:'tp_cuenta',value: $('select[name="tp_cuenta"] option:selected').val() });
         solicitud.push( {name:'nu_cuenta',value: $('input[name="nu_cuenta"]').val() });
@@ -990,7 +987,6 @@ function fnEliminarAsegurado(codigoFormulario){
     var nombreFormulario='';
     var nombreChecked='';
     var contarDesglose=explodeInput.length;
-    console.log(contarDesglose);
     if(contarDesglose>1){
         
     }
